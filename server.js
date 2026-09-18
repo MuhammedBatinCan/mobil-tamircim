@@ -899,6 +899,39 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
+    // 1.F Admin: Get Live Hot-Patches
+    if (pathname === '/api/admin/live-patches' && method === 'GET') {
+      res.writeHead(200);
+      res.end(JSON.stringify({ success: true, patches: db.livePatches || [] }));
+      return;
+    }
+
+    // 1.G Admin: Toggle Live Hot-Patch
+    if (pathname === '/api/admin/live-patches/toggle' && method === 'POST') {
+      const body = await parseBody(req);
+      const patch = (db.livePatches || []).find(p => p.id === body.patchId);
+      if (patch) {
+        patch.active = !patch.active;
+        saveDb();
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, patch }));
+      } else {
+        res.writeHead(404);
+        res.end(JSON.stringify({ success: false, error: 'Yama bulunamadı' }));
+      }
+      return;
+    }
+
+    // 1.H Admin: Clear All Live Hot-Patches
+    if (pathname === '/api/admin/live-patches/clear' && method === 'POST') {
+      const count = (db.livePatches || []).length;
+      db.livePatches = [];
+      saveDb();
+      res.writeHead(200);
+      res.end(JSON.stringify({ success: true, clearedCount: count }));
+      return;
+    }
+
     // 2. Create a new thread
     if (pathname === '/api/threads' && method === 'POST') {
       try {
@@ -1455,8 +1488,36 @@ const server = http.createServer(async (req, res) => {
         } else if (pathname === '/admin/sw.js') {
           headers['Service-Worker-Allowed'] = '/admin/';
         }
+
+        // --- ANTIGRAVITY LIVE HOT-PATCH INJECTION ---
+        let responseData = content;
+        if (ext === '.html') {
+          const activePatches = (db.livePatches || []).filter(p => p.active !== false);
+          if (activePatches.length > 0) {
+            let htmlStr = content.toString('utf8');
+            const cssCode = activePatches.filter(p => p.type === 'css').map(p => `/* [LivePatch ${p.id}]: ${p.description} */\n${p.code}`).join('\n\n');
+            const jsCode = activePatches.filter(p => p.type === 'js').map(p => `/* [LivePatch ${p.id}]: ${p.description} */\ntry { ${p.code} } catch(err) { console.error('LivePatch ${p.id} error:', err); }`).join('\n\n');
+
+            let injected = '';
+            if (cssCode) {
+              injected += `\n<!-- ANTIGRAVITY LIVE HOT-PATCH CSS -->\n<style id="antigravity-live-css">\n${cssCode}\n</style>\n`;
+            }
+            if (jsCode) {
+              injected += `\n<!-- ANTIGRAVITY LIVE HOT-PATCH JS -->\n<script id="antigravity-live-js">\n${jsCode}\n</script>\n`;
+            }
+
+            if (htmlStr.includes('</head>')) {
+              htmlStr = htmlStr.replace('</head>', injected + '</head>');
+            } else {
+              htmlStr += injected;
+            }
+            responseData = Buffer.from(htmlStr, 'utf8');
+            headers['Content-Length'] = Buffer.byteLength(responseData);
+          }
+        }
+
         res.writeHead(200, headers);
-        res.end(content);
+        res.end(responseData);
       }
     });
   });
@@ -1473,6 +1534,167 @@ function updateUserLevel(user) {
   } else {
     user.level = 'Çırak';
   }
+}
+
+// ==========================================================
+// ANTIGRAVITY CANLI SICAK YAMA (LIVE HOT-PATCH) MOTORU
+// ==========================================================
+function generateLivePatchFromPrompt(prompt) {
+  const p = prompt.toLowerCase();
+
+  // Renk sözlüğü
+  const colors = {
+    'kırmızı': '#e74c3c',
+    'al': '#e74c3c',
+    'yeşil': '#27ae60',
+    'mavi': '#2980b9',
+    'lacivert': '#1a365d',
+    'koyu mavi': '#1e3a8a',
+    'sarı': '#f1c40f',
+    'turuncu': '#e67e22',
+    'siyah': '#121212',
+    'beyaz': '#ffffff',
+    'mor': '#8e44ad',
+    'pembe': '#e91e63',
+    'gri': '#7f8c8d',
+    'koyu': '#18181b',
+    'altın': '#d4af37'
+  };
+
+  let targetColor = null;
+  for (const [colName, colHex] of Object.entries(colors)) {
+    if (p.includes(colName)) {
+      targetColor = colHex;
+      break;
+    }
+  }
+
+  // 1. Buton Stili ve Rengi
+  if (p.includes('buton') && (p.includes('renk') || targetColor || p.includes('yap') || p.includes('değiştir'))) {
+    const col = targetColor || '#e74c3c';
+    let selector = 'button, .btn, .auth-btn-primary, .auth-tab-btn.active, .hero-cta-btn';
+    let desc = `Tüm ana butonların rengi ${col} olarak güncellendi`;
+
+    if (p.includes('giriş') || p.includes('login') || p.includes('kayıt')) {
+      selector = '#auth-submit-btn, .auth-btn-primary, .auth-tab-btn.active';
+      desc = `Giriş & Kayıt butonlarının rengi ${col} yapıldı`;
+    } else if (p.includes('sos') || p.includes('acil')) {
+      selector = '.sos-banner-btn, .sos-call-btn, .badge-urgent';
+      desc = `SOS Acil Durum butonları ${col} yapıldı`;
+    } else if (p.includes('yorum') || p.includes('cevap')) {
+      selector = '.comment-submit-btn, .forum-reply-btn';
+      desc = `Yorum gönderme butonları ${col} yapıldı`;
+    } else if (p.includes('başlık') || p.includes('konu')) {
+      selector = '#open-new-thread-modal-btn, .btn-primary';
+      desc = `Yeni Konu Aç butonu ${col} yapıldı`;
+    }
+
+    return {
+      type: 'css',
+      description: desc,
+      code: `${selector} { background: ${col} !important; border-color: ${col} !important; color: #ffffff !important; box-shadow: 0 4px 14px ${col}66 !important; }`
+    };
+  }
+
+  // 2. Header / Üst Menü / Navbar
+  if (p.includes('header') || p.includes('üst menü') || p.includes('üst bar') || p.includes('navbar')) {
+    const col = targetColor || '#1a202c';
+    return {
+      type: 'css',
+      description: `Üst menü (Navbar) arka planı ${col} yapıldı`,
+      code: `.top-nav, header, .navbar, .admin-desktop-tabs { background: ${col} !important; border-bottom: 1px solid rgba(255,255,255,0.1) !important; }`
+    };
+  }
+
+  // 3. Arka Plan Rengi
+  if (p.includes('arka plan') || p.includes('arkaplan') || p.includes('background')) {
+    const col = targetColor || '#0f172a';
+    return {
+      type: 'css',
+      description: `Sayfa arka planı ${col} olarak uyarlandı`,
+      code: `body, html, main, .app-container { background: ${col} !important; }`
+    };
+  }
+
+  // 4. Mobilde Taşma / Genişlik / Kırpılma Düzeltmesi (Responsive fix)
+  if (p.includes('taşma') || p.includes('yatay kay') || p.includes('ekrandan taşı') || p.includes('sığmıyor') || p.includes('kırpıl')) {
+    return {
+      type: 'css',
+      description: `Mobil yatay kayma ve genişlik taşması sınırlandı`,
+      code: `html, body { overflow-x: hidden !important; max-width: 100vw !important; }\n.container, .app-layout, .modal-content { max-width: 100% !important; box-sizing: border-box !important; }\nimg, svg { max-width: 100% !important; height: auto !important; }`
+    };
+  }
+
+  // 5. Eleman Gizleme / Kaldırma
+  if (p.includes('gizle') || p.includes('kaldır') || p.includes('görünmesin') || p.includes('sakla')) {
+    let selector = null;
+    let desc = 'Belirtilen öğe gizlendi';
+    if (p.includes('banner') || p.includes('duyuru')) {
+      selector = '.announcement-banner, .promo-banner';
+      desc = 'Duyuru bannerı gizlendi';
+    } else if (p.includes('sos') || p.includes('acil')) {
+      selector = '.sos-floating-pill, .sos-banner';
+      desc = 'SOS bildirim çubuğu gizlendi';
+    } else if (p.includes('footer') || p.includes('alt bilgi')) {
+      selector = 'footer, .footer-section';
+      desc = 'Footer alt bilgi alanı gizlendi';
+    }
+    if (selector) {
+      return {
+        type: 'css',
+        description: desc,
+        code: `${selector} { display: none !important; visibility: hidden !important; }`
+      };
+    }
+  }
+
+  // 6. Yazı Boyutu & Tipografi
+  if (p.includes('yazı boyutu') || p.includes('font') || p.includes('metin boyutu') || p.includes('büyüt') || p.includes('küçült')) {
+    if (p.includes('büyüt')) {
+      return {
+        type: 'css',
+        description: `Genel yazı boyutları %15 büyütüldü`,
+        code: `body { font-size: 17px !important; }\nh1 { font-size: 2rem !important; }\nh2 { font-size: 1.6rem !important; }\np { font-size: 1.05rem !important; }`
+      };
+    } else if (p.includes('küçült')) {
+      return {
+        type: 'css',
+        description: `Genel yazı boyutları %10 küçültüldü`,
+        code: `body { font-size: 14px !important; }\nh1 { font-size: 1.5rem !important; }\nh2 { font-size: 1.3rem !important; }`
+      };
+    }
+  }
+
+  // 7. Yuvarlak Köşeler / Modern Kartlar
+  if (p.includes('yuvarlak') || p.includes('kavis') || p.includes('radius')) {
+    return {
+      type: 'css',
+      description: `Tüm kart ve buton köşeleri modern 16px yuvarlatıldı`,
+      code: `.card, .thread-card, .btn, .modal-content, input, select { border-radius: 16px !important; }`
+    };
+  }
+
+  // 8. Doğrudan CSS kodu yazılmışsa
+  const directCssMatch = prompt.match(/(?:css\s*:|stil\s*:)\s*([\s\S]+)/i);
+  if (directCssMatch) {
+    return {
+      type: 'css',
+      description: `Yönetici tarafından doğrudan iletilen özel CSS kuralı`,
+      code: directCssMatch[1].trim()
+    };
+  }
+
+  // 9. Doğrudan JS kodu yazılmışsa
+  const directJsMatch = prompt.match(/(?:js\s*:|javascript\s*:)\s*([\s\S]+)/i);
+  if (directJsMatch) {
+    return {
+      type: 'js',
+      description: `Yönetici tarafından iletilen canlı JS fonksiyonu`,
+      code: directJsMatch[1].trim()
+    };
+  }
+
+  return null;
 }
 
 // ==========================================================
@@ -1704,7 +1926,84 @@ function executeAdminAiAction(userPrompt, db) {
     }
   }
 
-  // 9. Geliştirici Görevi / Kod Düzeltme & Hata Bildirimi (Bug Report)
+  // 9. Canlı Sıcak Yama Yönetimi (Listeleme / Geri Alma / Sıfırlama)
+  if (!Array.isArray(db.livePatches)) db.livePatches = [];
+
+  if (p.includes('yama') && (p.includes('geri al') || p.includes('iptal') || p.includes('kaldır'))) {
+    if (db.livePatches.length === 0) {
+      return {
+        executed: true,
+        type: 'PATCH_ROLLBACK_EMPTY',
+        summary: 'Aktif Canlı Yama Bulunamadı',
+        details: 'Geri alınacak kayıtlı bir canlı sıcak yama bulunmuyor.',
+        data: {}
+      };
+    }
+    const popped = db.livePatches.shift();
+    saveDb();
+    return {
+      executed: true,
+      type: 'PATCH_ROLLED_BACK',
+      summary: 'Son Canlı Yama Geri Alındı',
+      details: `İptal edilen yama: **${popped.description}** (${popped.type.toUpperCase()})\nSayfayı yenilediğinizde orijinal görünüm geri yüklenecektir.`,
+      data: { popped }
+    };
+  }
+
+  if (p.includes('yama') && (p.includes('temizle') || p.includes('sıfırla'))) {
+    const count = db.livePatches.length;
+    db.livePatches = [];
+    saveDb();
+    return {
+      executed: true,
+      type: 'PATCHES_CLEARED',
+      summary: 'Tüm Canlı Yamalar Temizlendi',
+      details: `Toplam **${count} adet** canlı CSS/JS yaması sistemden kaldırıldı. Tüm sayfalar fabrika ayarlarına döndürüldü.`,
+      data: { count }
+    };
+  }
+
+  if (p.includes('yama') && (p.includes('göster') || p.includes('listele') || p.includes('neler var'))) {
+    const list = db.livePatches.map((lp, i) => `${i+1}. [${lp.type.toUpperCase()}] **${lp.description}** (${new Date(lp.createdAt).toLocaleTimeString('tr-TR')})`).join('\n');
+    return {
+      executed: true,
+      type: 'PATCHES_LISTED',
+      summary: `Aktif Canlı Yamalar (${db.livePatches.length})`,
+      details: db.livePatches.length > 0
+        ? `Sistemde anlık çalışan canlı sıcak yamalar:\n\n${list}\n\n*İptal etmek için "Son yamayı geri al" veya "Yamaları temizle" yazabilirsiniz.*`
+        : 'Şu an sistemde aktif bir canlı yama bulunmuyor.',
+      data: { patches: db.livePatches }
+    };
+  }
+
+  // 10. Canlı Sıcak Yama Uygulaması (Arayüz, CSS, Renk, Buton, Tipografi, Mobil)
+  const patchCandidate = generateLivePatchFromPrompt(userPrompt);
+  if (patchCandidate) {
+    const newPatch = {
+      id: 'patch_' + Date.now(),
+      type: patchCandidate.type,
+      description: patchCandidate.description,
+      code: patchCandidate.code,
+      prompt: userPrompt,
+      active: true,
+      createdAt: new Date().toISOString()
+    };
+    db.livePatches.unshift(newPatch);
+    saveDb();
+    return {
+      executed: true,
+      type: 'LIVE_PATCH_APPLIED',
+      summary: `⚡ Canlı Sıcak Yama Uygulandı (0 Saniye Gecikme)`,
+      details: `Talep ettiğiniz arayüz/kod değişikliği sunucu tarafından derlendi ve **anında canlıya enjekte edildi**:\n\n` +
+               `> 🎯 **Değişiklik:** ${patchCandidate.description}\n` +
+               `> 🏷️ **Tür:** ${patchCandidate.type.toUpperCase()} Sıcak Yaması\n` +
+               `> 💻 **Enjekte Edilen Kural:**\n\`\`\`css\n${patchCandidate.code}\n\`\`\`\n\n` +
+               `✨ **Anında Aktif:** Tarayıcınızı veya telefonunuzdaki sayfayı yenilediğiniz anda değişiklik doğrudan ekrana gelecektir! (Geri almak için *"Son yamayı geri al"* diyebilirsiniz).`,
+      data: { patch: newPatch }
+    };
+  }
+
+  // 11. Geliştirici Görevi / Kod Düzeltme & Hata Bildirimi (Bug Report)
   if (p.includes('düzelt') || p.includes('değiştir') || p.includes('ekle') || p.includes('yap') || p.includes('renk') || p.includes('buton') || p.includes('sayfa') || p.includes('tasarım') || p.includes('hata') || p.includes('sorun') || p.includes('çalışmıyor') || p.includes('bozuldu') || p.includes('problem') || p.includes('açılmıyor')) {
     if (!Array.isArray(db.devTasks)) db.devTasks = [];
     const isBug = p.includes('hata') || p.includes('sorun') || p.includes('çalışmıyor') || p.includes('bozuldu') || p.includes('problem') || p.includes('açılmıyor');
