@@ -1,0 +1,44 @@
+{
+  "name": "Mobil Tamircim - Oto Sanayi & Arıza Teşhis",
+  "short_name": "Mobil Tamircim",
+  "description": "Yeni Nesil Otomotiv & Araç Sahipleri Platformu, Canlı Arıza Teşhis ve Sanayi Usta Rehberi",
+  "start_url": "/",
+  "id": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0F172A",
+  "theme_color": "#F59E0B",
+  "categories": ["auto", "utilities", "social"],
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "AI Usta ile Teşhis",
+      "short_name": "AI Usta",
+      "description": "Yapay zeka usta ile arıza teşhisi yap",
+      "url": "/?openAi=true",
+      "icons": [{ "src": "/icons/icon.svg", "sizes": "192x192" }]
+    },
+    {
+      "name": "OBD Arıza Kodları",
+      "short_name": "OBD Ara",
+      "description": "67+ Arıza kodunu ve fiyatlarını gör",
+      "url": "/?openObd=true",
+      "icons": [{ "src": "/icons/icon.svg", "sizes": "192x192" }]
+    },
+    {
+      "name": "Yeni Konu Aç",
+      "short_name": "Konu Aç",
+      "description": "Hemen foruma danış",
+      "url": "/?newPost=true",
+      "icons": [{ "src": "/icons/icon.svg", "sizes": "192x192" }]
+    }
+  ]
+}

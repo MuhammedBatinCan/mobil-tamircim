@@ -1,0 +1,622 @@
+{
+  "users": [
+    {
+      "id": "usr_dev_1",
+      "username": "MuratGelistirici",
+      "name": "Murat Aydın",
+      "role": "developer",
+      "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+      "plate": "34 DEV 001",
+      "car": "2024 Tesla Model Y Long Range",
+      "badges": [
+        "developer",
+        "beta_tester",
+        "verified_user",
+        "email_verified"
+      ],
+      "reputationPoints": 1250,
+      "level": "Master",
+      "isMechanicVerified": false,
+      "isDealerVerified": false,
+      "isUserVerified": true,
+      "bio": "Mobil Tamircim baş mimarı ve geliştiricisi.",
+      "email": "muratgelistirici@mobiltamircim.com",
+      "isEmailVerified": true
+    },
+    {
+      "id": "usr_mech_1",
+      "username": "AhmetUsta_VAG",
+      "name": "Ahmet Çelik Usta",
+      "role": "mechanic",
+      "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
+      "plate": "34 USTA 1978",
+      "car": "2019 Volkswagen Passat 2.0 TDI B8",
+      "badges": [
+        "verified_mechanic",
+        "beta_tester",
+        "email_verified"
+      ],
+      "reputationPoints": 2500,
+      "level": "Master",
+      "isMechanicVerified": true,
+      "isDealerVerified": false,
+      "isUserVerified": true,
+      "shopName": "Çelik Oto VAG Özel Servis",
+      "sanayiSite": "Maslak Atatürk Oto Sanayi 2. Kısım",
+      "city": "İstanbul",
+      "district": "Sarıyer",
+      "phone": "0532 555 10 20",
+      "bio": "25 yıllık VAG Grubu (Audi, VW, Seat, Skoda) ve DSG şanzıman uzmanı.",
+      "email": "ahmetusta_vag@mobiltamircim.com",
+      "isEmailVerified": true
+    },
+    {
+      "id": "usr_dealer_1",
+      "username": "YildizOtomotiv",
+      "name": "Kemal Yıldız",
+      "role": "dealer",
+      "avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80",
+      "plate": "06 GAL 345",
+      "car": "2022 BMW 520i M Sport (G30)",
+      "badges": [
+        "verified_dealer",
+        "verified_user",
+        "email_verified"
+      ],
+      "reputationPoints": 420,
+      "level": "Usta",
+      "isMechanicVerified": false,
+      "isDealerVerified": true,
+      "isUserVerified": true,
+      "dealerName": "Yıldız Premium Motors",
+      "city": "Ankara",
+      "district": "Çankaya",
+      "phone": "0544 444 34 06",
+      "bio": "Yetki belgeli ikinci el lüks ve orta segment araç alım-satım.",
+      "email": "yildizotomotiv@mobiltamircim.com",
+      "isEmailVerified": true
+    },
+    {
+      "id": "usr_beta_1",
+      "username": "CanerSurucu",
+      "name": "Caner Özkan",
+      "role": "user",
+      "avatar": "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=150&auto=format&fit=crop&q=80",
+      "plate": "35 KS 882",
+      "car": "2016 Renault Megane 1.5 dCi EDC",
+      "badges": [
+        "beta_tester",
+        "verified_user",
+        "email_verified"
+      ],
+      "reputationPoints": 160,
+      "level": "Kalfa",
+      "isMechanicVerified": false,
+      "isDealerVerified": false,
+      "isUserVerified": true,
+      "bio": "Otomobil tutkunu, kendi küçük bakımlarını garajında yapan bir sürücü.",
+      "email": "canersurucu@mobiltamircim.com",
+      "isEmailVerified": true
+    },
+    {
+      "id": "usr_normal_1",
+      "username": "AliEmre",
+      "name": "Ali Emre Yıldırım",
+      "role": "user",
+      "avatar": "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=150&auto=format&fit=crop&q=80",
+      "plate": "16 BRS 412",
+      "car": "2020 Fiat Egea 1.3 Multijet Easy",
+      "badges": [
+        "email_verified",
+        "verified_mechanic"
+      ],
+      "reputationPoints": 95,
+      "level": "Çırak",
+      "isMechanicVerified": true,
+      "isDealerVerified": false,
+      "isUserVerified": false,
+      "bio": "Yeni araç sahibi, öğrenmeye ve tavsiyelere açık.",
+      "email": "aliemre@mobiltamircim.com",
+      "isEmailVerified": true,
+      "shopName": "Emre Oto Egzoz & Mekanik"
+    },
+    {
+      "id": "usr_admin_1",
+      "username": "SuperAdmin",
+      "name": "Platform Moderatörü",
+      "role": "admin",
+      "avatar": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80",
+      "plate": "34 ADM 999",
+      "car": "2023 Mercedes-Benz C200 4MATIC AMG",
+      "badges": [
+        "developer",
+        "beta_tester",
+        "verified_user",
+        "email_verified"
+      ],
+      "reputationPoints": 2400,
+      "level": "Master",
+      "isMechanicVerified": false,
+      "isDealerVerified": false,
+      "isUserVerified": true,
+      "bio": "Mobil Tamircim Yönetim ve Moderasyon Ekip Lideri.",
+      "email": "superadmin@mobiltamircim.com",
+      "isEmailVerified": true
+    },
+    {
+      "id": "usr_1789765735571",
+      "username": "testpilot_1789765735555",
+      "name": "Test Pilotu",
+      "password": "mypassword",
+      "phone": "",
+      "plate": "34 TST 99",
+      "car": "2022 Audi A3",
+      "role": "mechanic",
+      "avatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80",
+      "badges": [
+        "beta_tester",
+        "email_verified",
+        "verified_mechanic"
+      ],
+      "reputationPoints": 75,
+      "level": "Çırak",
+      "isMechanicVerified": true,
+      "isDealerVerified": false,
+      "isUserVerified": false,
+      "shopName": "Test Oto Servis",
+      "dealerName": "",
+      "bio": "Test Pilotu - Mobil Tamircim üyesi.",
+      "email": "testpilot_1789765735555@mobiltamircim.com",
+      "isEmailVerified": true
+    },
+    {
+      "id": "usr_1789765752596",
+      "username": "testpilot_1789765752592",
+      "name": "Test Pilotu",
+      "password": "mypassword",
+      "phone": "",
+      "plate": "34 TST 99",
+      "car": "2022 Audi A3",
+      "role": "mechanic",
+      "avatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80",
+      "badges": [
+        "beta_tester",
+        "email_verified",
+        "verified_mechanic"
+      ],
+      "reputationPoints": 75,
+      "level": "Çırak",
+      "isMechanicVerified": true,
+      "isDealerVerified": false,
+      "isUserVerified": false,
+      "shopName": "Test Oto Servis",
+      "dealerName": "",
+      "bio": "Test Pilotu - Mobil Tamircim üyesi.",
+      "email": "testpilot_1789765752592@mobiltamircim.com",
+      "isEmailVerified": true
+    },
+    {
+      "id": "usr_1789767767741",
+      "username": "ototest_1789767767739",
+      "name": "Oto Testçi",
+      "email": "ototest_1789767767739@tamircim.com",
+      "password": "password123",
+      "isEmailVerified": true,
+      "emailVerificationCode": null,
+      "emailVerificationExpires": 1789768667747,
+      "phone": "",
+      "plate": "34 TST 999",
+      "car": "",
+      "role": "user",
+      "avatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80",
+      "badges": [
+        "beta_tester",
+        "email_verified"
+      ],
+      "reputationPoints": 40,
+      "level": "Çırak",
+      "isMechanicVerified": false,
+      "isDealerVerified": false,
+      "isUserVerified": false,
+      "shopName": "",
+      "dealerName": "",
+      "bio": "Oto Testçi - Mobil Tamircim üyesi."
+    }
+  ],
+  "threads": [
+    {
+      "id": "thr_1789766227914",
+      "title": "Renault 1.5 dCi DF053 Ray Basıncı Regülasyon Fonksiyonu Hatası",
+      "category": "ariza-teshis",
+      "brand": "Renault",
+      "model": "Megane 4 1.5 dCi",
+      "obdCode": "DF053",
+      "authorId": "usr_mech_1",
+      "authorUsername": "AhmetUsta_VAG",
+      "authorPlate": "",
+      "authorCar": "",
+      "authorBadges": [],
+      "createdAt": "2026-09-18T21:17:07.914Z",
+      "allowCommentsFrom": "all",
+      "isSolved": false,
+      "solvedCommentId": null,
+      "views": 1,
+      "likes": 0,
+      "content": "Sabah soğukken marş uzuyor ve ekranda enjeksiyonu kontrol ettirin uyarısı veriyor. Cihaza bağladık DF053 verdi.",
+      "audioUrl": null,
+      "commentsCount": 0
+    },
+    {
+      "id": "thr_1",
+      "title": "1.6 TDI Rölantide Şıkırtı / Enjektör Sesi (Ses Kaydı Eklendi) - Yardım!",
+      "category": "ariza-teshis",
+      "brand": "Volkswagen",
+      "model": "Golf 7 1.6 TDI",
+      "obdCode": "P0201",
+      "authorId": "usr_beta_1",
+      "authorUsername": "CanerSurucu",
+      "authorPlate": "35 KS 882",
+      "authorCar": "2016 Renault Megane 1.5 dCi EDC",
+      "authorBadges": [
+        "beta_tester",
+        "verified_user"
+      ],
+      "createdAt": "2026-09-17T14:30:00.000Z",
+      "allowCommentsFrom": "all",
+      "isSolved": true,
+      "solvedCommentId": "cmt_1_1",
+      "views": 342,
+      "likes": 18,
+      "audioUrl": "motor_sesi_ornek.mp3",
+      "content": "Arkadaşlar selamlar. Sabahları ilk çalıştırmada motor soğukken enjektör kütüğünün oradan belirgin bir madeni şıkırtı sesi geliyor. Araç 145.000 km'de. Ses kaydını ekledim, dinleyip fikir verebilecek ustalarımız var mıdır? OBD cihazında P0201 (Silindir 1 Enjektör Devresi) kodu düştü.",
+      "commentsCount": 3
+    },
+    {
+      "id": "thr_2",
+      "title": "DİKKAT: Yalnızca Şanzıman Ustaları Yorumlasın - EDC Şanzıman 2'den 3'e Geçişte Vuruntu",
+      "category": "ariza-teshis",
+      "brand": "Renault",
+      "model": "Megane 4 1.5 dCi EDC",
+      "obdCode": "P0700",
+      "authorId": "usr_normal_1",
+      "authorUsername": "AliEmre",
+      "authorPlate": "16 BRS 412",
+      "authorCar": "2020 Fiat Egea 1.3 Multijet Easy",
+      "authorBadges": [],
+      "createdAt": "2026-09-18T10:15:00.000Z",
+      "allowCommentsFrom": "mechanics_only",
+      "isSolved": false,
+      "solvedCommentId": null,
+      "views": 215,
+      "likes": 9,
+      "content": "Merhaba. Aracımda özellikle yokuş yukarı kalkışlarda 2. vitesten 3. vitese geçerken arkadan tekme atar gibi sert bir vuruntu hissediyorum. Boş muhabbet olmaması adına yalnızca Onaylı Şanzıman / Mekanik Ustalarımızın yorum yazmasını rica ediyorum. Şanzıman beyni mi yoksa debriyaj kavrama çatalı mı?",
+      "commentsCount": 2
+    },
+    {
+      "id": "thr_3",
+      "title": "BMW N47 ve B47 Motorlarda Zincir Değişimi Ne Zaman Yapılmalı? (Usta Tavsiyesi)",
+      "category": "markalar",
+      "brand": "BMW",
+      "model": "320d F30 (N47)",
+      "obdCode": "",
+      "authorId": "usr_mech_1",
+      "authorUsername": "AhmetUsta_VAG",
+      "authorPlate": "34 USTA 1978",
+      "authorCar": "2019 Volkswagen Passat 2.0 TDI B8",
+      "authorBadges": [
+        "verified_mechanic",
+        "beta_tester"
+      ],
+      "createdAt": "2026-09-16T18:00:00.000Z",
+      "allowCommentsFrom": "all",
+      "isSolved": false,
+      "solvedCommentId": null,
+      "views": 780,
+      "likes": 54,
+      "content": "Değerli forum üyeleri, servisimize gelen birçok BMW 320d ve 520d aracın zincir koparma tehlikesiyle karşılaştığını görüyoruz. N47 motorlarda motorun arkasında yer alan triger zincirinin hışırtı sesi 150-180 bin km arasında başlar. İhmal edilirse motor bloğuna kadar hasar verir. Ses testi nasıl yapılır ve hangi parçalar orijinal OEM seçilmelidir, detayları aşağıya ekliyorum...",
+      "commentsCount": 4
+    }
+  ],
+  "comments": [
+    {
+      "id": "cmt_1_1",
+      "threadId": "thr_1",
+      "authorId": "usr_mech_1",
+      "authorUsername": "AhmetUsta_VAG",
+      "authorPlate": "34 USTA 1978",
+      "authorBadges": [
+        "verified_mechanic",
+        "beta_tester"
+      ],
+      "authorLevel": "Master",
+      "createdAt": "2026-09-17T15:10:00.000Z",
+      "likes": 24,
+      "isSolution": true,
+      "content": "Caner kardeşim ses kaydını dinledim. Ses doğrudan 1. silindirin piezo enjektör bobininden kaynaklanıyor. P0201 kodu da bunu teyit ediyor. İlk etapta enjektörü değiştirmek yerine tesisat soketini ve soket tırnağını kontrol ettir. Temassızlık veya oksitlenme yoksa enjektör geri dönüş testi (enjektör tezgahı) yaptırılmalı. Geri dönüş normalse sadece bobin revizyonuyla kurtarır, sıfır enjektöre 8.000 TL vermene gerek kalmaz.",
+      "aiModeration": {
+        "status": "approved",
+        "safetyScore": 0.99,
+        "flagged": false
+      }
+    },
+    {
+      "id": "cmt_1_2",
+      "threadId": "thr_1",
+      "authorId": "usr_dev_1",
+      "authorUsername": "MuratGelistirici",
+      "authorPlate": "34 DEV 001",
+      "authorBadges": [
+        "developer",
+        "beta_tester",
+        "verified_user"
+      ],
+      "authorLevel": "Master",
+      "createdAt": "2026-09-17T16:00:00.000Z",
+      "likes": 6,
+      "isSolution": false,
+      "content": "Ahmet Usta'nın dediği gibi soket kontrolü en ucuz ve en etkili başlangıç. Geçmiş olsun, sonucu buradan da paylaşırsan seviniriz.",
+      "aiModeration": {
+        "status": "approved",
+        "safetyScore": 0.98,
+        "flagged": false
+      }
+    },
+    {
+      "id": "cmt_2_1",
+      "threadId": "thr_2",
+      "authorId": "usr_mech_1",
+      "authorUsername": "AhmetUsta_VAG",
+      "authorPlate": "34 USTA 1978",
+      "authorBadges": [
+        "verified_mechanic",
+        "beta_tester"
+      ],
+      "authorLevel": "Master",
+      "createdAt": "2026-09-18T11:00:00.000Z",
+      "likes": 12,
+      "isSolution": false,
+      "content": "Ali Emre selamlar. EDC şanzımanda 2'den 3'e geçişte vuruntu iki ihtimalden kaynaklanır: 1) Kavrama çatalı ayarsızlığı veya aşınması (Clip cihazıyla kavrama adaptasyonu yapılarak önce test edilmeli), 2) Şanzıman beyni (TCM) selenoid valf basınç düşüklüğü. Aracı cihaza bağlayıp kavrama tolerans değerlerini okumadan şanzımanı indirtme.",
+      "aiModeration": {
+        "status": "approved",
+        "safetyScore": 0.97,
+        "flagged": false
+      }
+    },
+    {
+      "id": "cmt_1789764642589",
+      "threadId": "thr_2",
+      "authorId": "usr_mech_1",
+      "authorUsername": "AhmetUsta_VAG",
+      "authorPlate": "34 USTA 1978",
+      "authorBadges": [
+        "verified_mechanic",
+        "beta_tester"
+      ],
+      "authorLevel": "Master",
+      "createdAt": "2026-09-18T20:50:42.589Z",
+      "likes": 0,
+      "isSolution": false,
+      "content": "Kavrama �atali ve mekatronik basincini �l�t�rmelisin.",
+      "aiModeration": {
+        "status": "approved",
+        "safetyScore": 0.95,
+        "flagged": false,
+        "reason": "Temiz içerik"
+      }
+    }
+  ],
+  "verifications": [
+    {
+      "id": "vrf_1789765752596",
+      "userId": "usr_1789765752596",
+      "username": "Test Pilotu",
+      "type": "mechanic",
+      "shopName": "Test Oto Servis",
+      "sanayiSite": "",
+      "city": "İzmir",
+      "taxNumber": "",
+      "status": "approved",
+      "submittedAt": "2026-09-18T21:09:12.596Z",
+      "reviewedAt": "2026-09-18T21:49:37.902Z"
+    },
+    {
+      "id": "vrf_1789765735571",
+      "userId": "usr_1789765735571",
+      "username": "Test Pilotu",
+      "type": "mechanic",
+      "shopName": "Test Oto Servis",
+      "sanayiSite": "",
+      "city": "İzmir",
+      "taxNumber": "",
+      "status": "approved",
+      "submittedAt": "2026-09-18T21:08:55.571Z",
+      "reviewedAt": "2026-09-18T21:49:37.902Z"
+    },
+    {
+      "id": "vrf_1",
+      "userId": "usr_normal_1",
+      "username": "AliEmre",
+      "type": "mechanic",
+      "shopName": "Emre Oto Egzoz & Mekanik",
+      "sanayiSite": "Bursa Nilüfer Küçük Sanayi",
+      "city": "Bursa",
+      "district": "Nilüfer",
+      "taxNumber": "1907456789",
+      "documentUrl": "ustalik_belgesi_emre.pdf",
+      "notes": "15 yıllık egzoz ve hafif mekanik dükkanı sahibiyim, vergi levham ve ustalık belgem ektedir.",
+      "status": "approved",
+      "submittedAt": "2026-09-18T16:20:00.000Z",
+      "reviewedAt": "2026-09-18T21:49:37.902Z"
+    },
+    {
+      "id": "vrf_2",
+      "userId": "usr_beta_1",
+      "username": "CanerSurucu",
+      "type": "user",
+      "idNumberMasked": "24********6",
+      "phone": "0530 111 22 33",
+      "status": "approved",
+      "submittedAt": "2026-09-15T09:00:00.000Z",
+      "reviewedAt": "2026-09-15T11:00:00.000Z"
+    }
+  ],
+  "moderationQueue": [
+    {
+      "id": "mod_1",
+      "targetType": "comment",
+      "targetId": "cmt_flagged_1",
+      "userId": "usr_normal_1",
+      "username": "AliEmre",
+      "content": "Ulan bu sanayideki ustaların hepsi hırsız dolandırıcı parça çalıyorlar...",
+      "reason": "Topluluğa ve meslek grubuna hakaret / nefret söylemi riski",
+      "severity": "high",
+      "suggestedAction": "warn_or_delete",
+      "flaggedAt": "2026-09-18T19:40:00.000Z",
+      "status": "pending"
+    }
+  ],
+  "sosRequests": [
+    {
+      "id": "sos_1",
+      "userId": "usr_beta_1",
+      "username": "CanerSurucu",
+      "plate": "35 KS 882",
+      "car": "Renault Megane 1.5 dCi",
+      "locationCity": "Bolu",
+      "locationDetails": "Bolu Dağı Geçişi, 12. km Ankara İstikameti",
+      "issueType": "hararet",
+      "description": "Hararet aniden 110 dereceye fırladı, sağa çektim radyatör alt hortumundan su damlatıyor. Acil usta veya çekici lazım.",
+      "phone": "0530 111 22 33",
+      "status": "active",
+      "createdAt": "2026-09-18T22:15:00.000Z"
+    }
+  ],
+  "directory": [
+    {
+      "id": "dir_1",
+      "shopName": "Çelik Oto VAG Özel Servis",
+      "ownerName": "Ahmet Çelik Usta",
+      "city": "İstanbul",
+      "district": "Sarıyer",
+      "sanayiSite": "Maslak Atatürk Oto Sanayi 2. Kısım",
+      "address": "2. Kısım 34. Sokak No: 12 Maslak / İstanbul",
+      "phone": "0532 555 10 20",
+      "whatsapp": "905325551020",
+      "categories": [
+        "Motor & Mekanik",
+        "Otomatik Şanzıman",
+        "VAG Grubu"
+      ],
+      "rating": 4.9,
+      "reviewCount": 48,
+      "verified": true,
+      "isOpenWeekend": false,
+      "badge": "verified_mechanic"
+    },
+    {
+      "id": "dir_2",
+      "shopName": "Şaşmaz BMW & Mini Klinik",
+      "ownerName": "Salih Usta",
+      "city": "Ankara",
+      "district": "Etimesgut",
+      "sanayiSite": "Şaşmaz Oto Sanayi Sitesi",
+      "address": "Şaşmaz Oto Sanayi 2552. Cadde No: 18 Ankara",
+      "phone": "0533 777 44 55",
+      "whatsapp": "905337774455",
+      "categories": [
+        "BMW & Mini",
+        "Motor Revizyonu",
+        "Oto Elektrik & Beyin"
+      ],
+      "rating": 4.8,
+      "reviewCount": 36,
+      "verified": true,
+      "isOpenWeekend": true,
+      "badge": "verified_mechanic"
+    },
+    {
+      "id": "dir_3",
+      "shopName": "Ege Dizel Enjektör & Turbo Pompa",
+      "ownerName": "Mustafa Usta",
+      "city": "İzmir",
+      "district": "Bornova",
+      "sanayiSite": "İzmir 1. Sanayi Sitesi",
+      "address": "2822 Sokak No: 41 1. Sanayi Bornova / İzmir",
+      "phone": "0542 333 99 88",
+      "whatsapp": "905423339988",
+      "categories": [
+        "Dizel Enjektör",
+        "Turbo Tamiri",
+        "Pompa Ayarı"
+      ],
+      "rating": 4.7,
+      "reviewCount": 29,
+      "verified": true,
+      "isOpenWeekend": false,
+      "badge": "verified_mechanic"
+    }
+  ],
+  "priceBenchmarks": [
+    {
+      "id": "prc_1",
+      "brand": "Volkswagen",
+      "model": "Golf 7 1.6 TDI",
+      "operation": "Triger Seti + Devirdaim Değişimi",
+      "partCostAvg": 4500,
+      "laborCostAvg": 2500,
+      "totalAvg": 7000,
+      "city": "İstanbul",
+      "lastUpdated": "Eylül 2026",
+      "verifiedByMechanics": 12
+    },
+    {
+      "id": "prc_2",
+      "brand": "Renault",
+      "model": "Megane 4 1.5 dCi",
+      "operation": "Periyodik Bakım (Yağ + 4 Filtre)",
+      "partCostAvg": 2800,
+      "laborCostAvg": 800,
+      "totalAvg": 3600,
+      "city": "Ankara",
+      "lastUpdated": "Eylül 2026",
+      "verifiedByMechanics": 19
+    },
+    {
+      "id": "prc_3",
+      "brand": "Fiat",
+      "model": "Egea 1.3 Multijet",
+      "operation": "Baskı Balata & Debriyaj Seti Değişimi",
+      "partCostAvg": 3200,
+      "laborCostAvg": 1800,
+      "totalAvg": 5000,
+      "city": "Bursa",
+      "lastUpdated": "Eylül 2026",
+      "verifiedByMechanics": 15
+    }
+  ],
+  "devTasks": [
+    {
+      "id": "task_1789768304737",
+      "type": "BUG_REPORT",
+      "prompt": "mobilde mesaj gönderme butonu çalışmıyor hata veriyor",
+      "createdAt": "2026-09-18T21:51:44.737Z",
+      "priority": "YÜKSEK (P1)",
+      "status": "kaydedildi_ve_analiz_edildi",
+      "resolution": "Hata raporu Antigravity tarafından anında kayıt altına alındı ve analiz edildi."
+    },
+    {
+      "id": "task_1789768149788",
+      "prompt": "Ahmet ustanın puanını 2500 yap",
+      "createdAt": "2026-09-18T21:49:09.788Z",
+      "status": "tamamlandı",
+      "resolution": "Antigravity canlı geliştirici motoru tarafından analiz edildi ve sistem yapılandırmasına uygulandı."
+    },
+    {
+      "id": "task_1789768062104",
+      "prompt": "Ahmet ustanın puanını 2500 yap",
+      "createdAt": "2026-09-18T21:47:42.104Z",
+      "status": "tamamlandı",
+      "resolution": "Antigravity canlı geliştirici motoru tarafından analiz edildi ve sistem yapılandırmasına uygulandı."
+    }
+  ]
+}

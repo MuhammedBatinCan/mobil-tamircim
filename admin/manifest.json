@@ -1,0 +1,37 @@
+{
+  "name": "Mobil Tamircim Admin - Yönetici Konsolu",
+  "short_name": "Mobil Admin",
+  "description": "Mobil Tamircim Platformu Yönetim, Moderasyon ve Doğrulama Masası",
+  "start_url": "/admin/",
+  "id": "/admin/",
+  "scope": "/admin/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0B0F19",
+  "theme_color": "#EF4444",
+  "categories": ["utilities", "business"],
+  "icons": [
+    {
+      "src": "/admin/icons/icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Moderasyon Masası",
+      "short_name": "Moderasyon",
+      "description": "Şüpheli içerikleri denetle",
+      "url": "/admin/#moderation-panel",
+      "icons": [{ "src": "/admin/icons/icon.svg", "sizes": "192x192" }]
+    },
+    {
+      "name": "Usta Doğrulama",
+      "short_name": "Doğrulama",
+      "description": "Bekleyen usta ve galerici onayları",
+      "url": "/admin/#verification-panel",
+      "icons": [{ "src": "/admin/icons/icon.svg", "sizes": "192x192" }]
+    }
+  ]
+}

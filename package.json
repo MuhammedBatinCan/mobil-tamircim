@@ -1,0 +1,29 @@
+{
+  "name": "mobil-tamircim",
+  "version": "1.0.0",
+  "description": "Mobil Tamircim - Yeni Nesil Otomotiv & Araç Sahipleri Platformu ve Yönetim Paneli",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "mobile:build-app": "npx @capacitor/cli sync",
+    "mobile:open-app": "npx @capacitor/cli open android",
+    "mobile:build-admin": "npx @capacitor/cli sync --config capacitor.admin.config.json",
+    "mobile:open-admin": "npx @capacitor/cli open android --config capacitor.admin.config.json"
+  },
+  "keywords": [
+    "otomotiv",
+    "mobil-tamircim",
+    "forum",
+    "tamirci",
+    "obd2",
+    "sos",
+    "pwa",
+    "capacitor",
+    "android"
+  ],
+  "author": "Mobil Tamircim Ekibi",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
