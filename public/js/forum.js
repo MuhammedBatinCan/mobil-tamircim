@@ -5,7 +5,9 @@ const Forum = {
   comments: [],
   activeFilter: 'all',
   activeBrandFilter: null,
+  activeCategory: null,
   activeThreadId: null,
+  searchQuery: '',
 
   init(stateThreads, stateComments) {
     this.threads = stateThreads || [];
@@ -13,8 +15,20 @@ const Forum = {
     this.renderThreadList();
   },
 
+  onSearch(query) {
+    this.searchQuery = (query || '').trim().toLowerCase();
+    this.renderThreadList();
+  },
+
   setFilter(filter) {
     this.activeFilter = filter;
+    this.activeCategory = null;
+    this.renderThreadList();
+  },
+
+  setCategory(cat) {
+    this.activeCategory = cat;
+    this.activeFilter = 'category';
     this.renderThreadList();
   },
 
@@ -30,7 +44,19 @@ const Forum = {
 
     let filtered = [...this.threads];
 
-    // Category filter
+    // Live search query filter
+    if (this.searchQuery) {
+      filtered = filtered.filter(t => 
+        (t.title && t.title.toLowerCase().includes(this.searchQuery)) ||
+        (t.content && t.content.toLowerCase().includes(this.searchQuery)) ||
+        (t.brand && t.brand.toLowerCase().includes(this.searchQuery)) ||
+        (t.model && t.model.toLowerCase().includes(this.searchQuery)) ||
+        (t.obdCode && t.obdCode.toLowerCase().includes(this.searchQuery)) ||
+        (t.authorUsername && t.authorUsername.toLowerCase().includes(this.searchQuery))
+      );
+    }
+
+    // Category / Filter filter
     if (this.activeFilter === 'ariza-teshis') {
       filtered = filtered.filter(t => t.category === 'ariza-teshis');
     } else if (this.activeFilter === 'solved') {
@@ -39,6 +65,8 @@ const Forum = {
       filtered = filtered.filter(t => !t.isSolved);
     } else if (this.activeFilter === 'mechanics_only') {
       filtered = filtered.filter(t => t.allowCommentsFrom === 'mechanics_only');
+    } else if (this.activeFilter === 'category' && this.activeCategory) {
+      filtered = filtered.filter(t => t.category === this.activeCategory || (t.title && t.title.toLowerCase().includes(this.activeCategory.toLowerCase())));
     }
 
     // Brand filter
@@ -49,11 +77,11 @@ const Forum = {
     if (filtered.length === 0) {
       container.innerHTML = `
         <div style="text-align:center; padding: 48px 20px; color: var(--text-dim); background: var(--bg-card); border-radius: var(--radius-md); border: 1px dashed var(--border-color);">
-          <div style="width:44px; height:44px; border-radius:50%; background:rgba(255,255,255,0.04); display:flex; align-items:center; justify-content:center; margin:0 auto 12px auto; color:var(--text-dim);">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+          <div style="width:40px; height:40px; border-radius:50%; background:rgba(255,255,255,0.04); display:flex; align-items:center; justify-content:center; margin:0 auto 12px auto; color:var(--text-dim);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
           </div>
-          <div style="font-size:1.05rem; font-weight:700; color:var(--text-main);">Henüz Konu Bulunamadı</div>
-          <p style="font-size:0.85rem; margin-top:4px; color:var(--text-muted);">Bu kriterlere uygun konu yok. İlk konuyu açabilirsiniz.</p>
+          <div style="font-size:1rem; font-weight:700; color:var(--text-main);">Aramanıza Uygun Konu Bulunamadı</div>
+          <p style="font-size:0.82rem; margin-top:4px; color:var(--text-muted);">Farklı bir anahtar kelime deneyebilir veya yeni bir konu açabilirsiniz.</p>
         </div>
       `;
       return;
@@ -62,40 +90,30 @@ const Forum = {
     container.innerHTML = filtered.map(t => {
       const isMechanicsOnly = t.allowCommentsFrom === 'mechanics_only';
       return `
-        <div class="thread-card ${t.isSolved ? 'solved-card' : ''}" onclick="Forum.openThread('${t.id}')">
-          <div class="thread-header">
-            <div class="author-meta">
-              <span class="author-name">${t.authorUsername}</span>
-              ${Auth.renderPlate(t.authorPlate, 'sm')}
-              ${Auth.renderBadges(t.authorBadges)}
+        <article class="thread-row ${t.isSolved ? 'is-solved' : ''}" onclick="Forum.openThread('${t.id}')">
+          <div class="thread-reply-col">
+            <span class="reply-num">${t.commentsCount || 0}</span>
+            <span class="reply-text">yanıt</span>
+          </div>
+
+          <div class="thread-body-col">
+            <div class="thread-title-line">
+              ${t.isSolved ? '<span class="status-pill-solved">Çözüldü</span>' : ''}
+              <h3 class="thread-title-heading">${escapeHtml(t.title)}</h3>
             </div>
-            <span class="thread-time">${formatDate(t.createdAt)}</span>
-          </div>
 
-          <h2 class="thread-title">
-            ${t.isSolved ? '<span style="color:var(--accent-green); margin-right:6px;">[ÇÖZÜLDÜ]</span>' : ''}
-            ${escapeHtml(t.title)}
-          </h2>
+            <p class="thread-preview-text">${escapeHtml(t.content)}</p>
 
-          <p class="thread-snippet">${escapeHtml(t.content)}</p>
-
-          <div class="thread-tags">
-            ${t.brand ? `<span class="thread-tag">${escapeHtml(t.brand)} ${escapeHtml(t.model || '')}</span>` : ''}
-            ${t.obdCode ? `<span class="thread-tag tag-obd">OBD: ${escapeHtml(t.obdCode)}</span>` : ''}
-            ${isMechanicsOnly ? `<span class="thread-tag tag-mechanic-only">Sadece Usta Yorumu</span>` : ''}
-            ${t.audioUrl ? `<span class="thread-tag" style="background:#1E293B;color:#38BDF8;">Ses Kaydı</span>` : ''}
-            ${t.isSolved ? `<span class="thread-tag tag-solved">Çözüldü</span>` : ''}
-          </div>
-
-          <div class="thread-footer">
-            <div class="thread-stats">
-              <span><strong>${t.commentsCount || 0}</strong> yanıt</span>
-              <span>${t.views || 0} görüntüleme</span>
-              <span>${t.likes || 0} beğeni</span>
+            <div class="thread-info-bar">
+              <span class="thread-author-name">${escapeHtml(t.authorUsername)}</span>
+              ${t.brand ? `<span class="thread-vehicle-tag">${escapeHtml(t.brand)} ${escapeHtml(t.model || '')}</span>` : ''}
+              ${t.obdCode ? `<span class="thread-obd-tag">${escapeHtml(t.obdCode)}</span>` : ''}
+              ${isMechanicsOnly ? `<span class="thread-mech-tag">Usta Yanıtlı</span>` : ''}
+              ${t.audioUrl ? `<span class="thread-audio-tag">Ses Kaydı</span>` : ''}
+              <span class="thread-time-tag">${formatDate(t.createdAt)}</span>
             </div>
-            <span style="color:var(--accent-amber); font-weight:700;">Detayı Gör &rarr;</span>
           </div>
-        </div>
+        </article>
       `;
     }).join('');
   },
