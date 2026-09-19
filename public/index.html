@@ -610,15 +610,10 @@
           <input id="sos-location-input" class="form-control" type="text" placeholder="Örn: TEM Otoyolu Bolu Dağı tünel çıkışı 2. km" required>
         </div>
 
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-          <div class="form-group">
-            <label class="form-label">Araç Plakası:</label>
-            <input id="sos-plate-input" class="form-control" type="text" placeholder="34 ABC 123" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Araç Modeli:</label>
-            <input id="sos-car-input" class="form-control" type="text" placeholder="Renault Megane 1.5 dCi">
-          </div>
+        <div class="form-group">
+          <label class="form-label">Araç Modeli:</label>
+          <input id="sos-car-input" class="form-control" type="text" placeholder="Örn: Renault Megane 1.5 dCi">
+          <input id="sos-plate-input" type="hidden" value="">
         </div>
 
         <div class="form-group">
@@ -804,8 +799,8 @@
       <div id="auth-login-pane" class="auth-tab-pane active">
         <form id="auth-login-form" onsubmit="handleAuthLogin(event)">
           <div class="form-group">
-            <label class="form-label">Kullanıcı Adı, E-Posta veya Plaka:</label>
-            <input id="login-username" class="form-control" type="text" placeholder="Örn: ahmet@usta.com, AhmetUsta_VAG veya 34 USTA 1978" required autocomplete="username">
+            <label class="form-label">Kullanıcı Adı veya E-Posta:</label>
+            <input id="login-username" class="form-control" type="text" placeholder="Örn: ahmet@usta.com veya AhmetUsta_VAG" required autocomplete="username">
           </div>
 
           <div class="form-group">
@@ -902,16 +897,11 @@
             </div>
           </div>
 
-          <!-- Araç Plakası ve Araç Modeli -->
-          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-            <div class="form-group">
-              <label class="form-label">Araç Plakası (Profilde Gösterilir):</label>
-              <input id="reg-plate" class="form-control" type="text" placeholder="Örn: 34 GLR 55" style="text-transform:uppercase; font-family:var(--font-plate); font-weight:800;">
-            </div>
-            <div class="form-group">
-              <label class="form-label">Araç Marka & Model:</label>
-              <input id="reg-car" class="form-control" type="text" placeholder="Örn: 2021 Ford Focus">
-            </div>
+          <!-- Araç Modeli (Plaka alanı kaldırıldı) -->
+          <div class="form-group">
+            <label class="form-label">Araç Marka & Model (İsteğe Bağlı):</label>
+            <input id="reg-car" class="form-control" type="text" placeholder="Örn: 2021 Ford Focus">
+            <input id="reg-plate" type="hidden" value="">
           </div>
 
           <div class="form-group">

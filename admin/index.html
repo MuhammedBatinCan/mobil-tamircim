@@ -164,7 +164,7 @@
       </div>
 
       <div class="admin-search-bar">
-        <input id="user-search-input" class="admin-search-input" type="text" placeholder="İsim, kullanıcı adı, plaka (örn: 34 USTA) ile ara...">
+        <input id="user-search-input" class="admin-search-input" type="text" placeholder="İsim veya kullanıcı adı ile ara...">
       </div>
 
       <!-- Kullanıcı Listesi -->
@@ -361,14 +361,10 @@
         <button class="admin-btn admin-btn-secondary" onclick="AdminApp.closeBadgeModal()">&times;</button>
       </div>
 
-      <div style="margin-bottom:14px;">
-        <label style="display:block; font-size:0.8rem; color:var(--text-secondary); margin-bottom:4px;">Araç Plakası:</label>
-        <input id="modal-plate-input" class="admin-search-input" style="width:100%; font-family:var(--font-plate); font-weight:800;" placeholder="34 USTA 1978">
-      </div>
-
       <div style="margin-bottom:16px;">
         <label style="display:block; font-size:0.8rem; color:var(--text-secondary); margin-bottom:4px;">Araç Bilgisi:</label>
         <input id="modal-car-input" class="admin-search-input" style="width:100%;" placeholder="2019 Volkswagen Passat 2.0 TDI">
+        <input id="modal-plate-input" type="hidden" value="">
       </div>
 
       <div style="margin-bottom:14px;">

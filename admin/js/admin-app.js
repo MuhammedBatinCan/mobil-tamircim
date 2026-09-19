@@ -660,15 +660,9 @@ const AdminApp = {
     }
   },
 
-  // Helpers
+  // Helpers (Plaka kaldırıldı)
   renderPlate(plate) {
-    if (!plate) return '';
-    return `
-      <div class="license-plate">
-        <div class="plate-blue-strip">TR</div>
-        <div class="plate-text">${escapeHtml(plate.toUpperCase().trim())}</div>
-      </div>
-    `;
+    return '';
   },
 
   renderBadges(badges = []) {

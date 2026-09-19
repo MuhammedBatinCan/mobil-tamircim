@@ -344,16 +344,9 @@ const Auth = {
     return user.role === 'admin';
   },
 
-  // HTML Plaka Oluşturucu (Asla Kesilmez)
+  // HTML Plaka Oluşturucu (Kaldırıldı)
   renderPlate(plate, size = '') {
-    if (!plate) return '';
-    const cleanPlate = plate.toUpperCase().trim();
-    return `
-      <div class="license-plate ${size}">
-        <div class="plate-blue-strip">TR</div>
-        <div class="plate-text">${cleanPlate}</div>
-      </div>
-    `;
+    return '';
   },
 
   // HTML Rozetler Oluşturucu

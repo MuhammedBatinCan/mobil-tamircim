@@ -465,7 +465,7 @@ async function handleAuthLogin(event) {
   const rememberMe = document.getElementById('login-remember-me').checked;
 
   if (!username || !password) {
-    showToast('Lütfen kullanıcı adı, e-posta veya plakanızı ve şifrenizi giriniz.', 'error');
+    showToast('Lütfen kullanıcı adınızı veya e-postanızı ve şifrenizi giriniz.', 'error');
     return;
   }
 
