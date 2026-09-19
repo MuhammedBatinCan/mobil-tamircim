@@ -165,7 +165,7 @@ const App = {
   filterByBrand(brandName) {
     Forum.setBrandFilter(brandName);
     this.switchView('view-forum');
-    showToast(`🚗 ${brandName} Kulübü Konuları Filtrelendi`);
+    showToast(`${brandName} Kulübü Konuları Filtrelendi`);
   },
 
   renderUserSwitcherOptions() {
@@ -184,7 +184,7 @@ const App = {
                   <span>${escapeHtml(u.name)}</span>
                   <span class="user-switch-handle">@${escapeHtml(u.username)}</span>
                 </div>
-                <div class="user-switch-car">🚗 ${escapeHtml(u.car || 'Araç tanımlanmadı')}</div>
+                <div class="user-switch-car">${escapeHtml(u.car || 'Araç tanımlanmadı')}</div>
               </div>
             </div>
             <div class="user-switch-plate-wrap">
@@ -194,8 +194,8 @@ const App = {
 
           <div class="user-switch-badges">
             ${Auth.renderBadges(u.badges, u.level)}
-            ${u.isEmailVerified === false ? `<button type="button" class="badge" style="background:#B45309; color:#FEF3C7; border:none; cursor:pointer; font-weight:700;" onclick="event.stopPropagation(); Auth.openVerifyModalForUser('${u.id}')" title="Doğrulama kodunu girmek için tıklayın">⚠️ E-Postayı Doğrula</button>` : ''}
-            ${isSelected ? '<span class="active-pill-tag">✓ AKTİF PROFİL</span>' : ''}
+            ${u.isEmailVerified === false ? `<button type="button" class="badge" style="background:rgba(245,158,11,0.12); color:#FCD34D; border:1px solid rgba(245,158,11,0.3); cursor:pointer; font-weight:600;" onclick="event.stopPropagation(); Auth.openVerifyModalForUser('${u.id}')" title="Doğrulama kodunu girmek için tıklayın">E-Postayı Doğrula</button>` : ''}
+            ${isSelected ? '<span class="active-pill-tag">Aktif Profil</span>' : ''}
           </div>
         </div>
       `;

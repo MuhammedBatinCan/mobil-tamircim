@@ -78,18 +78,18 @@ const Forum = {
           <p class="thread-snippet">${escapeHtml(t.content)}</p>
 
           <div class="thread-tags">
-            ${t.brand ? `<span class="thread-tag">🚗 ${escapeHtml(t.brand)} ${escapeHtml(t.model || '')}</span>` : ''}
-            ${t.obdCode ? `<span class="thread-tag tag-obd">⚠️ OBD: ${escapeHtml(t.obdCode)}</span>` : ''}
-            ${isMechanicsOnly ? `<span class="thread-tag tag-mechanic-only">🔒 Yalnızca Tamirciler Yorumlayabilir</span>` : ''}
-            ${t.audioUrl ? `<span class="thread-tag" style="background:#1E293B;color:#38BDF8;">🔊 Ses Kaydı Var</span>` : ''}
-            ${t.isSolved ? `<span class="thread-tag tag-solved">✓ Çözüldü</span>` : ''}
+            ${t.brand ? `<span class="thread-tag">${escapeHtml(t.brand)} ${escapeHtml(t.model || '')}</span>` : ''}
+            ${t.obdCode ? `<span class="thread-tag tag-obd">OBD: ${escapeHtml(t.obdCode)}</span>` : ''}
+            ${isMechanicsOnly ? `<span class="thread-tag tag-mechanic-only">Sadece Usta Yorumu</span>` : ''}
+            ${t.audioUrl ? `<span class="thread-tag" style="background:#1E293B;color:#38BDF8;">Ses Kaydı</span>` : ''}
+            ${t.isSolved ? `<span class="thread-tag tag-solved">Çözüldü</span>` : ''}
           </div>
 
           <div class="thread-footer">
             <div class="thread-stats">
-              <span>💬 <strong>${t.commentsCount || 0}</strong> Yorum</span>
-              <span>👁️ ${t.views || 0} Görüntülenme</span>
-              <span>👍 ${t.likes || 0} Beğeni</span>
+              <span><strong>${t.commentsCount || 0}</strong> yanıt</span>
+              <span>${t.views || 0} görüntüleme</span>
+              <span>${t.likes || 0} beğeni</span>
             </div>
             <span style="color:var(--accent-amber); font-weight:700;">Detayı Gör &rarr;</span>
           </div>
@@ -127,7 +127,7 @@ const Forum = {
       solvedBoxHtml = `
         <div class="solved-highlight-box">
           <div class="solved-header">
-            <span>✅ DOĞRULANMIŞ EN İYİ ÇÖZÜM</span>
+            <span>Doğrulanmış En İyi Çözüm</span>
             <span style="font-size:0.75rem; color:var(--text-dim); font-weight:normal; margin-left:auto;">Konu Sahibi Tarafından Onaylandı</span>
           </div>
           <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
@@ -146,7 +146,7 @@ const Forum = {
         <div class="audio-player-box">
           <button class="audio-play-btn" onclick="Forum.playDemoAudio(this)">▶</button>
           <div style="flex:1;">
-            <div style="font-size:0.82rem; font-weight:700; color:#FFF; margin-bottom:4px;">🔊 Kaput Altı Motor Sesi Kaydı (0:24)</div>
+            <div style="font-size:0.82rem; font-weight:700; color:#FFF; margin-bottom:4px;">Motor Sesi Kaydı (0:24)</div>
             <div class="audio-wave">
               <span class="wave-bar" style="height:8px;"></span>
               <span class="wave-bar" style="height:16px;"></span>
@@ -170,13 +170,13 @@ const Forum = {
       commentBoxHtml = `
         <div style="background:var(--bg-input); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:16px; margin-top:24px;">
           <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
-            <span style="font-weight:700; font-size:0.9rem;">Cevabınızı Yazın (+10 XP)</span>
-            ${isMechanicsOnly ? '<span class="badge badge-mechanic">🔧 Usta Yorum Yetkisiyle Yazıyorsunuz</span>' : ''}
+            <span style="font-weight:700; font-size:0.9rem;">Cevabınızı Yazın</span>
+            ${isMechanicsOnly ? '<span class="badge badge-mechanic">Usta Yetkisiyle Yazıyorsunuz</span>' : ''}
           </div>
           <textarea id="comment-input" class="form-control" rows="3" placeholder="Arıza tespiti, tecrübenizi veya çözüm önerinizi paylaşın..."></textarea>
           <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:10px;">
             <button class="btn btn-primary" onclick="Forum.submitComment('${thread.id}')">
-              <span>💬 Yorumu Paylaş</span>
+              <span>Yorumu Paylaş</span>
             </button>
           </div>
         </div>
@@ -184,13 +184,9 @@ const Forum = {
     } else {
       commentBoxHtml = `
         <div class="mechanics-only-alert">
-          <div style="font-size:1.4rem;">🔒</div>
           <div>
-            <strong>Yorum Yapma Kısıtlaması:</strong> Bu gönderi sahibi, bilgi kirliliğini önlemek amacıyla 
-            <strong>yalnızca Onaylı Tamircilerin ve Ustaların</strong> yorum yapabilmesini talep etmiştir.
-            <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">
-              Sanayi esnafı veya usta iseniz profilinizden <em>Tamirci Doğrulaması</em> talep edebilirsiniz.
-            </div>
+            <strong>Yorum Kısıtlaması:</strong> Bu konu sahibi yalnızca 
+            <strong>Onaylı Tamircilerin ve Ustaların</strong> yorum yapabilmesini talep etmiştir.
           </div>
         </div>
       `;
@@ -211,10 +207,10 @@ const Forum = {
               <span class="thread-time">${formatDate(c.createdAt)}</span>
               ${isOwner && !isSol ? `
                 <button class="btn btn-sm btn-secondary" style="border-color:var(--accent-green); color:var(--accent-green);" onclick="Forum.markSolution('${thread.id}', '${c.id}')">
-                  ✓ Çözüm Olarak İşaretle (+50 XP)
+                  Çözüm Olarak İşaretle
                 </button>
               ` : ''}
-              ${isSol ? `<span style="color:var(--accent-green); font-weight:700; font-size:0.8rem;">✓ EN İYİ ÇÖZÜM</span>` : ''}
+              ${isSol ? `<span style="color:var(--accent-green); font-weight:700; font-size:0.8rem;">Doğrulanmış Çözüm</span>` : ''}
             </div>
           </div>
           <p style="font-size:0.9rem; line-height:1.5; color:#F1F5F9;">${escapeHtml(c.content)}</p>
@@ -245,10 +241,10 @@ const Forum = {
         </h1>
 
         <div class="thread-tags" style="margin-bottom:16px;">
-          ${thread.brand ? `<span class="thread-tag">🚗 ${escapeHtml(thread.brand)} ${escapeHtml(thread.model || '')}</span>` : ''}
-          ${thread.obdCode ? `<span class="thread-tag tag-obd">⚠️ OBD: ${escapeHtml(thread.obdCode)}</span>` : ''}
-          ${isMechanicsOnly ? `<span class="thread-tag tag-mechanic-only">🔒 Yalnızca Tamirciler Yorumlayabilir</span>` : ''}
-          ${thread.isSolved ? `<span class="thread-tag tag-solved">✓ Sorun Çözüldü</span>` : ''}
+          ${thread.brand ? `<span class="thread-tag">${escapeHtml(thread.brand)} ${escapeHtml(thread.model || '')}</span>` : ''}
+          ${thread.obdCode ? `<span class="thread-tag tag-obd">OBD: ${escapeHtml(thread.obdCode)}</span>` : ''}
+          ${isMechanicsOnly ? `<span class="thread-tag tag-mechanic-only">Sadece Usta Yorumu</span>` : ''}
+          ${thread.isSolved ? `<span class="thread-tag tag-solved">Sorun Çözüldü</span>` : ''}
         </div>
 
         ${audioBoxHtml}
@@ -260,11 +256,11 @@ const Forum = {
 
       <div style="margin-top:24px;">
         <h3 style="font-size:1.1rem; font-weight:700; margin-bottom:16px;">
-          💬 Yorumlar (${threadComments.length})
+          Yorumlar (${threadComments.length})
         </h3>
         
         <div id="comments-feed">
-          ${commentsListHtml || '<p style="color:var(--text-dim);">Henüz yorum yapılmamış. İlk teşhisi sen koy!</p>'}
+          ${commentsListHtml || '<p style="color:var(--text-dim);">Henüz yorum yapılmamış. İlk teşhisi siz koyun.</p>'}
         </div>
 
         ${commentBoxHtml}

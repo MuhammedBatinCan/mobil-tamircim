@@ -27,34 +27,36 @@
     <div class="container header-inner">
       <!-- Logo -->
       <a href="#" class="brand-logo" onclick="App.switchView('view-forum'); return false;">
-        <div class="brand-icon-wrap">🔧</div>
+        <div class="brand-icon-wrap">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+          </svg>
+        </div>
         <div class="brand-text">MOBİL <span>TAMİRCİM</span></div>
       </a>
 
       <!-- Masaüstü Navigasyon -->
       <nav class="nav-desktop">
-        <a class="nav-link active" data-view="view-forum">💬 Akış</a>
-        <a class="nav-link" data-view="view-brands">🚗 Markalar</a>
-        <a class="nav-link" data-view="view-directory">📍 Usta Rehberi</a>
-        <a class="nav-link" data-view="view-prices">💰 Fiyat Analizi</a>
-        <a class="nav-link sos-link" data-view="view-sos">🚨 Acil SOS</a>
-        <a href="/admin" target="_blank" class="nav-link" style="color:#C084FC; border:1px solid rgba(168,85,247,0.35); background:rgba(168,85,247,0.1);" title="Yönetici Paneli">
-          🛡️ Admin
-        </a>
+        <a class="nav-link active" data-view="view-forum">Akış</a>
+        <a class="nav-link" data-view="view-brands">Markalar</a>
+        <a class="nav-link" data-view="view-directory">Usta Rehberi</a>
+        <a class="nav-link" data-view="view-prices">Fiyat Analizi</a>
+        <a class="nav-link sos-link" data-view="view-sos"><span class="sos-dot"></span> Acil SOS</a>
+        <a href="/admin" target="_blank" class="nav-link admin-nav-link" title="Yönetici Paneli">Admin</a>
       </nav>
 
       <!-- Sağ Butonlar -->
       <div class="header-actions">
-        <button class="btn btn-secondary btn-sm" onclick="App.openMobileAppModal()" title="Mobil Uygulamayı Telefona Yükle" style="white-space:nowrap; font-weight:700; border-color:var(--accent-amber); color:var(--accent-amber); background:rgba(245,158,11,0.08);">
-          <span>📱 Telefona Yükle</span>
+        <button class="btn btn-secondary btn-sm" onclick="App.openMobileAppModal()" title="Mobil Uygulamayı Telefona Yükle">
+          <span>Uygulamayı İndir</span>
         </button>
 
-        <button class="btn btn-secondary btn-sm" onclick="openAuthModal('login')" title="Giriş Yap veya Kayıt Ol" style="white-space:nowrap; font-weight:700;">
-          <span>🔑 Giriş / Kayıt</span>
+        <button class="btn btn-secondary btn-sm" onclick="openAuthModal('login')" title="Giriş Yap veya Kayıt Ol">
+          <span>Giriş Yap</span>
         </button>
 
         <button class="btn btn-primary btn-sm" onclick="openModal('new-thread-modal')">
-          <span>➕ Konu Aç</span>
+          <span>+ Konu Aç</span>
         </button>
 
         <!-- Aktif Kullanıcı Değiştirici -->
@@ -62,7 +64,7 @@
           <img id="header-avatar" class="user-avatar-mini" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150" alt="Avatar">
           <div class="user-meta-mini">
             <span id="header-user-name" class="user-name-mini">Ahmet Usta</span>
-            <span id="header-user-role" class="user-role-mini">🔧 Onaylı Usta</span>
+            <span id="header-user-role" class="user-role-mini">Onaylı Usta</span>
           </div>
           <div id="header-user-plate" style="margin-left:4px;"></div>
         </div>
@@ -93,37 +95,33 @@
       <!-- Kullanıcı Profil Kartı -->
       <div class="sidebar-card profile-box">
         <img id="sidebar-avatar" class="profile-avatar-large" src="" alt="Profil">
-        <h3 id="sidebar-name" style="font-size:1.1rem; font-weight:800; color:#FFF;">Ahmet Çelik Usta</h3>
-        <span id="sidebar-username" style="font-size:0.8rem; color:var(--text-dim); margin-bottom:6px;">@AhmetUsta_VAG</span>
+        <h3 id="sidebar-name" style="font-size:1.05rem; font-weight:700; color:#FFF; margin-bottom:2px;">Ahmet Çelik Usta</h3>
+        <span id="sidebar-username" style="font-size:0.78rem; color:var(--text-dim); margin-bottom:4px;">@AhmetUsta_VAG</span>
         
-        <div id="sidebar-plate" style="margin: 6px 0;"></div>
+        <div id="sidebar-plate" style="display:none;"></div>
         <div id="sidebar-car" style="font-size:0.8rem; color:var(--text-muted); margin-bottom:8px;">2019 VW Passat 2.0 TDI</div>
         
         <div id="sidebar-badges" class="profile-badges"></div>
 
-        <!-- Seviye & Puan İlerleme Barı -->
-        <div style="width:100%; margin-top:10px; text-align:left;">
-          <div style="display:flex; justify-content:space-between; font-size:0.75rem; font-weight:700;">
-            <span style="color:var(--text-muted);">İtibar & Seviye</span>
-            <span id="sidebar-xp" style="color:var(--accent-amber);">890 XP</span>
-          </div>
-          <div class="level-progress-wrap">
-            <div id="sidebar-progress-bar" class="level-progress-bar" style="width: 75%;"></div>
-          </div>
-          <div id="sidebar-next-level" class="level-xp-text" style="text-align:right;">Master Seviyesi</div>
+        <!-- Sade İtibar Bilgisi -->
+        <div class="profile-reputation-row">
+          <span style="font-size:0.75rem; color:var(--text-muted);">Platform İtibarı:</span>
+          <span id="sidebar-xp" style="font-size:0.8rem; font-weight:700; color:var(--accent-amber);">Yüksek İtibar</span>
+          <div id="sidebar-progress-bar" style="display:none;"></div>
+          <div id="sidebar-next-level" style="display:none;"></div>
         </div>
 
         <div style="display:flex; gap:8px; width:100%; margin-top:12px;">
           <button class="btn btn-secondary btn-sm" style="flex:1;" onclick="openAuthModal('login')" title="Giriş Yap veya Kayıt Ol">
-            🔑 Giriş / Kayıt
+            Giriş Yap
           </button>
           <button class="btn btn-secondary btn-sm" style="padding:6px 10px;" onclick="Auth.logout()" title="Oturumu Kapat">
-            🚪
+            Çıkış
           </button>
         </div>
 
         <button class="btn btn-secondary btn-sm" style="width:100%; margin-top:8px;" onclick="openModal('verification-modal')">
-          📑 Doğrulama Talep Et
+          Doğrulama Talebi
         </button>
       </div>
 
@@ -132,15 +130,15 @@
         <div class="sidebar-title">
           <span>Kategoriler</span>
         </div>
-        <div style="display:flex; flex-direction:column; gap:6px;">
-          <a class="nav-link" onclick="Forum.setFilter('all'); App.switchView('view-forum');">⚡ Tüm Tartışmalar</a>
-          <a class="nav-link" onclick="Forum.setFilter('ariza-teshis'); App.switchView('view-forum');">🔊 Sesli Arıza & Teşhis</a>
-          <a class="nav-link" onclick="Forum.setFilter('mechanics_only'); App.switchView('view-forum');">🔒 Sadece Usta Yorumlular</a>
-          <a class="nav-link" onclick="Forum.setFilter('solved'); App.switchView('view-forum');">✅ Çözülmüş Arızalar</a>
-          <a class="nav-link" onclick="App.switchView('view-brands');">🚗 Marka Kulüpleri</a>
-          <a class="nav-link" onclick="App.switchView('view-directory');">📍 Sanayi Rehberi</a>
-          <a class="nav-link" onclick="App.switchView('view-prices');">💰 Fiyat Hesaplayıcı</a>
-          <a class="nav-link sos-link" onclick="App.switchView('view-sos');">🚨 Yolda Kaldım (SOS)</a>
+        <div style="display:flex; flex-direction:column; gap:4px;">
+          <a class="nav-link" onclick="Forum.setFilter('all'); App.switchView('view-forum');">Tüm Tartışmalar</a>
+          <a class="nav-link" onclick="Forum.setFilter('ariza-teshis'); App.switchView('view-forum');">Sesli Arıza & Teşhis</a>
+          <a class="nav-link" onclick="Forum.setFilter('mechanics_only'); App.switchView('view-forum');">Usta Yanıtlı Konular</a>
+          <a class="nav-link" onclick="Forum.setFilter('solved'); App.switchView('view-forum');">Çözülen Arızalar</a>
+          <a class="nav-link" onclick="App.switchView('view-brands');">Marka Kulüpleri</a>
+          <a class="nav-link" onclick="App.switchView('view-directory');">Sanayi Rehberi</a>
+          <a class="nav-link" onclick="App.switchView('view-prices');">Fiyat Hesaplayıcı</a>
+          <a class="nav-link sos-link" onclick="App.switchView('view-sos');"><span class="sos-dot"></span> Acil SOS</a>
         </div>
       </div>
     </aside>
@@ -153,12 +151,13 @@
         <div class="feed-action-bar">
           <div class="feed-filters">
             <button class="filter-btn active" onclick="document.querySelectorAll('.feed-filters .filter-btn').forEach(b => b.classList.remove('active')); this.classList.add('active'); Forum.setFilter('all');">Tümü</button>
-            <button class="filter-btn" onclick="document.querySelectorAll('.feed-filters .filter-btn').forEach(b => b.classList.remove('active')); this.classList.add('active'); Forum.setFilter('ariza-teshis');">🔊 Arıza & Teşhis</button>
-            <button class="filter-btn" onclick="document.querySelectorAll('.feed-filters .filter-btn').forEach(b => b.classList.remove('active')); this.classList.add('active'); Forum.setFilter('mechanics_only');">🔒 Sadece Tamirciler</button>
-            <button class="filter-btn" onclick="document.querySelectorAll('.feed-filters .filter-btn').forEach(b => b.classList.remove('active')); this.classList.add('active'); Forum.setFilter('solved');">✓ Çözüldü</button>
+            <button class="filter-btn" onclick="document.querySelectorAll('.feed-filters .filter-btn').forEach(b => b.classList.remove('active')); this.classList.add('active'); Forum.setFilter('ariza-teshis');">Arıza & Teşhis</button>
+            <button class="filter-btn" onclick="document.querySelectorAll('.feed-filters .filter-btn').forEach(b => b.classList.remove('active')); this.classList.add('active'); Forum.setFilter('mechanics_only');">Sadece Ustalar</button>
+            <button class="filter-btn" onclick="document.querySelectorAll('.feed-filters .filter-btn').forEach(b => b.classList.remove('active')); this.classList.add('active'); Forum.setFilter('solved');">Çözülenler</button>
           </div>
           <button class="btn btn-secondary btn-sm" onclick="AiAssistant.toggleModal()">
-            🤖 AI Usta'ya Sor
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:4px;"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            AI Danışman
           </button>
         </div>
 
@@ -174,9 +173,9 @@
       <!-- 3. GÖRÜNÜM: Marka Kulüpleri -->
       <div id="view-brands" class="view-section">
         <div class="sidebar-card" style="margin-bottom:20px;">
-          <h2 style="font-size:1.3rem; font-weight:800; color:#FFF; margin-bottom:6px;">🚗 Marka Kulüpleri & Kronik Sorun Arşivi</h2>
-          <p style="font-size:0.88rem; color:var(--text-muted);">
-            Aracının markasını seç, o markaya özel arızaları, usta tavsiyelerini ve deneyimleri incele.
+          <h2 style="font-size:1.25rem; font-weight:700; color:#FFF; margin-bottom:6px;">Marka Kulüpleri & Model Arşivi</h2>
+          <p style="font-size:0.85rem; color:var(--text-muted);">
+            Aracınızın markasını seçerek markaya özel kronik arızaları, usta tavsiyelerini ve deneyimleri inceleyin.
           </p>
         </div>
         <div id="brands-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:16px;"></div>
@@ -185,8 +184,8 @@
       <!-- 4. GÖRÜNÜM: Sanayi & Usta Rehberi -->
       <div id="view-directory" class="view-section">
         <div class="sidebar-card" style="margin-bottom:20px;">
-          <h2 style="font-size:1.3rem; font-weight:800; color:#FFF; margin-bottom:6px;">📍 Sanayi ve Onaylı Usta Rehberi</h2>
-          <p style="font-size:0.88rem; color:var(--text-muted); margin-bottom:14px;">
+          <h2 style="font-size:1.25rem; font-weight:700; color:#FFF; margin-bottom:6px;">Sanayi ve Onaylı Usta Rehberi</h2>
+          <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:14px;">
             Şehir ve uzmanlık alanına göre doğrulanmış sanayi esnafını, adreslerini ve doğrudan iletişim numaralarını bulun.
           </p>
           <div style="display:flex; gap:12px; flex-wrap:wrap;">
@@ -214,13 +213,13 @@
         <div class="sidebar-card" style="margin-bottom:20px;">
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
             <div>
-              <h2 style="font-size:1.3rem; font-weight:800; color:#FFF; margin-bottom:4px;">💰 Piyasa Ne Diyor? (Fiyat Analizi)</h2>
-              <p style="font-size:0.88rem; color:var(--text-muted);">
-                Parça ve işçilik piyasa fiyatlarını karşılaştırın, sanayide fazladan ücret ödemeyin.
+              <h2 style="font-size:1.25rem; font-weight:700; color:#FFF; margin-bottom:4px;">Parça & İşçilik Fiyat Analizi</h2>
+              <p style="font-size:0.85rem; color:var(--text-muted);">
+                Parça ve işçilik piyasa fiyatlarını karşılaştırın, sanayide şeffaf maliyetleri görün.
               </p>
             </div>
             <button class="btn btn-primary btn-sm" onclick="openModal('price-modal')">
-              ➕ Fiyat Paylaş
+              + Fiyat Paylaş
             </button>
           </div>
         </div>
@@ -229,17 +228,17 @@
 
       <!-- 6. GÖRÜNÜM: SOS Modülü (Yolda Kaldım) -->
       <div id="view-sos" class="view-section">
-        <div class="sidebar-card" style="margin-bottom:20px; border: 1px solid rgba(239, 68, 68, 0.4); background: rgba(239, 68, 68, 0.05);">
+        <div class="sidebar-card" style="margin-bottom:20px; border: 1px solid rgba(239, 68, 68, 0.25); background: rgba(239, 68, 68, 0.04);">
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
             <div>
-              <span class="badge" style="background:#EF4444; color:#FFF; margin-bottom:6px;">🚨 ACİL DURUM AĞI</span>
-              <h2 style="font-size:1.3rem; font-weight:800; color:#FFF; margin-bottom:4px;">Yolda Kaldım! Acil Yardım Radarı</h2>
-              <p style="font-size:0.88rem; color:var(--text-muted);">
-                Aracınız arıza yaptıysa, hararet yükseldiyse veya lastiğiniz patladıysa konum bildirin; en yakındaki nöbetçi ustalar ve çekiciler anında size ulaşsın.
+              <span class="badge" style="background:rgba(239,68,68,0.15); color:#FCA5A5; border:1px solid rgba(239,68,68,0.3); margin-bottom:6px;">Acil Yardım Radarı</span>
+              <h2 style="font-size:1.25rem; font-weight:700; color:#FFF; margin-bottom:4px;">Yolda Kaldım! Acil Yardım Radarı</h2>
+              <p style="font-size:0.85rem; color:var(--text-muted);">
+                Aracınız arıza yaptıysa konum bildirin; en yakındaki nöbetçi ustalar ve çekiciler doğrudan size ulaşsın.
               </p>
             </div>
-            <button class="btn btn-primary" style="background:#EF4444; color:#FFF; border:none;" onclick="openModal('sos-modal')">
-              🚨 Acil Yardım Çağrısı Aç
+            <button class="btn btn-primary" style="background:#DC2626; color:#FFF; border:none;" onclick="openModal('sos-modal')">
+              Acil Yardım Talebi Aç
             </button>
           </div>
         </div>
@@ -248,94 +247,67 @@
 
     </section>
 
-    <!-- SAĞ SÜTUN: AI Asistan & Canlı İstatistikler -->
+    <!-- SAĞ SÜTUN: AI Danışman & Platform Özeti -->
     <aside class="sidebar-right">
-      <!-- AI Usta Hızlı Widget -->
-      <div class="sidebar-card" style="border: 1px solid var(--border-glow); background: linear-gradient(180deg, rgba(245, 158, 11, 0.08), var(--bg-card));">
-        <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
-          <div style="font-size:1.5rem;">🤖</div>
+      <!-- AI Danışman Kartı -->
+      <div class="sidebar-card ai-advisor-card">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+          <div class="advisor-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          </div>
           <div>
-            <h3 style="font-size:1rem; font-weight:800; color:#FFF;">Mobil Tamircim AI Usta</h3>
-            <span style="font-size:0.72rem; color:var(--accent-amber);">Akıllı Arıza Ön Teşhis</span>
+            <h3 style="font-size:0.95rem; font-weight:700; color:#FFF; margin:0;">Arıza Teşhis Danışmanı</h3>
+            <span style="font-size:0.72rem; color:var(--accent-amber);">OBD-II & Semptom Analizi</span>
           </div>
         </div>
-        <p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:12px;">
-          Motor sesinden veya OBD arıza kodundan anında tahmini masraf ve çözüm reçetesi çıkarır.
+        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px; line-height:1.5;">
+          Motor sesinden veya OBD kodundan arıza sebebi ve tahmini piyasa maliyetini öğrenin.
         </p>
         <button class="btn btn-primary btn-sm" style="width:100%;" onclick="AiAssistant.toggleModal()">
-          💬 AI Usta ile Konuş
+          Danışmana Danış
         </button>
       </div>
 
-      <!-- Hızlı OBD Sorgulama -->
+      <!-- Sık Karşılaşılan Arızalar -->
       <div class="sidebar-card">
         <div class="sidebar-title">
-          <span>⚠️ Sık Karşılaşılan Arızalar</span>
+          <span>Sık Karşılaşılan Arızalar</span>
         </div>
-        <div style="display:flex; flex-direction:column; gap:8px; font-size:0.8rem;">
-          <div style="cursor:pointer; padding:6px; background:var(--bg-input); border-radius:4px;" onclick="AiAssistant.toggleModal(); AiAssistant.askPreset('P0300 arıza kodu nedir ve nasıl çözülür?');">
-            <strong style="color:#F87171;">P0300:</strong> Çoklu Silindir Ateşleme Hatası &rarr;
+        <div style="display:flex; flex-direction:column; gap:6px; font-size:0.8rem;">
+          <div class="fault-preset-item" onclick="AiAssistant.toggleModal(); AiAssistant.askPreset('P0300 arıza kodu nedir ve nasıl çözülür?');">
+            <span class="code-badge">P0300</span> Silindir Ateşleme Hatası &rarr;
           </div>
-          <div style="cursor:pointer; padding:6px; background:var(--bg-input); border-radius:4px;" onclick="AiAssistant.toggleModal(); AiAssistant.askPreset('EDC veya DSG şanzıman vuruntu yapıyor');">
-            <strong style="color:var(--accent-amber);">P0700:</strong> Otomatik Şanzıman Vuruntusu &rarr;
+          <div class="fault-preset-item" onclick="AiAssistant.toggleModal(); AiAssistant.askPreset('EDC veya DSG şanzıman vuruntu yapıyor');">
+            <span class="code-badge">P0700</span> Otomatik Şanzıman Vuruntusu &rarr;
           </div>
-          <div style="cursor:pointer; padding:6px; background:var(--bg-input); border-radius:4px;" onclick="AiAssistant.toggleModal(); AiAssistant.askPreset('Sabahları ilk marşta beyaz duman atıyor');">
-            <strong style="color:#38BDF8;">Duman:</strong> Sabahları Beyaz Duman & Su Eksiltme &rarr;
+          <div class="fault-preset-item" onclick="AiAssistant.toggleModal(); AiAssistant.askPreset('Sabahları ilk marşta beyaz duman atıyor');">
+            <span class="code-badge">DUMAN</span> Beyaz Duman & Su Eksiltme &rarr;
           </div>
-          <div style="cursor:pointer; padding:6px; background:var(--bg-input); border-radius:4px;" onclick="AiAssistant.toggleModal(); AiAssistant.askPreset('Triger seti değişimi ne kadar tutar?');">
-            <strong style="color:#10B981;">Fiyat:</strong> Triger Seti Değişim Maliyeti &rarr;
+          <div class="fault-preset-item" onclick="AiAssistant.toggleModal(); AiAssistant.askPreset('Triger seti değişimi ne kadar tutar?');">
+            <span class="code-badge">TRİGER</span> Triger Değişim Maliyeti &rarr;
           </div>
         </div>
       </div>
 
-      <!-- Sanayi Bilgi Köşesi -->
+      <!-- Platform İstatistikleri -->
       <div class="sidebar-card">
         <div class="sidebar-title">
-          <span>📊 Platform İstatistikleri</span>
+          <span>Platform Özeti</span>
         </div>
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; text-align:center;">
-          <div style="background:var(--bg-input); padding:10px; border-radius:var(--radius-sm);">
-            <div style="font-size:1.3rem; font-weight:900; color:var(--accent-amber);">140+</div>
-            <div style="font-size:0.7rem; color:var(--text-dim);">Onaylı Tamirci</div>
+          <div class="stat-mini-tile">
+            <div class="stat-val">140+</div>
+            <div class="stat-lbl">Onaylı Tamirci</div>
           </div>
-          <div style="background:var(--bg-input); padding:10px; border-radius:var(--radius-sm);">
-            <div style="font-size:1.3rem; font-weight:900; color:var(--accent-green);">1.850+</div>
-            <div style="font-size:0.7rem; color:var(--text-dim);">Çözülen Arıza</div>
+          <div class="stat-mini-tile">
+            <div class="stat-val">1.850+</div>
+            <div class="stat-lbl">Çözülen Arıza</div>
           </div>
         </div>
       </div>
     </aside>
 
   </main>
-
-  <!-- Mobil Alt Navigasyon Çubuğu -->
-  <nav class="mobile-bottom-nav">
-    <div class="mobile-nav-item active" data-view="view-forum">
-      <span class="mobile-nav-icon">💬</span>
-      <span>Akış</span>
-    </div>
-    <div class="mobile-nav-item" data-view="view-brands">
-      <span class="mobile-nav-icon">🚗</span>
-      <span>Kulüpler</span>
-    </div>
-    <div class="mobile-nav-item" onclick="openModal('new-thread-modal')">
-      <span class="mobile-nav-icon" style="color:var(--accent-amber);">➕</span>
-      <span style="color:var(--accent-amber);">Konu Aç</span>
-    </div>
-    <div class="mobile-nav-item" data-view="view-directory">
-      <span class="mobile-nav-icon">📍</span>
-      <span>Usta</span>
-    </div>
-    <div class="mobile-nav-item sos" data-view="view-sos">
-      <span class="mobile-nav-icon">🚨</span>
-      <span>SOS</span>
-    </div>
-  </nav>
-
-  <!-- Yüzen AI Usta Butonu -->
-  <button class="floating-ai-btn" onclick="AiAssistant.toggleModal()" title="Mobil Tamircim AI Usta">
-    🤖
-  </button>
 
   <!-- ==================== MODALLER ==================== -->
 
@@ -376,8 +348,8 @@
           <div class="form-group">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
               <label class="form-label" style="margin-bottom:0;">OBD-II Arıza Kodu (Varsa):</label>
-              <button type="button" id="btn-toggle-custom-obd" class="btn btn-secondary btn-sm" style="font-size:0.72rem; padding:2px 8px; border-color:var(--accent-amber); color:var(--accent-amber);" onclick="Forum.toggleCustomObd()">
-                ✏️ Kendim Yazacağım
+              <button type="button" id="btn-toggle-custom-obd" class="btn btn-secondary btn-sm" style="font-size:0.72rem; padding:2px 8px;" onclick="Forum.toggleCustomObd()">
+                Manuel Giriş
               </button>
             </div>
 
@@ -393,11 +365,11 @@
               <div style="display:flex; gap:8px;">
                 <input id="thread-obd-custom-input" class="form-control" type="text" placeholder="Örn: P2452, DF053, 00532, B1001..." style="text-transform:uppercase; font-family:var(--font-plate); font-weight:800; letter-spacing:1px;">
                 <button type="button" class="btn btn-secondary btn-sm" onclick="Forum.toggleCustomObd(false)" title="Listeye Geri Dön">
-                  📋 Listeden Seç
+                  Listeden Seç
                 </button>
               </div>
               <span style="font-size:0.72rem; color:var(--text-muted); display:block; margin-top:4px;">
-                💡 İster standart OBD-II (P/C/B/U), ister Renault DF, VAG veya marka özel arıza kodunu serbestçe yazabilirsiniz.
+                Standart OBD-II veya marka özel arıza kodunu serbestçe yazabilirsiniz.
               </span>
             </div>
           </div>
@@ -405,7 +377,7 @@
 
         <!-- YORUM İZNİ AYARI (ÖZEL GEREKSİNİM) -->
         <div class="form-group">
-          <label class="form-label">🔒 Bu Konuya Kimler Yorum Yapabilir?</label>
+          <label class="form-label">Yorum Yetkisi</label>
           <div class="permission-options">
             <label class="permission-card selected" id="perm-all" onclick="document.getElementById('perm-mech').classList.remove('selected'); this.classList.add('selected');">
               <input type="radio" name="allowCommentsFrom" value="all" checked style="margin-right:6px;">
@@ -424,7 +396,7 @@
         <div class="form-group">
           <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:0.85rem; color:#38BDF8;">
             <input type="checkbox" id="thread-audio-check" checked>
-            <span>🎙️ Kaput altı / motor ses kaydı ekle (Simüle ses dosyasını bağlar)</span>
+            <span>Kaput altı / motor ses kaydı ekle (Simüle ses dosyasını bağlar)</span>
           </label>
         </div>
 
@@ -435,7 +407,7 @@
 
         <div style="display:flex; justify-content:flex-end; gap:10px;">
           <button type="button" class="btn btn-secondary" onclick="closeModal('new-thread-modal')">İptal</button>
-          <button type="submit" class="btn btn-primary">🚀 Konuyu Yayınla (+15 XP)</button>
+          <button type="submit" class="btn btn-primary">Konuyu Yayınla</button>
         </div>
       </form>
     </div>
@@ -446,21 +418,20 @@
     <div class="modal-content" style="max-width:640px;">
       <div class="modal-header">
         <div style="display:flex; align-items:center; gap:8px;">
-          <span style="font-size:1.3rem;">🔄</span>
-          <h3 style="font-size:1.2rem; font-weight:800; color:#FFF;">Aktif Profil / Rol Değiştir</h3>
+          <h3 style="font-size:1.15rem; font-weight:700; color:#FFF;">Aktif Profil / Rol Değiştir</h3>
         </div>
         <button class="modal-close" onclick="closeModal('user-switcher-modal')">&times;</button>
       </div>
       <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:14px;">
-        Farklı rozetleri (Tamirci, Developer, Beta Tester, Galerici) ve izin kısıtlamalarını test etmek için aşağıdaki profiller arasında anında geçiş yapabilirsiniz:
+        Farklı rolleri ve yetkileri test etmek için aşağıdaki profiller arasında anında geçiş yapabilirsiniz:
       </p>
-      <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.3); border-radius:var(--radius-md); padding:12px 16px; margin-bottom:16px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.03); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:12px 16px; margin-bottom:16px;">
         <div>
           <div style="font-size:0.88rem; font-weight:700; color:#FFF;">Kendi Hesabınızla Giriş Yapın</div>
           <div style="font-size:0.75rem; color:var(--text-secondary);">Şifrenizle giriş yapabilir veya hemen yeni profil açabilirsiniz</div>
         </div>
         <button class="btn btn-primary btn-sm" onclick="closeModal('user-switcher-modal'); openAuthModal('login');" style="white-space:nowrap;">
-          🔑 Giriş / Kayıt Ol
+          Giriş / Kayıt Ol
         </button>
       </div>
       <div id="user-switcher-list" style="display:flex; flex-direction:column; gap:12px;"></div>
@@ -654,10 +625,10 @@
         </div>
         <div style="display:flex; align-items:center; gap:8px;">
           <button type="button" class="btn btn-secondary btn-sm" style="font-size:0.75rem; padding:4px 8px;" onclick="AiAssistant.toggleApiKeyModal()" title="Yapay Zeka Motoru ve API Tercihleri">
-            ⚙️ AI Motoru & API
+            AI Motoru
           </button>
           <button type="button" class="btn btn-secondary btn-sm" style="font-size:0.75rem; padding:4px 8px;" onclick="AiAssistant.clearHistory()" title="Sohbeti Temizle">
-            🗑️
+            Temizle
           </button>
           <button class="modal-close" onclick="AiAssistant.toggleModal()">&times;</button>
         </div>
@@ -667,7 +638,6 @@
       <div id="ai-api-key-banner" style="display:none; background:#1E293B; border:1px solid #475569; border-radius:var(--radius-md); padding:14px 16px; margin-bottom:14px; box-shadow:0 8px 24px rgba(0,0,0,0.5);">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; border-bottom:1px solid #334155; padding-bottom:8px;">
           <div style="display:flex; align-items:center; gap:8px;">
-            <span style="font-size:0.95rem;">⚙️</span>
             <strong style="font-size:0.88rem; color:#FFF;">Yapay Zeka Motoru & API Ayarları</strong>
           </div>
           <button type="button" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.2rem; line-height:1;" onclick="AiAssistant.toggleApiKeyModal()">&times;</button>
@@ -676,12 +646,12 @@
         <!-- Sağlayıcı Seçimi -->
         <div style="margin-bottom:10px;">
           <label style="font-size:0.75rem; font-weight:700; color:var(--accent-amber); display:block; margin-bottom:4px;">
-            ⚡ Tercih Edilen AI Motoru:
+            Tercih Edilen AI Motoru:
           </label>
           <select id="ai-provider-select" class="form-control" style="font-size:0.82rem; padding:7px 10px; background:var(--bg-input); color:#FFF; border:1px solid #475569;" onchange="AiAssistant.onProviderChange()">
-            <option value="claude">🧠 Anthropic Claude (3.5 Sonnet / Haiku) - [Önerilen]</option>
-            <option value="gemini">✨ Google Gemini 2.5</option>
-            <option value="local">🚗 Mobil Tamircim Yerel Motor (API Anahtarsız & Anında)</option>
+            <option value="claude">Anthropic Claude (3.5 Sonnet / Haiku) - [Önerilen]</option>
+            <option value="gemini">Google Gemini 2.5</option>
+            <option value="local">Mobil Tamircim Yerel Motor (Hızlı & Çevrimdışı)</option>
           </select>
         </div>
 
@@ -724,31 +694,31 @@
         <!-- Yerel Motor Bilgilendirme -->
         <div id="ai-local-section" style="display:none; background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.25); border-radius:var(--radius-sm); padding:10px 12px; margin-bottom:10px;">
           <div style="font-size:0.75rem; color:#6EE7B7; line-height:1.4;">
-            🚗 <strong>Mobil Tamircim Dahili Bilgi Motoru:</strong> Herhangi bir harici API anahtarı veya internet bağlantısı gerektirmeden 67+ OBD-II kodu, mekanik arızalar, motor tipleri ve 2026 oto sanayi işçilik/parça fiyatlarını yerel olarak anında hesaplar.
+            <strong>Mobil Tamircim Dahili Bilgi Motoru:</strong> Herhangi bir harici API anahtarı veya internet bağlantısı gerektirmeden 67+ OBD-II kodu, mekanik arızalar, motor tipleri ve güncel sanayi maliyetlerini yerel olarak anında hesaplar.
           </div>
         </div>
 
         <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:8px;">
           <button type="button" class="btn btn-secondary btn-sm" onclick="AiAssistant.toggleApiKeyModal()">Kapat</button>
-          <button type="button" class="btn btn-primary btn-sm" onclick="AiAssistant.saveSettings()" style="font-weight:700;">💾 Ayarları Kaydet</button>
+          <button type="button" class="btn btn-primary btn-sm" onclick="AiAssistant.saveSettings()" style="font-weight:700;">Ayarları Kaydet</button>
         </div>
       </div>
 
       <!-- Hızlı Soru / Şikayet Çipleri -->
       <div class="ai-quick-chips">
-        <button type="button" class="ai-chip" onclick="AiAssistant.askPreset('P0300 arıza kodu nedir, ne kadara çözülür?')">⚡ P0300 Ateşleme</button>
-        <button type="button" class="ai-chip" onclick="AiAssistant.askPreset('EDC veya DSG şanzıman 2. viteste vuruntu yapıyor, kavrama mı?')">⚡ DSG/EDC Vuruntu</button>
-        <button type="button" class="ai-chip" onclick="AiAssistant.askPreset('1.5 dCi motor rölantide şıkırtı sesi yapıyor, enjektör mü?')">⚡ 1.5 dCi Enjektör</button>
-        <button type="button" class="ai-chip" onclick="AiAssistant.askPreset('Sabahları ilk marşta beyaz duman atıyor ve su eksiltiyor')">⚡ Beyaz Duman & Conta</button>
-        <button type="button" class="ai-chip" onclick="AiAssistant.askPreset('Triger kayışı ve devirdaim pompası değişim maliyeti ne kadar?')">⚡ Triger Masrafı</button>
-        <button type="button" class="ai-chip" onclick="AiAssistant.askPreset('P0299 Turboşarj düşük basınç uyarısı verdi, araç çekmiyor')">⚡ P0299 Turbo</button>
+        <button type="button" class="ai-chip" onclick="AiAssistant.askPreset('P0300 arıza kodu nedir, ne kadara çözülür?')">P0300 Ateşleme</button>
+        <button type="button" class="ai-chip" onclick="AiAssistant.askPreset('EDC veya DSG şanzıman 2. viteste vuruntu yapıyor, kavrama mı?')">DSG/EDC Vuruntu</button>
+        <button type="button" class="ai-chip" onclick="AiAssistant.askPreset('1.5 dCi motor rölantide şıkırtı sesi yapıyor, enjektör mü?')">1.5 dCi Enjektör</button>
+        <button type="button" class="ai-chip" onclick="AiAssistant.askPreset('Sabahları ilk marşta beyaz duman atıyor ve su eksiltiyor')">Beyaz Duman & Conta</button>
+        <button type="button" class="ai-chip" onclick="AiAssistant.askPreset('Triger kayışı ve devirdaim pompası değişim maliyeti ne kadar?')">Triger Masrafı</button>
+        <button type="button" class="ai-chip" onclick="AiAssistant.askPreset('P0299 Turboşarj düşük basınç uyarısı verdi, araç çekmiyor')">P0299 Turbo</button>
       </div>
 
       <!-- Mesaj Alanı -->
       <div class="ai-chat-box">
         <div id="ai-chat-messages" class="ai-messages"></div>
         <div id="ai-typing-indicator" class="ai-typing-indicator" style="display:none;">
-          <span>🤖 AI Usta düşünüyor</span>
+          <span>Danışman yanıt hazırlıyor...</span>
           <div class="typing-dots">
             <span></span><span></span><span></span>
           </div>
@@ -758,14 +728,14 @@
       <!-- Giriş Alanı -->
       <div style="padding-top:12px; display:flex; flex-direction:column; gap:8px; border-top:1px solid var(--border-color); margin-top:8px;">
         <div style="display:flex; gap:8px;">
-          <input id="ai-chat-input" class="form-control" type="text" placeholder="Aracındaki arızayı, sesi, OBD kodunu veya merak ettiğin parçayı yaz..." onkeydown="if(event.key==='Enter') AiAssistant.sendFromInput()">
-          <button class="btn btn-primary" onclick="AiAssistant.sendFromInput()" style="white-space:nowrap; padding:0 20px; font-weight:800;">
-            🚀 Sor
+          <input id="ai-chat-input" class="form-control" type="text" placeholder="Aracınızdaki arızayı, sesi, OBD kodunu veya merak ettiğiniz işlemi yazın..." onkeydown="if(event.key==='Enter') AiAssistant.sendFromInput()">
+          <button class="btn btn-primary" onclick="AiAssistant.sendFromInput()" style="white-space:nowrap; padding:0 20px; font-weight:700;">
+            Gönder
           </button>
         </div>
         <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.75rem; color:var(--text-muted);">
-          <span>💡 Örnek: <em>"2019 Passat P0299 arızası verdi çekiş düştü masrafı nedir?"</em></span>
-          <span id="ai-source-badge" style="color:#10B981; font-weight:700;">● Mobil Tamircim Akıllı Teşhis</span>
+          <span>Örnek: <em>"2019 Passat P0299 arızası verdi çekiş düştü masrafı nedir?"</em></span>
+          <span id="ai-source-badge" style="color:#10B981; font-weight:700;">● Akıllı Teşhis Aktif</span>
         </div>
       </div>
     </div>
@@ -776,10 +746,9 @@
     <div class="modal-content" style="max-width:500px;">
       <div class="modal-header">
         <div style="display:flex; align-items:center; gap:10px;">
-          <span style="font-size:1.4rem;">🔑</span>
           <div>
-            <h3 style="font-size:1.15rem; font-weight:800; color:#FFF;">Mobil Tamircim Hesabı</h3>
-            <span style="font-size:0.75rem; color:var(--text-muted);">Giriş yap veya topluluğa hemen katıl</span>
+            <h3 style="font-size:1.15rem; font-weight:700; color:#FFF;">Mobil Tamircim Hesabı</h3>
+            <span style="font-size:0.75rem; color:var(--text-muted);">Giriş yapın veya topluluğa hemen katılın</span>
           </div>
         </div>
         <button class="modal-close" onclick="closeModal('auth-modal')">&times;</button>
@@ -788,10 +757,10 @@
       <!-- Giriş / Kayıt Sekmeleri -->
       <div class="auth-tabs-nav">
         <button id="auth-tab-login-btn" type="button" class="auth-tab-btn active" onclick="switchAuthTab('login')">
-          <span>🔐 Giriş Yap</span>
+          <span>Giriş Yap</span>
         </button>
         <button id="auth-tab-register-btn" type="button" class="auth-tab-btn" onclick="switchAuthTab('register')">
-          <span>✨ Kayıt Ol</span>
+          <span>Kayıt Ol</span>
         </button>
       </div>
 
@@ -817,17 +786,17 @@
             <span>Beni Unutma (Oturumumu açık tut)</span>
           </label>
 
-          <button type="submit" class="btn btn-primary" style="width:100%; padding:12px; font-weight:800; font-size:0.95rem;">
-            🚀 Giriş Yap
+          <button type="submit" class="btn btn-primary" style="width:100%; padding:12px; font-weight:700; font-size:0.95rem;">
+            Giriş Yap
           </button>
 
           <!-- Hızlı Demo Giriş Düğmeleri -->
           <div class="quick-login-pills">
-            <span style="width:100%; font-size:0.75rem; color:var(--text-muted); font-weight:600;">⚡ Hızlı Demo Girişi (1 Tıkla Doldur):</span>
-            <button type="button" class="quick-login-pill" onclick="quickFillLogin('AhmetUsta_VAG', '123456')">🔧 Ahmet Usta</button>
-            <button type="button" class="quick-login-pill" onclick="quickFillLogin('MuratGelistirici', '123456')">💻 Murat (Dev)</button>
-            <button type="button" class="quick-login-pill" onclick="quickFillLogin('YildizOtomotiv', '123456')">🏢 Kemal (Galerici)</button>
-            <button type="button" class="quick-login-pill" onclick="quickFillLogin('CanerSurucu', '123456')">🚗 Caner (Sürücü)</button>
+            <span style="width:100%; font-size:0.75rem; color:var(--text-muted); font-weight:600;">Hızlı Test Girişi (1 Tıkla Doldur):</span>
+            <button type="button" class="quick-login-pill" onclick="quickFillLogin('AhmetUsta_VAG', '123456')">Ahmet Usta (Tamirci)</button>
+            <button type="button" class="quick-login-pill" onclick="quickFillLogin('MuratGelistirici', '123456')">Murat (Geliştirici)</button>
+            <button type="button" class="quick-login-pill" onclick="quickFillLogin('YildizOtomotiv', '123456')">Kemal (Galerici)</button>
+            <button type="button" class="quick-login-pill" onclick="quickFillLogin('CanerSurucu', '123456')">Caner (Sürücü)</button>
           </div>
         </form>
       </div>
@@ -850,7 +819,7 @@
             <label class="form-label">E-Posta Adresi (Doğrulama Kodu Gönderilir): *</label>
             <input id="reg-email" class="form-control" type="email" placeholder="ornek@domain.com" required autocomplete="email">
             <span style="font-size:0.75rem; color:var(--text-muted); display:block; margin-top:4px;">
-              ✉️ Güvenlik ve hesap aktivasyonu için bu adrese 6 haneli doğrulama kodu iletilecektir.
+              Güvenlik ve hesap aktivasyonu için bu adrese 6 haneli doğrulama kodu iletilecektir.
             </span>
           </div>
           <div class="form-group">
@@ -864,10 +833,10 @@
           <div class="form-group">
             <label class="form-label">Profil / Rol Tipiniz:</label>
             <select id="reg-role" class="form-control" onchange="handleRoleChange(this.value)">
-              <option value="user">🚗 Araç Sahibi / Sürücü</option>
-              <option value="mechanic">🔧 Sanayi Tamircisi / Oto Esnafı</option>
-              <option value="dealer">🏢 Otomotiv Galericisi / Yetkili Satıcı</option>
-              <option value="developer">💻 Yazılımcı / Platform Geliştiricisi</option>
+              <option value="user">Araç Sahibi / Sürücü</option>
+              <option value="mechanic">Sanayi Tamircisi / Oto Esnafı</option>
+              <option value="dealer">Otomotiv Galericisi / Satıcı</option>
+              <option value="developer">Platform Geliştiricisi</option>
             </select>
           </div>
 
@@ -915,8 +884,8 @@
             <span>Beni Unutma (Oturumumu açık tut)</span>
           </label>
 
-          <button type="submit" class="btn btn-primary" style="width:100%; padding:12px; font-weight:800; font-size:0.95rem;">
-            ✨ Kaydı Tamamla (+25 Hoş Geldin XP)
+          <button type="submit" class="btn btn-primary" style="width:100%; padding:12px; font-weight:700; font-size:0.95rem;">
+            Kaydı Tamamla
           </button>
         </form>
       </div>
@@ -944,10 +913,10 @@
       </p>
 
       <!-- Test / Simülasyon Kodu Bildirim Kutusu -->
-      <div id="verify-demo-alert" style="background:rgba(245,158,11,0.08); border:1px dashed var(--accent-amber); border-radius:var(--radius-sm); padding:12px 14px; margin-bottom:18px; text-align:left;">
+      <div id="verify-demo-alert" style="background:rgba(255,255,255,0.03); border:1px dashed var(--border-color); border-radius:var(--radius-sm); padding:12px 14px; margin-bottom:18px; text-align:left;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-          <span style="font-weight:700; color:var(--accent-amber); font-size:0.82rem;">⚡ Test / Demo Kodu:</span>
-          <button type="button" class="btn btn-secondary" style="padding:4px 8px; font-size:0.75rem;" onclick="Auth.fillDemoVerifyCode()">📋 Otomatik Doldur</button>
+          <span style="font-weight:600; color:var(--text-muted); font-size:0.82rem;">Test Doğrulama Kodu:</span>
+          <button type="button" class="btn btn-secondary" style="padding:4px 8px; font-size:0.75rem;" onclick="Auth.fillDemoVerifyCode()">Otomatik Doldur</button>
         </div>
         <div style="font-size:0.8rem; color:var(--text-secondary);">
           Geliştirme ortamı kodu: <strong id="verify-demo-code-val" style="color:#FFF; font-size:1.1rem; font-family:monospace; letter-spacing:3px;">123456</strong>
@@ -961,15 +930,15 @@
           <input id="verify-code-input" class="form-control" type="text" maxlength="6" pattern="[0-9]{6}" inputmode="numeric" placeholder="••••••" required autocomplete="one-time-code" style="text-align:center; font-size:1.8rem; font-weight:800; letter-spacing:8px; font-family:monospace; padding:12px; background:var(--bg-input); border:2px solid var(--accent-amber); color:#FFF; border-radius:12px; width:100%; box-sizing:border-box;">
         </div>
 
-        <button type="submit" id="verify-submit-btn" class="btn btn-primary" style="width:100%; padding:13px; font-size:0.95rem; font-weight:800; border-radius:10px; margin-bottom:14px;">
-          ✓ Doğrula & Hesabı Aktif Et (+15 XP)
+        <button type="submit" id="verify-submit-btn" class="btn btn-primary" style="width:100%; padding:13px; font-size:0.95rem; font-weight:700; border-radius:10px; margin-bottom:14px;">
+          Doğrula & Hesabı Aktif Et
         </button>
 
         <!-- Tekrar Gönder ve Geri Sayım -->
         <div style="font-size:0.82rem; color:var(--text-muted); display:flex; justify-content:space-between; align-items:center; padding-top:4px;">
           <span id="verify-countdown-text">Tekrar kod: <strong id="verify-countdown-timer">60s</strong></span>
           <button type="button" id="verify-resend-btn" class="btn btn-secondary" style="padding:5px 10px; font-size:0.78rem;" onclick="Auth.resendVerificationCode()" disabled>
-            🔄 Yeni Kod Gönder
+            Yeni Kod Gönder
           </button>
         </div>
       </form>
@@ -979,23 +948,31 @@
   <!-- MOBİL TAMİRCİM ALT MENÜ (NATIVE APP FEEL) -->
   <nav class="mobile-bottom-nav">
     <button class="mobile-nav-btn active" id="mnav-forum" onclick="App.mobileNavigate('view-forum', this)">
-      <span class="mnav-icon">🏠</span>
+      <span class="mnav-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+      </span>
       <span class="mnav-label">Akış</span>
     </button>
-    <button class="mobile-nav-btn" id="mnav-obd" onclick="App.mobileNavigate('view-obd', this)">
-      <span class="mnav-icon">🔍</span>
-      <span class="mnav-label">OBD Kodları</span>
+    <button class="mobile-nav-btn" id="mnav-obd" onclick="App.mobileNavigate('view-directory', this)">
+      <span class="mnav-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+      </span>
+      <span class="mnav-label">Rehber</span>
     </button>
     <button class="mobile-nav-btn special" onclick="openModal('new-thread-modal')">
-      <div class="mnav-plus-circle">➕</div>
+      <div class="mnav-plus-circle">+</div>
       <span class="mnav-label">Konu Aç</span>
     </button>
     <button class="mobile-nav-btn" id="mnav-ai" onclick="AiAssistant.toggleModal()">
-      <span class="mnav-icon">🤖</span>
-      <span class="mnav-label">AI Usta</span>
+      <span class="mnav-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+      </span>
+      <span class="mnav-label">Danışman</span>
     </button>
     <button class="mobile-nav-btn" id="mnav-profile" onclick="openModal('user-switcher-modal')">
-      <span class="mnav-icon">👤</span>
+      <span class="mnav-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+      </span>
       <span class="mnav-label">Hesabım</span>
     </button>
   </nav>
@@ -1025,7 +1002,7 @@
         </div>
 
         <div style="font-size:0.82rem; color:#FFF; margin-bottom:16px;">
-          📱 Telefon kamerasını QR koda tutun veya tarayıcınızda açın:
+          Telefon kamerasını QR koda tutun veya tarayıcınızda açın:
           <div style="margin-top:6px;">
             <a href="http://192.168.1.5:3000" target="_blank" style="color:var(--accent-amber); font-weight:700; font-size:0.95rem; text-decoration:underline; word-break:break-all;">
               http://192.168.1.5:3000
@@ -1035,21 +1012,21 @@
 
         <!-- 2 Adımda Kurulum Rehberi -->
         <div style="text-align:left; background:var(--bg-input); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:14px; font-size:0.82rem; line-height:1.55; color:var(--text-secondary); margin-bottom:16px;">
-          <div style="font-weight:700; color:#FFF; margin-bottom:8px; display:flex; align-items:center; gap:6px;">
-            <span>📲</span> <span>Telefona Nasıl Yüklenir?</span>
+          <div style="font-weight:700; color:#FFF; margin-bottom:8px;">
+            Telefona Nasıl Yüklenir?
           </div>
           <div style="margin-bottom:8px;">
-            🤖 <strong>Android:</strong> Chrome'da adresi açın &rarr; Sağ üstteki 3 nokta (⋮) &rarr; <strong>"Uygulamayı Yükle"</strong> veya <strong>"Ana Ekrana Ekle"</strong> deyin.
+            <strong>Android:</strong> Chrome'da adresi açın &rarr; Sağ üstteki menü (⋮) &rarr; <strong>"Uygulamayı Yükle"</strong> seçeneğine dokunun.
           </div>
           <div>
-            🍎 <strong>iPhone (iOS):</strong> Safari'de adresi açın &rarr; Alttaki <strong>Paylaş</strong> simgesine dokunun &rarr; <strong>"Ana Ekrana Ekle"</strong> deyin.
+            <strong>iPhone (iOS):</strong> Safari'de adresi açın &rarr; Alttaki <strong>Paylaş</strong> simgesine dokunun &rarr; <strong>"Ana Ekrana Ekle"</strong> deyin.
           </div>
         </div>
 
         <!-- Doğrudan Yükleme Butonu (Destekleyen Tarayıcılarda Aktif) -->
         <div id="pwa-native-install-wrap" style="margin-bottom:12px; display:none;">
-          <button class="btn btn-primary" onclick="App.triggerPwaInstall()" style="width:100%; padding:12px; font-weight:800;">
-            📲 Bu Cihaza Doğrudan Yükle
+          <button class="btn btn-primary" onclick="App.triggerPwaInstall()" style="width:100%; padding:12px; font-weight:700;">
+            Bu Cihaza Doğrudan Yükle
           </button>
         </div>
 

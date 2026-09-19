@@ -349,38 +349,20 @@ const Auth = {
     return '';
   },
 
-  // HTML Rozetler Oluşturucu
+  // HTML Rozetler Oluşturucu (Sade & Prestijli)
   renderBadges(badges = [], showLevel = null) {
     let html = '';
     if (Array.isArray(badges)) {
-      if (badges.includes('email_verified')) {
-        html += `<span class="badge" style="background:#065F46; color:#D1FAE5;" title="E-Posta Adresi Onaylandı">✓ E-Posta Onaylı</span>`;
-      }
       if (badges.includes('verified_mechanic')) {
-        html += `<span class="badge badge-mechanic" title="Doğrulanmış Sanayi Tamircisi / Esnafı">🔧 Onaylı Tamirci</span>`;
-      }
-      if (badges.includes('developer')) {
-        html += `<span class="badge badge-developer" title="Platform Geliştiricisi">💻 Developer</span>`;
-      }
-      if (badges.includes('beta_tester')) {
-        html += `<span class="badge badge-beta" title="Erken Aşama Beta Test Üyesi">🧪 Beta Tester</span>`;
-      }
-      if (badges.includes('verified_dealer')) {
-        html += `<span class="badge badge-dealer" title="Yetki Belgeli Otomotiv Galericisi">🏢 Onaylı Galerici</span>`;
-      }
-      if (badges.includes('verified_user')) {
-        html += `<span class="badge" style="background:#0369A1; color:#E0F2FE;" title="Kimlik ve İletişim Bilgileri Doğrulanmış Araç Sahibi">🛡️ Doğrulanmış</span>`;
+        html += `<span class="badge badge-mechanic" title="Doğrulanmış Sanayi Tamircisi">Onaylı Usta</span>`;
+      } else if (badges.includes('developer')) {
+        html += `<span class="badge badge-developer" title="Platform Geliştiricisi">Geliştirici</span>`;
+      } else if (badges.includes('verified_dealer')) {
+        html += `<span class="badge badge-dealer" title="Yetki Belgeli Otomotiv Galericisi">Yetkili Galerici</span>`;
+      } else if (badges.includes('verified_user')) {
+        html += `<span class="badge badge-verified" title="Doğrulanmış Araç Sahibi">Doğrulanmış Üye</span>`;
       }
     }
-
-    if (showLevel) {
-      let levelClass = 'badge-level-cirak';
-      if (showLevel === 'Master') levelClass = 'badge-level-master';
-      else if (showLevel === 'Usta') levelClass = 'badge-level-usta';
-      else if (showLevel === 'Kalfa') levelClass = 'badge-level-kalfa';
-      html += `<span class="badge ${levelClass}">${showLevel}</span>`;
-    }
-
     return html;
   },
 
@@ -398,11 +380,11 @@ const Auth = {
     if (nameEl) nameEl.textContent = u.name;
     if (roleEl) {
       let roleDesc = 'Araç Sahibi';
-      if (this.isMechanic(u)) roleDesc = '🔧 Onaylı Usta';
-      else if (this.isDeveloper(u)) roleDesc = '💻 Developer';
-      else if (this.isDealer(u)) roleDesc = '🏢 Galerici';
-      else if (this.isAdmin(u)) roleDesc = '🛡️ Admin / Mod';
-      roleEl.textContent = `${roleDesc} (${u.level} - ${u.reputationPoints || 0} XP)`;
+      if (this.isMechanic(u)) roleDesc = 'Onaylı Usta';
+      else if (this.isDeveloper(u)) roleDesc = 'Geliştirici';
+      else if (this.isDealer(u)) roleDesc = 'Yetkili Galerici';
+      else if (this.isAdmin(u)) roleDesc = 'Yönetici';
+      roleEl.textContent = roleDesc;
     }
     if (plateContainer) {
       plateContainer.innerHTML = this.renderPlate(u.plate, 'sm');
@@ -427,37 +409,14 @@ const Auth = {
     if (sbBadges) {
       let bHtml = this.renderBadges(u.badges, u.level);
       if (u.isEmailVerified === false) {
-        bHtml += ` <button type="button" class="badge" style="background:#B45309; color:#FEF3C7; border:none; cursor:pointer; font-weight:700; margin-left:4px;" onclick="Auth.openVerifyModalForUser('${u.id}')" title="Hesabınızı aktifleştirmek için e-postanızı doğrulayın">⚠️ E-Postayı Doğrula</button>`;
+        bHtml += ` <button type="button" class="badge" style="background:rgba(245,158,11,0.12); color:#FCD34D; border:1px solid rgba(245,158,11,0.3); cursor:pointer; font-weight:600; margin-left:4px;" onclick="Auth.openVerifyModalForUser('${u.id}')" title="Hesabınızı aktifleştirmek için e-postanızı doğrulayın">E-Postayı Doğrula</button>`;
       }
       sbBadges.innerHTML = bHtml;
     }
 
-    // Calculate XP Progress
     const pts = u.reputationPoints || 0;
-    let percent = 0;
-    let target = 100;
-    let nextTitle = 'Kalfa';
-
-    if (pts >= 700) {
-      percent = 100;
-      target = pts;
-      nextTitle = 'Zirve (Master Seviyesi)';
-    } else if (pts >= 300) {
-      percent = Math.round(((pts - 300) / 400) * 100);
-      target = 700;
-      nextTitle = 'Master için ' + (700 - pts) + ' XP kaldı';
-    } else if (pts >= 100) {
-      percent = Math.round(((pts - 100) / 200) * 100);
-      target = 300;
-      nextTitle = 'Usta için ' + (300 - pts) + ' XP kaldı';
-    } else {
-      percent = Math.round((pts / 100) * 100);
-      target = 100;
-      nextTitle = 'Kalfa için ' + (100 - pts) + ' XP kaldı';
-    }
-
-    if (sbXp) sbXp.textContent = `${pts} XP`;
-    if (sbBar) sbBar.style.width = `${Math.min(100, Math.max(5, percent))}%`;
-    if (sbNextLevel) sbNextLevel.textContent = nextTitle;
+    if (sbXp) sbXp.textContent = pts >= 500 ? 'Yüksek İtibar' : 'Aktif Üye';
+    if (sbBar) sbBar.style.display = 'none';
+    if (sbNextLevel) sbNextLevel.style.display = 'none';
   }
 };
