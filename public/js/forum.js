@@ -48,10 +48,12 @@ const Forum = {
 
     if (filtered.length === 0) {
       container.innerHTML = `
-        <div style="text-align:center; padding: 40px; color: var(--text-dim); background: var(--bg-card); border-radius: var(--radius-md); border: 1px dashed var(--border-color);">
-          <div style="font-size:2.5rem; margin-bottom:10px;">🔍</div>
-          <div style="font-size:1.1rem; font-weight:700; color:var(--text-main);">Henüz Konu Bulunamadı</div>
-          <p style="font-size:0.85rem; margin-top:4px;">Bu kriterlere uygun konu yok. İlk konuyu sen açabilirsin!</p>
+        <div style="text-align:center; padding: 48px 20px; color: var(--text-dim); background: var(--bg-card); border-radius: var(--radius-md); border: 1px dashed var(--border-color);">
+          <div style="width:44px; height:44px; border-radius:50%; background:rgba(255,255,255,0.04); display:flex; align-items:center; justify-content:center; margin:0 auto 12px auto; color:var(--text-dim);">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+          </div>
+          <div style="font-size:1.05rem; font-weight:700; color:var(--text-main);">Henüz Konu Bulunamadı</div>
+          <p style="font-size:0.85rem; margin-top:4px; color:var(--text-muted);">Bu kriterlere uygun konu yok. İlk konuyu açabilirsiniz.</p>
         </div>
       `;
       return;
@@ -301,7 +303,7 @@ const Forum = {
         user.reputationPoints = (user.reputationPoints || 0) + 10;
         Auth.updateUserUI();
 
-        showToast('🎉 Yorumunuz paylaşıldı! +10 XP Kazandınız');
+        showToast('Yorumunuz paylaşıldı.');
         this.renderThreadDetail(thr);
       } else {
         showToast(data.error || 'Yorum gönderilemedi', 'error');
@@ -330,7 +332,7 @@ const Forum = {
         }
         this.comments.filter(c => c.threadId === threadId).forEach(c => c.isSolution = (c.id === commentId));
         
-        showToast('✅ En iyi çözüm onaylandı ve sabitlendi!');
+        showToast('Çözüm onaylandı ve sabitlendi.');
         this.renderThreadDetail(thr);
       } else {
         showToast(data.error || 'İşlem gerçekleştirilemedi', 'error');
@@ -370,7 +372,7 @@ const Forum = {
         user.reputationPoints = (user.reputationPoints || 0) + 15;
         Auth.updateUserUI();
 
-        showToast('🚀 Konunuz yayınlandı! +15 XP Kazandınız');
+        showToast('Konunuz yayınlandı.');
         this.renderThreadList();
         window.App.switchView('view-forum');
       } else {
@@ -384,7 +386,7 @@ const Forum = {
   playDemoAudio(btn) {
     if (btn.textContent === '▶') {
       btn.textContent = '⏸';
-      showToast('🔊 Motor sesi kaydı oynatılıyor...');
+      showToast('Motor sesi kaydı oynatılıyor...');
       setTimeout(() => {
         btn.textContent = '▶';
       }, 3000);
@@ -407,7 +409,7 @@ const Forum = {
       if (selectWrap) selectWrap.style.display = 'none';
       if (customWrap) customWrap.style.display = 'block';
       if (toggleBtn) {
-        toggleBtn.textContent = '📋 Listeden Seç';
+        toggleBtn.textContent = 'Listeden Seç';
         toggleBtn.style.borderColor = 'var(--accent-blue)';
         toggleBtn.style.color = 'var(--accent-blue)';
       }
@@ -419,7 +421,7 @@ const Forum = {
       if (selectWrap) selectWrap.style.display = 'block';
       if (customWrap) customWrap.style.display = 'none';
       if (toggleBtn) {
-        toggleBtn.textContent = '✏️ Kendim Yazacağım';
+        toggleBtn.textContent = 'Kendim Yazacağım';
         toggleBtn.style.borderColor = 'var(--accent-amber)';
         toggleBtn.style.color = 'var(--accent-amber)';
       }

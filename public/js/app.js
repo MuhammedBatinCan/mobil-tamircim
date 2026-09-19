@@ -58,7 +58,7 @@ const App = {
       this.deferredPrompt = null;
       const banner = document.getElementById('mobile-install-banner');
       if (banner) banner.style.display = 'none';
-      showToast('🎉 Mobil Tamircim telefonunuza başarıyla yüklendi!');
+      showToast('Mobil Tamircim telefonunuza başarıyla yüklendi.');
     });
   },
 
@@ -79,7 +79,7 @@ const App = {
       this.deferredPrompt.prompt();
       const { outcome } = await this.deferredPrompt.userChoice;
       if (outcome === 'accepted') {
-        showToast('🚀 Mobil Tamircim kuruluyor...');
+        showToast('Mobil Tamircim kuruluyor...');
       }
       this.deferredPrompt = null;
       const banner = document.getElementById('mobile-install-banner');
@@ -149,13 +149,13 @@ const App = {
     if (!container) return;
 
     container.innerHTML = APP_DATA.brands.map(b => `
-      <div class="sidebar-card" style="cursor:pointer; transition:transform 0.15s, border-color 0.15s; margin-bottom:0;" onclick="App.filterByBrand('${b.name}')">
-        <div style="font-size:2rem; margin-bottom:8px;">${b.logo}</div>
-        <h3 style="font-size:1.15rem; font-weight:800; color:#FFF; margin-bottom:4px;">${b.name} Kulübü</h3>
-        <p style="font-size:0.75rem; color:var(--text-dim); margin-bottom:10px;">
+      <div class="sidebar-card brand-card" style="cursor:pointer; transition:transform 0.15s, border-color 0.15s; margin-bottom:0;" onclick="App.filterByBrand('${b.name}')">
+        <div class="brand-monogram-badge">${b.logo}</div>
+        <h3 style="font-size:1.05rem; font-weight:700; color:#FFF; margin-bottom:4px;">${b.name} Kulübü</h3>
+        <p style="font-size:0.78rem; color:var(--text-dim); margin-bottom:12px;">
           ${b.popularModels.join(', ')}
         </p>
-        <div style="font-size:0.8rem; color:var(--accent-amber); font-weight:700;">
+        <div style="font-size:0.8rem; color:var(--accent-amber); font-weight:600;">
           Tartışmaları İncele &rarr;
         </div>
       </div>
@@ -224,13 +224,13 @@ const App = {
 
       let html = `
         <option value="">-- OBD-II Kodu Yok / Bilinmiyor --</option>
-        <option value="CUSTOM" style="font-weight:800; color:var(--accent-amber); background:rgba(245,158,11,0.15);">
-          ✏️ Listede Yok - Kendi Kodumu Yazmak İstiyorum (Özel Kod)
+        <option value="CUSTOM" style="font-weight:700; color:var(--accent-amber); background:rgba(245,158,11,0.12);">
+          Listede Yok - Kendi Kodumu Yazmak İstiyorum (Özel Kod)
         </option>
       `;
 
       for (const [catName, codes] of Object.entries(groups)) {
-        html += `<optgroup label="📂 ${catName} (${codes.length} Kod)">`;
+        html += `<optgroup label="${catName} (${codes.length} Kod)">`;
         codes.forEach(c => {
           html += `<option value="${c.code}">${c.code} - ${c.title}</option>`;
         });
@@ -405,7 +405,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         const data = await res.json();
         if (data.success) {
-          showToast('📑 Başvurunuz alındı! Moderatör incelemesinden sonra rozetiniz tanımlanacaktır.');
+          showToast('Başvurunuz alındı. İnceleme sonrası rozetiniz tanımlanacaktır.');
           closeModal('verification-modal');
           vrfForm.reset();
         }
@@ -448,7 +448,7 @@ function quickFillLogin(username, password) {
   const pInput = document.getElementById('login-password');
   if (uInput) uInput.value = username;
   if (pInput) pInput.value = password;
-  showToast(`⚡ Bilgiler dolduruldu: ${username}`);
+  showToast(`Giriş bilgileri dolduruldu: ${username}`);
 }
 
 function handleRoleChange(role) {

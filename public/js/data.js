@@ -2,18 +2,18 @@
 
 const APP_DATA = {
   brands: [
-    { id: 'volkswagen', name: 'Volkswagen', logo: '🚗', popularModels: ['Golf', 'Passat', 'Polo', 'Tiguan', 'Jetta'] },
-    { id: 'renault', name: 'Renault', logo: '🚗', popularModels: ['Clio', 'Megane', 'Fluence', 'Captur', 'Talisman'] },
-    { id: 'fiat', name: 'Fiat', logo: '🚗', popularModels: ['Egea', 'Linea', 'Punto', 'Doblo', 'Fiorino'] },
-    { id: 'bmw', name: 'BMW', logo: '🚗', popularModels: ['3 Serisi (F30/G20)', '5 Serisi (F10/G30)', '1 Serisi', 'X5'] },
-    { id: 'mercedes', name: 'Mercedes-Benz', logo: '🚗', popularModels: ['C Serisi (W205)', 'E Serisi (W213)', 'A Serisi', 'CLA'] },
-    { id: 'ford', name: 'Ford', logo: '🚗', popularModels: ['Focus', 'Fiesta', 'Mondeo', 'Transit', 'Kuga'] },
-    { id: 'toyota', name: 'Toyota', logo: '🚗', popularModels: ['Corolla', 'Yaris', 'C-HR', 'Auris', 'RAV4'] },
-    { id: 'honda', name: 'Honda', logo: '🚗', popularModels: ['Civic', 'City', 'CR-V', 'Accord'] },
-    { id: 'hyundai', name: 'Hyundai', logo: '🚗', popularModels: ['i20', 'i30', 'Tucson', 'Elantra', 'Accent Blue'] },
-    { id: 'peugeot', name: 'Peugeot', logo: '🚗', popularModels: ['208', '308', '3008', '508', '2008'] },
-    { id: 'audi', name: 'Audi', logo: '🚗', popularModels: ['A3', 'A4', 'A6', 'Q3', 'Q5'] },
-    { id: 'opel', name: 'Opel', logo: '🚗', popularModels: ['Astra', 'Corsa', 'Insignia', 'Mokka'] }
+    { id: 'volkswagen', name: 'Volkswagen', logo: 'VW', popularModels: ['Golf', 'Passat', 'Polo', 'Tiguan', 'Jetta'] },
+    { id: 'renault', name: 'Renault', logo: 'RN', popularModels: ['Clio', 'Megane', 'Fluence', 'Captur', 'Talisman'] },
+    { id: 'fiat', name: 'Fiat', logo: 'FIAT', popularModels: ['Egea', 'Linea', 'Punto', 'Doblo', 'Fiorino'] },
+    { id: 'bmw', name: 'BMW', logo: 'BMW', popularModels: ['3 Serisi (F30/G20)', '5 Serisi (F10/G30)', '1 Serisi', 'X5'] },
+    { id: 'mercedes', name: 'Mercedes-Benz', logo: 'MB', popularModels: ['C Serisi (W205)', 'E Serisi (W213)', 'A Serisi', 'CLA'] },
+    { id: 'ford', name: 'Ford', logo: 'FORD', popularModels: ['Focus', 'Fiesta', 'Mondeo', 'Transit', 'Kuga'] },
+    { id: 'toyota', name: 'Toyota', logo: 'TOYOTA', popularModels: ['Corolla', 'Yaris', 'C-HR', 'Auris', 'RAV4'] },
+    { id: 'honda', name: 'Honda', logo: 'HONDA', popularModels: ['Civic', 'City', 'CR-V', 'Accord'] },
+    { id: 'hyundai', name: 'Hyundai', logo: 'HYUNDAI', popularModels: ['i20', 'i30', 'Tucson', 'Elantra', 'Accent Blue'] },
+    { id: 'peugeot', name: 'Peugeot', logo: 'PEUGEOT', popularModels: ['208', '308', '3008', '508', '2008'] },
+    { id: 'audi', name: 'Audi', logo: 'AUDI', popularModels: ['A3', 'A4', 'A6', 'Q3', 'Q5'] },
+    { id: 'opel', name: 'Opel', logo: 'OPEL', popularModels: ['Astra', 'Corsa', 'Insignia', 'Mokka'] }
   ],
 
   obdCodes: [

@@ -454,9 +454,9 @@
             document.getElementById('vrf-mech-fields').style.display = isM ? 'block' : 'none';
             document.getElementById('vrf-dealer-fields').style.display = isD ? 'block' : 'none';
           ">
-            <option value="mechanic">🔧 Onaylı Sanayi Tamircisi / Esnafı</option>
-            <option value="dealer">🏢 Onaylı Otomotiv Galericisi</option>
-            <option value="user">🛡️ Doğrulanmış Araç Sahibi</option>
+            <option value="mechanic">Onaylı Sanayi Tamircisi / Esnafı</option>
+            <option value="dealer">Onaylı Otomotiv Galericisi</option>
+            <option value="user">Doğrulanmış Araç Sahibi</option>
           </select>
         </div>
 
@@ -552,9 +552,9 @@
 
   <!-- 5. SOS MODALI -->
   <div id="sos-modal" class="modal-overlay">
-    <div class="modal-content" style="max-width:520px; border-color:rgba(239, 68, 68, 0.5);">
+    <div class="modal-content" style="max-width:520px; border-color:rgba(239, 68, 68, 0.4);">
       <div class="modal-header">
-        <h3 style="font-size:1.2rem; font-weight:800; color:#EF4444;">🚨 Yolda Kaldım! Acil Yardım Çağrısı</h3>
+        <h3 style="font-size:1.15rem; font-weight:700; color:#EF4444;">Yolda Kaldım - Acil Yardım Çağrısı</h3>
         <button class="modal-close" onclick="closeModal('sos-modal')">&times;</button>
       </div>
       <form id="sos-form">
@@ -600,7 +600,7 @@
         <div style="display:flex; justify-content:flex-end; gap:10px;">
           <button type="button" class="btn btn-secondary" onclick="closeModal('sos-modal')">Vazgeç</button>
           <button type="submit" class="btn btn-primary" style="background:#EF4444; color:#FFF; border:none;">
-            🚨 Acil Çağrıyı Yayınla
+            Acil Çağrıyı Yayınla
           </button>
         </div>
       </form>
@@ -614,13 +614,15 @@
       <!-- Modal Başlığı -->
       <div class="modal-header" style="margin-bottom:12px; padding-bottom:12px; border-bottom:1px solid var(--border-color);">
         <div style="display:flex; align-items:center; gap:12px;">
-          <div class="ai-avatar-badge">🤖</div>
+          <div class="ai-avatar-badge">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          </div>
           <div>
             <div style="display:flex; align-items:center; gap:8px;">
-              <h3 style="font-size:1.15rem; font-weight:800; color:#FFF; margin:0;">Mobil Tamircim AI Usta</h3>
-              <span class="ai-online-indicator">● Canlı AI</span>
+              <h3 style="font-size:1.15rem; font-weight:800; color:#FFF; margin:0;">Mobil Tamircim AI Danışman</h3>
+              <span class="ai-online-indicator">Aktif</span>
             </div>
-            <span style="font-size:0.75rem; color:var(--accent-amber);">Otomotiv & Sanayi Arıza, Maliyet ve Teşhis Motoru</span>
+            <span style="font-size:0.75rem; color:var(--text-muted);">Otomotiv & Sanayi Arıza ve Teşhis Sistemi</span>
           </div>
         </div>
         <div style="display:flex; align-items:center; gap:8px;">
@@ -669,7 +671,7 @@
             <label style="font-size:0.72rem; font-weight:600; color:#FED7AA; display:block; margin-bottom:3px;">Anthropic Claude API Anahtarı:</label>
             <div style="position:relative; display:flex; align-items:center;">
               <input id="claude-api-key-input" class="form-control" style="font-size:0.8rem; padding:6px 36px 6px 10px; background:var(--bg-card);" type="password" placeholder="sk-ant-api03-...">
-              <button type="button" id="toggle-claude-key-btn" onclick="AiAssistant.toggleKeyVisibility('claude-api-key-input', this)" style="position:absolute; right:8px; background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:14px;" title="Anahtarı Göster / Gizle">👁️</button>
+              <button type="button" id="toggle-claude-key-btn" onclick="AiAssistant.toggleKeyVisibility('claude-api-key-input', this)" style="position:absolute; right:8px; background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:11px; font-weight:600;" title="Anahtarı Göster / Gizle">Göster</button>
             </div>
             <div style="font-size:0.68rem; color:var(--text-muted); margin-top:4px;">
               Anahtarınızı <a href="https://console.anthropic.com/settings/keys" target="_blank" style="color:var(--accent-amber); text-decoration:underline;">console.anthropic.com</a> adresinden oluşturabilirsiniz.
@@ -683,7 +685,7 @@
             <label style="font-size:0.72rem; font-weight:600; color:#E9D5FF; display:block; margin-bottom:3px;">Google Gemini API Anahtarı:</label>
             <div style="position:relative; display:flex; align-items:center;">
               <input id="gemini-api-key-input" class="form-control" style="font-size:0.8rem; padding:6px 36px 6px 10px; background:var(--bg-card);" type="password" placeholder="AIzaSy...">
-              <button type="button" id="toggle-gemini-key-btn" onclick="AiAssistant.toggleKeyVisibility('gemini-api-key-input', this)" style="position:absolute; right:8px; background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:14px;" title="Anahtarı Göster / Gizle">👁️</button>
+              <button type="button" id="toggle-gemini-key-btn" onclick="AiAssistant.toggleKeyVisibility('gemini-api-key-input', this)" style="position:absolute; right:8px; background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:11px; font-weight:600;" title="Anahtarı Göster / Gizle">Göster</button>
             </div>
             <div style="font-size:0.68rem; color:var(--text-muted); margin-top:4px;">
               Ücretsiz anahtarınızı <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:var(--accent-amber); text-decoration:underline;">aistudio.google.com</a> üzerinden alabilirsiniz.
@@ -776,7 +778,7 @@
             <label class="form-label">Şifre:</label>
             <div class="password-input-wrap">
               <input id="login-password" class="form-control" type="password" placeholder="••••••••" required autocomplete="current-password">
-              <button type="button" class="password-eye-btn" onclick="Auth.togglePassword('login-password', this)" title="Şifreyi Göster">👁️</button>
+              <button type="button" class="password-eye-btn" onclick="Auth.togglePassword('login-password', this)" title="Şifreyi Göster">Göster</button>
             </div>
           </div>
 
@@ -826,7 +828,7 @@
             <label class="form-label">Şifre Oluştur:</label>
             <div class="password-input-wrap">
               <input id="reg-password" class="form-control" type="password" placeholder="En az 4 karakter" required autocomplete="new-password">
-              <button type="button" class="password-eye-btn" onclick="Auth.togglePassword('reg-password', this)" title="Şifreyi Göster">👁️</button>
+              <button type="button" class="password-eye-btn" onclick="Auth.togglePassword('reg-password', this)" title="Şifreyi Göster">Göster</button>
             </div>
           </div>
 
@@ -897,8 +899,8 @@
     <div class="modal-content" style="max-width:480px; width:92%; text-align:center; padding:26px 24px;">
       <div class="modal-header" style="justify-content:center; position:relative; border-bottom:1px solid var(--border-color); padding-bottom:14px; margin-bottom:18px;">
         <div style="display:flex; align-items:center; gap:12px;">
-          <div style="width:42px; height:42px; border-radius:12px; background:rgba(245,158,11,0.15); display:flex; align-items:center; justify-content:center; font-size:1.4rem;">
-            ✉️
+          <div style="width:38px; height:38px; border-radius:8px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; justify-content:center; color:var(--text-main);">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
           </div>
           <div style="text-align:left;">
             <h3 style="font-size:1.15rem; font-weight:800; color:#FFF; margin:0;">E-Posta Doğrulama</h3>

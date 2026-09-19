@@ -67,10 +67,10 @@ const AiAssistant = {
     if (!input) return;
     if (input.type === 'password') {
       input.type = 'text';
-      if (btn) btn.innerText = '🙈';
+      if (btn) btn.innerText = 'Gizle';
     } else {
       input.type = 'password';
-      if (btn) btn.innerText = '👁️';
+      if (btn) btn.innerText = 'Göster';
     }
   },
 
@@ -104,7 +104,7 @@ const AiAssistant = {
     if (provider === 'gemini') providerName = 'Google Gemini 2.5';
     if (provider === 'local') providerName = 'Mobil Tamircim Yerel Motor';
 
-    showToast(`✨ Yapay zeka ayarları güncellendi! Aktif: ${providerName}`);
+    showToast(`Yapay zeka ayarları güncellendi. Aktif: ${providerName}`);
     this.toggleApiKeyModal();
     this.updateSourceBadge();
   },
@@ -127,23 +127,23 @@ const AiAssistant = {
   },
 
   updateSourceBadge(source = null, model = null) {
-    const badge = document.getElementById('ai-source-badge');
+    const badge = document.querySelector('.ai-online-indicator');
     if (!badge) return;
 
-    const provider = source || this.getProvider();
+    const provider = this.getProvider();
     const hasClaude = !!this.getClaudeKey();
     const hasGemini = !!this.getGeminiKey();
 
     if (provider === 'claude' && (hasClaude || source === 'claude')) {
       const activeModel = model || this.getClaudeModel();
       const modelName = activeModel.includes('haiku') ? 'Claude 3.5 Haiku' : 'Claude 3.5 Sonnet';
-      badge.innerHTML = `🧠 Canlı ${modelName}`;
+      badge.innerHTML = `Canlı ${modelName}`;
       badge.style.color = '#F97316';
     } else if (provider === 'gemini' && (hasGemini || source === 'gemini')) {
-      badge.innerHTML = '✨ Canlı Google Gemini 2.5';
+      badge.innerHTML = 'Canlı Google Gemini 2.5';
       badge.style.color = '#A855F7';
     } else {
-      badge.innerHTML = '● Mobil Tamircim Yerel Teşhis';
+      badge.innerHTML = 'Mobil Tamircim Yerel Teşhis';
       badge.style.color = '#10B981';
     }
   },
@@ -182,11 +182,11 @@ const AiAssistant = {
       let sourceTag = '';
       if (m.role === 'bot') {
         if (m.source === 'claude') {
-          sourceTag = `<div style="font-size:0.68rem; font-weight:700; color:#F97316; margin-bottom:4px;">🧠 Anthropic Claude 3.5</div>`;
+          sourceTag = `<div style="font-size:0.68rem; font-weight:700; color:#F97316; margin-bottom:4px;">Anthropic Claude 3.5</div>`;
         } else if (m.source === 'gemini') {
-          sourceTag = `<div style="font-size:0.68rem; font-weight:700; color:#A855F7; margin-bottom:4px;">✨ Google Gemini 2.5</div>`;
+          sourceTag = `<div style="font-size:0.68rem; font-weight:700; color:#A855F7; margin-bottom:4px;">Google Gemini 2.5</div>`;
         } else if (m.source === 'local_engine') {
-          sourceTag = `<div style="font-size:0.68rem; font-weight:700; color:#10B981; margin-bottom:4px;">🚗 Mobil Tamircim Yerel Motor</div>`;
+          sourceTag = `<div style="font-size:0.68rem; font-weight:700; color:#10B981; margin-bottom:4px;">Mobil Tamircim Yerel Motor</div>`;
         }
       }
 
@@ -232,7 +232,7 @@ const AiAssistant = {
       if (provider === 'claude') indicatorName = 'Claude AI Usta';
       else if (provider === 'gemini') indicatorName = 'Gemini AI Usta';
       
-      typingIndicator.querySelector('span').innerText = `🤖 ${indicatorName} düşünüyor...`;
+      typingIndicator.querySelector('span').innerText = `${indicatorName} yanıt hazırlıyor...`;
       typingIndicator.style.display = 'flex';
     }
 
@@ -260,7 +260,7 @@ const AiAssistant = {
         this.chatHistory.push({
           role: 'bot',
           source: 'local_engine',
-          text: `🔧 **Arıza Analiz Edildi:**\n• ${data.error || 'Geçici bağlantı aksaklığı, yerel veri tabanıyla cevaplandı.'}`
+          text: `**Arıza Analiz Edildi:**\n• ${data.error || 'Geçici bağlantı aksaklığı, yerel veri tabanıyla cevaplandı.'}`
         });
       }
     } catch (err) {
@@ -280,10 +280,10 @@ const AiAssistant = {
     if (window.APP_DATA && Array.isArray(window.APP_DATA.obdCodes)) {
       const found = window.APP_DATA.obdCodes.find(o => qLower.includes(o.code.toLowerCase()));
       if (found) {
-        return `🔧 **OBD-II Arıza Teşhisi: ${found.code} (${found.title})**\n• **Sistem:** ${found.category}\n• **Muhtemel Sebep:** ${found.desc}\n• **Usta Tavsiyesi:** Soket korozyonu ve voltaj değerlerini okutun. Arıza lambasını söndürüp test sürüşüne çıkın.`;
+        return `**OBD-II Arıza Teşhisi: ${found.code} (${found.title})**\n• **Sistem:** ${found.category}\n• **Muhtemel Sebep:** ${found.desc}\n• **Usta Tavsiyesi:** Soket korozyonu ve voltaj değerlerini okutun. Arıza lambasını söndürüp test sürüşüne çıkın.`;
       }
     }
-    return `🔧 **Mobil Tamircim AI Usta Yanıtı:**\nBelirttiğin "${escapeHtml(query)}" konusuyla ilgili olarak; araç model ve motor tipini belirterek forumda bir başlık açarsan onaylı ustalarımız en hızlı teşhisi koyacaktır!`;
+    return `**Mobil Tamircim AI Danışman Yanıtı:**\nBelirttiğin "${escapeHtml(query)}" konusuyla ilgili olarak; araç model ve motor tipini belirterek forumda bir başlık açarsan onaylı ustalarımız en hızlı teşhisi koyacaktır!`;
   },
 
   sendFromInput() {

@@ -47,10 +47,12 @@ const Directory = {
 
     if (list.length === 0) {
       container.innerHTML = `
-        <div style="text-align:center; padding: 40px; color: var(--text-dim); background: var(--bg-card); border-radius: var(--radius-md);">
-          <div style="font-size:2.5rem; margin-bottom:8px;">📍</div>
+        <div style="text-align:center; padding: 48px 20px; color: var(--text-dim); background: var(--bg-card); border-radius: var(--radius-md); border: 1px dashed var(--border-color);">
+          <div style="width:44px; height:44px; border-radius:50%; background:rgba(255,255,255,0.04); display:flex; align-items:center; justify-content:center; margin:0 auto 12px auto; color:var(--text-dim);">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+          </div>
           <div style="font-weight:700; color:#FFF;">Bu Kriterlerde Kayıtlı Usta Bulunamadı</div>
-          <p style="font-size:0.85rem; margin-top:4px;">Farklı bir şehir veya uzmanlık dalı seçebilirsiniz.</p>
+          <p style="font-size:0.85rem; margin-top:4px; color:var(--text-muted);">Farklı bir şehir veya uzmanlık dalı seçebilirsiniz.</p>
         </div>
       `;
       return;
@@ -64,35 +66,35 @@ const Directory = {
               ${escapeHtml(item.shopName)}
             </h3>
             <div style="font-size:0.88rem; color:var(--text-muted); display:flex; align-items:center; gap:8px;">
-              <span>👨‍🔧 ${escapeHtml(item.ownerName)}</span>
-              ${item.verified ? '<span class="badge badge-mechanic">🔧 Onaylı Usta</span>' : ''}
-              ${item.isOpenWeekend ? '<span class="badge" style="background:#166534; color:#86EFAC;">Pazar Açık</span>' : ''}
+              <span>${escapeHtml(item.ownerName)}</span>
+              ${item.verified ? '<span class="badge badge-mechanic">Onaylı Usta</span>' : ''}
+              ${item.isOpenWeekend ? '<span class="badge" style="background:rgba(16,185,129,0.12); color:#6EE7B7; border:1px solid rgba(16,185,129,0.3);">Pazar Açık</span>' : ''}
             </div>
           </div>
-          <div style="background:#1E293B; border:1px solid #334155; padding:4px 10px; border-radius:var(--radius-sm); text-align:right;">
+          <div style="background:rgba(255,255,255,0.04); border:1px solid var(--border-color); padding:4px 10px; border-radius:var(--radius-sm); text-align:right;">
             <div style="color:var(--accent-amber); font-weight:800; font-size:1.05rem;">★ ${item.rating}</div>
             <div style="font-size:0.7rem; color:var(--text-dim);">${item.reviewCount} Değerlendirme</div>
           </div>
         </div>
 
         <div style="font-size:0.85rem; color:var(--text-dim); margin-bottom:12px;">
-          📍 <strong>${escapeHtml(item.city)} / ${escapeHtml(item.district)}</strong> — ${escapeHtml(item.sanayiSite)}
+          <strong>${escapeHtml(item.city)} / ${escapeHtml(item.district)}</strong> — ${escapeHtml(item.sanayiSite)}
           <br/>
           <span style="color:var(--text-muted); font-size:0.8rem;">${escapeHtml(item.address)}</span>
         </div>
 
         <div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:14px;">
           ${item.categories.map(c => `
-            <span class="thread-tag" style="background:#1E293B; border-color:#334155; color:#94A3B8;">${c}</span>
+            <span class="thread-tag">${c}</span>
           `).join('')}
         </div>
 
         <div style="display:flex; gap:10px; flex-wrap:wrap;">
           <a href="tel:${item.phone}" class="btn btn-secondary btn-sm" style="flex:1;">
-            📞 Ara: ${item.phone}
+            Ara: ${item.phone}
           </a>
           <a href="https://wa.me/${item.whatsapp}?text=Mobil%20Tamircimden%20ulaşıyorum" target="_blank" class="btn btn-primary btn-sm" style="background:#22C55E; color:#000; border:none; flex:1;">
-            💬 WhatsApp ile Yaz
+            WhatsApp ile Yaz
           </a>
         </div>
       </div>

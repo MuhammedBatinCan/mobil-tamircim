@@ -60,7 +60,7 @@ const Auth = {
           window.App.refreshCurrentView();
         }
 
-        showToast(`🎉 Hoş geldiniz, ${data.user.name}!`);
+        showToast(`Hoş geldiniz, ${data.user.name}`);
         closeModal('auth-modal');
         return { success: true };
       } else {
@@ -107,10 +107,10 @@ const Auth = {
         // E-Posta Doğrulama Modalı Aç
         if (data.requiresEmailVerification) {
           this.openVerifyModal(data.user, data.verificationCode);
-          showToast(`✉️ Kayıt alındı! Doğrulama kodunuz ${data.user.email} adresine iletildi.`);
+          showToast(`Kayıt alındı. Doğrulama kodu ${data.user.email} adresine iletildi.`);
           return { success: true, requiresVerification: true };
         } else {
-          showToast(`🚀 Kayıt başarılı! Aramıza hoş geldin ${data.user.name} (+25 XP)`);
+          showToast(`Kayıt başarılı. Hoş geldiniz ${data.user.name}`);
           return { success: true };
         }
       } else {
@@ -159,7 +159,7 @@ const Auth = {
       const code = demoCodeEl.textContent.trim() || '123456';
       input.value = code;
       input.focus();
-      showToast('📋 Doğrulama kodu otomatik dolduruldu.');
+      showToast('Doğrulama kodu dolduruldu.');
     }
   },
 
@@ -207,7 +207,7 @@ const Auth = {
         }
         this.startVerifyCountdown(60);
         if (showToastMsg) {
-          showToast(`✉️ ${user.email} adresine yeni 6 haneli kod gönderildi!`);
+          showToast(`${user.email} adresine yeni 6 haneli kod gönderildi.`);
         }
       } else {
         showToast(data.error || 'Kod gönderilemedi.', 'error');
@@ -261,7 +261,7 @@ const Auth = {
         }
 
         closeModal('email-verify-modal');
-        showToast(`🎉 ${data.message || 'E-posta başarıyla doğrulandı! (+15 XP)'}`);
+        showToast(data.message || 'E-posta başarıyla doğrulandı.');
         return true;
       } else {
         showToast(data.error || 'Doğrulama başarısız!', 'error');
@@ -293,11 +293,11 @@ const Auth = {
 
     if (input.type === 'password') {
       input.type = 'text';
-      btnEl.innerHTML = '🙈';
+      btnEl.innerHTML = 'Gizle';
       btnEl.title = 'Şifreyi Gizle';
     } else {
       input.type = 'password';
-      btnEl.innerHTML = '👁️';
+      btnEl.innerHTML = 'Göster';
       btnEl.title = 'Şifreyi Göster';
     }
   },
