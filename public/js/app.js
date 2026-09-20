@@ -144,18 +144,46 @@ const App = {
     }
   },
 
+  brandSearchQuery: '',
+
+  onBrandSearch(query) {
+    this.brandSearchQuery = (query || '').trim().toLowerCase();
+    this.renderBrandGrid();
+  },
+
   renderBrandGrid() {
     const container = document.getElementById('brands-grid');
     if (!container) return;
 
-    container.innerHTML = APP_DATA.brands.map(b => `
+    let list = APP_DATA.brands;
+    if (this.brandSearchQuery) {
+      list = list.filter(b => 
+        b.name.toLowerCase().includes(this.brandSearchQuery) ||
+        (b.popularModels && b.popularModels.some(m => m.toLowerCase().includes(this.brandSearchQuery)))
+      );
+    }
+
+    if (list.length === 0) {
+      container.innerHTML = `
+        <div style="grid-column: 1 / -1; text-align:center; padding: 40px 20px; color: var(--text-dim);">
+          <p style="font-size:0.95rem; color:var(--text-main); font-weight:600;">Aradığınız marka bulunamadı</p>
+          <p style="font-size:0.8rem; color:var(--text-muted);">Konu eklerken "Manuel Giriş" veya "Diğer" seçeneğini kullanarak istediğiniz markayı yazabilirsiniz.</p>
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = list.map(b => `
       <div class="sidebar-card brand-card" style="cursor:pointer; transition:transform 0.15s, border-color 0.15s; margin-bottom:0;" onclick="App.filterByBrand('${b.name}')">
-        <div class="brand-monogram-badge">${b.logo}</div>
-        <h3 style="font-size:1.05rem; font-weight:700; color:#FFF; margin-bottom:4px;">${b.name} Kulübü</h3>
-        <p style="font-size:0.78rem; color:var(--text-dim); margin-bottom:12px;">
-          ${b.popularModels.join(', ')}
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;">
+          <div class="brand-monogram-badge">${b.logo}</div>
+          ${b.popular ? '<span style="font-size:0.68rem; font-weight:700; color:var(--accent-amber); background:rgba(245,158,11,0.1); padding:2px 6px; border-radius:4px; border:1px solid rgba(245,158,11,0.2);">Popüler</span>' : ''}
+        </div>
+        <h3 style="font-size:1.02rem; font-weight:700; color:#FFF; margin-bottom:4px;">${b.name} Kulübü</h3>
+        <p style="font-size:0.76rem; color:var(--text-dim); margin-bottom:12px; line-height:1.4; min-height:32px;">
+          ${b.popularModels ? b.popularModels.slice(0, 4).join(', ') : ''}
         </p>
-        <div style="font-size:0.8rem; color:var(--accent-amber); font-weight:600;">
+        <div style="font-size:0.78rem; color:var(--accent-amber); font-weight:600;">
           Tartışmaları İncele &rarr;
         </div>
       </div>
@@ -243,8 +271,100 @@ const App = {
     // Populate Brand in thread creation
     const brandSelect = document.getElementById('thread-brand-select');
     if (brandSelect) {
-      brandSelect.innerHTML = `<option value="">-- Marka Seçin --</option>` +
-        APP_DATA.brands.map(b => `<option value="${b.name}">${b.name}</option>`).join('');
+      const popularBrands = APP_DATA.brands.filter(b => b.popular);
+      const allBrandsSorted = [...APP_DATA.brands].sort((a, b) => a.name.localeCompare(b.name, 'tr'));
+
+      let html = `<option value="">-- Araç Markası Seçin --</option>`;
+
+      html += `<optgroup label="⭐ Popüler Markalar">`;
+      popularBrands.forEach(b => {
+        html += `<option value="${b.name}">${b.name}</option>`;
+      });
+      html += `</optgroup>`;
+
+      html += `<optgroup label="🚗 Tüm Markalar (A-Z - ${allBrandsSorted.length} Marka)">`;
+      allBrandsSorted.forEach(b => {
+        html += `<option value="${b.name}">${b.name}</option>`;
+      });
+      html += `</optgroup>`;
+
+      html += `<optgroup label="✨ Diğer">`;
+      html += `<option value="Diğer">Diğer (Listede Yoksa - Kendin Yaz)</option>`;
+      html += `</optgroup>`;
+
+      brandSelect.innerHTML = html;
+    }
+
+    // Populate Datalist for prices and search inputs
+    const allBrandsDatalist = document.getElementById('all-brands-datalist');
+    if (allBrandsDatalist) {
+      allBrandsDatalist.innerHTML = APP_DATA.brands.map(b => `<option value="${b.name}">`).join('');
+    }
+  },
+
+  onBrandSelectChange(brandName) {
+    const customWrap = document.getElementById('brand-custom-wrap');
+    const customInput = document.getElementById('thread-brand-custom-input');
+    const modelInput = document.getElementById('thread-model-input');
+    const modelSuggestions = document.getElementById('model-suggestions');
+
+    if (brandName === 'Diğer') {
+      if (customWrap) customWrap.style.display = 'block';
+      if (customInput) {
+        customInput.focus();
+        customInput.required = true;
+      }
+      if (modelInput) modelInput.placeholder = 'Örn: Model ve Motor Detayı';
+      if (modelSuggestions) modelSuggestions.innerHTML = '';
+      return;
+    }
+
+    if (customWrap) customWrap.style.display = 'none';
+    if (customInput) {
+      customInput.value = '';
+      customInput.required = false;
+    }
+
+    const brandObj = APP_DATA.brands.find(b => b.name.toLowerCase() === (brandName || '').toLowerCase());
+    if (brandObj && brandObj.popularModels && brandObj.popularModels.length > 0) {
+      if (modelInput) {
+        modelInput.placeholder = `Örn: ${brandObj.popularModels.slice(0, 3).join(', ')}...`;
+      }
+      if (modelSuggestions) {
+        modelSuggestions.innerHTML = brandObj.popularModels.map(m => `<option value="${m}">`).join('');
+      }
+    } else {
+      if (modelInput) modelInput.placeholder = 'Örn: Megane 4 1.5 dCi EDC';
+      if (modelSuggestions) modelSuggestions.innerHTML = '';
+    }
+  },
+
+  toggleCustomBrand(forceShow) {
+    const selectWrap = document.getElementById('brand-select-wrap');
+    const customWrap = document.getElementById('brand-custom-wrap');
+    const brandSelect = document.getElementById('thread-brand-select');
+    const customInput = document.getElementById('thread-brand-custom-input');
+    const btn = document.getElementById('btn-toggle-custom-brand');
+
+    const shouldShow = forceShow !== undefined ? forceShow : (customWrap && customWrap.style.display === 'none');
+
+    if (shouldShow) {
+      if (selectWrap) selectWrap.style.display = 'none';
+      if (customWrap) customWrap.style.display = 'block';
+      if (btn) btn.textContent = 'Listeden Seç';
+      if (customInput) {
+        customInput.focus();
+        customInput.required = true;
+      }
+      if (brandSelect) brandSelect.value = '';
+    } else {
+      if (selectWrap) selectWrap.style.display = 'block';
+      if (customWrap) customWrap.style.display = 'none';
+      if (btn) btn.textContent = 'Manuel Giriş';
+      if (customInput) {
+        customInput.value = '';
+        customInput.required = false;
+      }
     }
   }
 };
@@ -312,7 +432,16 @@ document.addEventListener('DOMContentLoaded', () => {
       e.preventDefault();
       const title = document.getElementById('thread-title-input').value.trim();
       const category = document.getElementById('thread-cat-select').value;
-      const brand = document.getElementById('thread-brand-select').value;
+      // Araç Markası: Listeden veya manuel özel girişten al
+      let brand = document.getElementById('thread-brand-select').value;
+      const customBrandWrap = document.getElementById('brand-custom-wrap');
+      const customBrandInput = document.getElementById('thread-brand-custom-input');
+      const isCustomBrandActive = customBrandWrap && customBrandWrap.style.display !== 'none';
+
+      if (isCustomBrandActive || brand === 'Diğer') {
+        brand = (customBrandInput && customBrandInput.value.trim()) || 'Diğer';
+      }
+
       const model = document.getElementById('thread-model-input').value.trim();
       // OBD-II Kodu: Seçim listesinden veya manuel özel yazımdan al
       let obdCode = document.getElementById('thread-obd-select').value;
@@ -340,6 +469,9 @@ document.addEventListener('DOMContentLoaded', () => {
       newThreadForm.reset();
       if (typeof Forum.toggleCustomObd === 'function') {
         Forum.toggleCustomObd(false);
+      }
+      if (typeof App.toggleCustomBrand === 'function') {
+        App.toggleCustomBrand(false);
       }
       closeModal('new-thread-modal');
     });

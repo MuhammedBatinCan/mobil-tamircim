@@ -27,20 +27,20 @@
       "id": "usr_mech_1",
       "username": "AhmetUsta_VAG",
       "name": "Ahmet Çelik Usta",
-      "role": "mechanic",
+      "role": "developer",
       "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
       "plate": "34 USTA 1978",
       "car": "2019 Volkswagen Passat 2.0 TDI B8",
       "badges": [
         "verified_mechanic",
-        "beta_tester",
-        "email_verified"
+        "developer",
+        "beta_tester"
       ],
-      "reputationPoints": 2500,
+      "reputationPoints": 2515,
       "level": "Master",
       "isMechanicVerified": true,
       "isDealerVerified": false,
-      "isUserVerified": true,
+      "isUserVerified": false,
       "shopName": "Çelik Oto VAG Özel Servis",
       "sanayiSite": "Maslak Atatürk Oto Sanayi 2. Kısım",
       "city": "İstanbul",
@@ -221,9 +221,61 @@
       "shopName": "",
       "dealerName": "",
       "bio": "Oto Testçi - Mobil Tamircim üyesi."
+    },
+    {
+      "id": "usr_1789941375341",
+      "username": "muhammedbatins",
+      "name": "Muhammed Batın",
+      "email": "developer.batin@gmail.com",
+      "password": "1234",
+      "isEmailVerified": false,
+      "emailVerificationCode": "507435",
+      "emailVerificationExpires": 1789942275341,
+      "phone": "",
+      "plate": "",
+      "car": "",
+      "role": "mechanic",
+      "avatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80",
+      "badges": [
+        "beta_tester"
+      ],
+      "reputationPoints": 25,
+      "level": "Çırak",
+      "isMechanicVerified": false,
+      "isDealerVerified": false,
+      "isUserVerified": false,
+      "shopName": "",
+      "dealerName": "",
+      "bio": "Muhammed Batın - Mobil Tamircim üyesi."
     }
   ],
   "threads": [
+    {
+      "id": "thr_1789941206489",
+      "title": "jjpjşpnp",
+      "category": "ariza-teshis",
+      "brand": "Opel",
+      "model": "",
+      "obdCode": "U0001",
+      "authorId": "usr_mech_1",
+      "authorUsername": "Ahmet Çelik Usta",
+      "authorPlate": "34 USTA 1978",
+      "authorCar": "2019 Volkswagen Passat 2.0 TDI B8",
+      "authorBadges": [
+        "verified_mechanic",
+        "beta_tester",
+        "email_verified"
+      ],
+      "createdAt": "2026-09-20T21:53:26.489Z",
+      "allowCommentsFrom": "all",
+      "isSolved": false,
+      "solvedCommentId": null,
+      "views": 1,
+      "likes": 0,
+      "content": "bu arızas ebebn",
+      "audioUrl": "motor_sesi_yuklendi.mp3",
+      "commentsCount": 0
+    },
     {
       "id": "thr_1789766227914",
       "title": "Renault 1.5 dCi DF053 Ray Basıncı Regülasyon Fonksiyonu Hatası",
