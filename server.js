@@ -112,7 +112,7 @@ const initialData = {
       avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80',
       plate: '34 ADM 999',
       car: '2023 Mercedes-Benz C200 4MATIC AMG',
-      badges: ['developer', 'beta_tester', 'verified_user'],
+      badges: ['moderator', 'developer', 'beta_tester', 'verified_user'],
       reputationPoints: 2400,
       level: 'Master',
       isMechanicVerified: false,

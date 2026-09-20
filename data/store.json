@@ -129,6 +129,7 @@
       "plate": "34 ADM 999",
       "car": "2023 Mercedes-Benz C200 4MATIC AMG",
       "badges": [
+        "moderator",
         "developer",
         "beta_tester",
         "verified_user",

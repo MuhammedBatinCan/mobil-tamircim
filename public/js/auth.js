@@ -334,6 +334,18 @@ const Auth = {
     return user.role === 'developer' || (user.badges && user.badges.includes('developer'));
   },
 
+  isModerator(user = this.currentUser) {
+    if (!user) return false;
+    return user.role === 'admin' || 
+           user.role === 'moderator' || 
+           (user.badges && (user.badges.includes('moderator') || user.badges.includes('admin')));
+  },
+
+  canAccessAdminPanel(user = this.currentUser) {
+    if (!user) return false;
+    return this.isDeveloper(user) || this.isModerator(user);
+  },
+
   isBetaTester(user = this.currentUser) {
     if (!user) return false;
     return user.badges && user.badges.includes('beta_tester');
@@ -353,13 +365,19 @@ const Auth = {
   renderBadges(badges = [], showLevel = null) {
     let html = '';
     if (Array.isArray(badges)) {
+      if (badges.includes('developer')) {
+        html += `<span class="badge badge-developer" title="Platform Geliştiricisi">Geliştirici</span>`;
+      }
+      if (badges.includes('moderator') || badges.includes('admin')) {
+        html += `<span class="badge" style="background:rgba(168,85,247,0.15); color:#C084FC; border:1px solid rgba(168,85,247,0.3);" title="Platform Moderatörü">Moderatör</span>`;
+      }
       if (badges.includes('verified_mechanic')) {
         html += `<span class="badge badge-mechanic" title="Doğrulanmış Sanayi Tamircisi">Onaylı Usta</span>`;
-      } else if (badges.includes('developer')) {
-        html += `<span class="badge badge-developer" title="Platform Geliştiricisi">Geliştirici</span>`;
-      } else if (badges.includes('verified_dealer')) {
+      }
+      if (badges.includes('verified_dealer')) {
         html += `<span class="badge badge-dealer" title="Yetki Belgeli Otomotiv Galericisi">Yetkili Galerici</span>`;
-      } else if (badges.includes('verified_user')) {
+      }
+      if (badges.includes('verified_user')) {
         html += `<span class="badge badge-verified" title="Doğrulanmış Araç Sahibi">Doğrulanmış Üye</span>`;
       }
     }
@@ -380,10 +398,10 @@ const Auth = {
     if (nameEl) nameEl.textContent = u.name;
     if (roleEl) {
       let roleDesc = 'Araç Sahibi';
-      if (this.isMechanic(u)) roleDesc = 'Onaylı Usta';
-      else if (this.isDeveloper(u)) roleDesc = 'Geliştirici';
+      if (this.isDeveloper(u)) roleDesc = 'Geliştirici';
+      else if (this.isModerator(u)) roleDesc = 'Moderatör';
+      else if (this.isMechanic(u)) roleDesc = 'Onaylı Usta';
       else if (this.isDealer(u)) roleDesc = 'Yetkili Galerici';
-      else if (this.isAdmin(u)) roleDesc = 'Yönetici';
       roleEl.textContent = roleDesc;
     }
     if (plateContainer) {
@@ -418,6 +436,16 @@ const Auth = {
     if (sbXp) sbXp.textContent = pts >= 500 ? 'Yüksek İtibar' : 'Aktif Üye';
     if (sbBar) sbBar.style.display = 'none';
     if (sbNextLevel) sbNextLevel.style.display = 'none';
+
+    // Yönetici Paneli: Sadece Developer ve Moderatör rozeti/rolü olanlarda görünür
+    const adminLink = document.getElementById('sidebar-admin-link');
+    if (adminLink) {
+      if (this.canAccessAdminPanel(u)) {
+        adminLink.style.display = 'flex';
+      } else {
+        adminLink.style.display = 'none';
+      }
+    }
   }
 };
 

@@ -146,7 +146,13 @@
           <a class="sidebar-nav-item" onclick="App.switchView('view-directory');">Sanayi Rehberi</a>
           <a class="sidebar-nav-item" onclick="App.switchView('view-prices');">Parça & İşçilik Fiyatları</a>
           <a class="sidebar-nav-item" onclick="App.openMobileAppModal();">Uygulamayı Telefona İndir</a>
-          <a class="sidebar-nav-item" href="/admin" target="_blank">Yönetici Paneli</a>
+          <a id="sidebar-admin-link" class="sidebar-nav-item" href="/admin" target="_blank" style="display:none; color:#C084FC; font-weight:600;">
+            <div style="display:flex; align-items:center; gap:6px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+              <span>Yönetici Paneli</span>
+            </div>
+            <span class="badge" style="background:rgba(168,85,247,0.18); color:#C084FC; border:1px solid rgba(168,85,247,0.3); font-size:0.65rem; padding:1px 5px;">Yetkili</span>
+          </a>
         </div>
       </div>
     </aside>
