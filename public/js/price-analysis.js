@@ -74,3 +74,6 @@ const PriceAnalysis = {
     }
   }
 };
+
+// Global Export
+window.PriceAnalysis = PriceAnalysis;

@@ -101,3 +101,6 @@ const Directory = {
     `).join('');
   }
 };
+
+// Global Export
+window.Directory = Directory;

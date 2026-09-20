@@ -239,14 +239,14 @@ const Profile = {
 
       container.innerHTML = userThreads.map(t => `
         <article class="thread-row ${t.isSolved ? 'is-solved' : ''}" onclick="Forum.openThread('${t.id}')">
-          <div class="thread-reply-col">
+          <div class="thread-reply-col" onclick="event.stopPropagation(); Forum.openThread('${t.id}')" title="Yorumları Gör">
             <span class="reply-num">${t.commentsCount || 0}</span>
             <span class="reply-text">yanıt</span>
           </div>
           <div class="thread-body-col">
             <div class="thread-title-line">
               ${t.isSolved ? '<span class="status-pill-solved">Çözüldü</span>' : ''}
-              <h3 class="thread-title-heading">${escapeHtml(t.title)}</h3>
+              <h3 class="thread-title-heading" onclick="event.stopPropagation(); Forum.openThread('${t.id}')">${escapeHtml(t.title)}</h3>
             </div>
             <p class="thread-preview-text">${escapeHtml(t.content)}</p>
             <div class="thread-info-bar">
@@ -255,18 +255,28 @@ const Profile = {
               ${t.audioUrl ? `<span class="thread-audio-tag">Ses Kaydı</span>` : ''}
               <span class="thread-time-tag">${formatDate(t.createdAt)}</span>
             </div>
+            <div class="thread-action-footer">
+              <button class="btn-thread-open" onclick="event.stopPropagation(); Forum.openThread('${t.id}')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:4px;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                <span>Yorumları & Detayı Gör (${t.commentsCount || 0})</span>
+                <span class="btn-arrow">&rarr;</span>
+              </button>
+            </div>
           </div>
         </article>
       `).join('');
 
     } else if (this.activeTab === 'replies') {
       let userComments = [];
-      (Forum.threads || []).forEach(t => {
-        if (Array.isArray(t.comments)) {
-          t.comments.forEach(c => {
-            if (c.authorId === user.id || c.authorUsername === user.username) {
-              userComments.push({ ...c, threadId: t.id, threadTitle: t.title, threadBrand: t.brand });
-            }
+      const commentsPool = (typeof Forum !== 'undefined' && Forum.comments) ? Forum.comments : [];
+      commentsPool.forEach(c => {
+        if (c.authorId === user.id || c.authorUsername === user.username) {
+          const t = ((typeof Forum !== 'undefined' && Forum.threads) ? Forum.threads : []).find(th => th.id === c.threadId);
+          userComments.push({
+            ...c,
+            threadId: c.threadId,
+            threadTitle: t ? t.title : 'Konu',
+            threadBrand: t ? t.brand : ''
           });
         }
       });

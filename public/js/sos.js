@@ -90,7 +90,8 @@ const SOS = {
         this.renderSosFeed();
         showToast('Acil durum çağrınız yayınlandı. Çevredeki usta ve çekicilere bildirildi.');
         closeModal('sos-modal');
-        window.App.switchView('view-sos');
+        if (window.App && window.App.switchView) window.App.switchView('view-sos');
+        else if (typeof App !== 'undefined' && App.switchView) App.switchView('view-sos');
       } else {
         showToast(data.error || 'Hata oluştu', 'error');
       }
@@ -114,3 +115,6 @@ const SOS = {
     }
   }
 };
+
+// Global Export
+window.SOS = SOS;

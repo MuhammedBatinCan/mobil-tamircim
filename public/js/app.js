@@ -785,3 +785,6 @@ async function handleEmailVerifySubmit(event) {
   }
 }
 
+// Global Export
+window.App = App;
+

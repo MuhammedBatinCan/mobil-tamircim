@@ -158,7 +158,7 @@
         "email_verified",
         "verified_mechanic"
       ],
-      "reputationPoints": 75,
+      "reputationPoints": 85,
       "level": "Çırak",
       "isMechanicVerified": true,
       "isDealerVerified": false,
@@ -368,7 +368,7 @@
       "likes": 18,
       "audioUrl": "motor_sesi_ornek.mp3",
       "content": "Arkadaşlar selamlar. Sabahları ilk çalıştırmada motor soğukken enjektör kütüğünün oradan belirgin bir madeni şıkırtı sesi geliyor. Araç 145.000 km'de. Ses kaydını ekledim, dinleyip fikir verebilecek ustalarımız var mıdır? OBD cihazında P0201 (Silindir 1 Enjektör Devresi) kodu düştü.",
-      "commentsCount": 3
+      "commentsCount": 4
     },
     {
       "id": "thr_2",
@@ -496,6 +496,29 @@
       "likes": 0,
       "isSolution": false,
       "content": "Kavrama �atali ve mekatronik basincini �l�t�rmelisin.",
+      "aiModeration": {
+        "status": "approved",
+        "safetyScore": 0.95,
+        "flagged": false,
+        "reason": "Temiz içerik"
+      }
+    },
+    {
+      "id": "cmt_1789942943161",
+      "threadId": "thr_1",
+      "authorId": "usr_1789765735571",
+      "authorUsername": "Test Pilotu",
+      "authorPlate": "34 TST 99",
+      "authorBadges": [
+        "beta_tester",
+        "email_verified",
+        "verified_mechanic"
+      ],
+      "authorLevel": "Çırak",
+      "createdAt": "2026-09-20T22:22:23.161Z",
+      "likes": 0,
+      "isSolution": false,
+      "content": "Hocam enjektör geri dönüş testi yapıldı mı? Değerleri kaç bar çıktı?",
       "aiModeration": {
         "status": "approved",
         "safetyScore": 0.95,

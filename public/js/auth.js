@@ -420,3 +420,6 @@ const Auth = {
     if (sbNextLevel) sbNextLevel.style.display = 'none';
   }
 };
+
+// Global Export
+window.Auth = Auth;
