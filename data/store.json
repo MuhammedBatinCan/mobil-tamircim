@@ -89,7 +89,7 @@
         "verified_user",
         "email_verified"
       ],
-      "reputationPoints": 160,
+      "reputationPoints": 175,
       "level": "Kalfa",
       "isMechanicVerified": false,
       "isDealerVerified": false,
@@ -250,6 +250,29 @@
     }
   ],
   "threads": [
+    {
+      "id": "thr_1789942202384",
+      "title": "Skoda Superb 1.5 TSI Sogukken Titreme",
+      "category": "ariza-teshis",
+      "brand": "Skoda",
+      "model": "Superb",
+      "engine": "1.5 TSI ACT (150 HP)",
+      "obdCode": "P0300",
+      "authorId": "usr_beta_1",
+      "authorUsername": "CanerSurucu",
+      "authorPlate": "",
+      "authorCar": "",
+      "authorBadges": [],
+      "createdAt": "2026-09-20T22:10:02.384Z",
+      "allowCommentsFrom": "all",
+      "isSolved": false,
+      "solvedCommentId": null,
+      "views": 1,
+      "likes": 0,
+      "content": "Superb 1.5 TSI aracimda sabah ilk �alistirmada 10-15 saniye hafif sarsinti oluyor. Tecr�besi olan usta var midir?",
+      "audioUrl": null,
+      "commentsCount": 0
+    },
     {
       "id": "thr_1789941649508",
       "title": "kğkoğjğ",
@@ -552,6 +575,20 @@
     }
   ],
   "sosRequests": [
+    {
+      "id": "sos_1789942147211",
+      "userId": "usr_mech_1",
+      "username": "Ahmet Çelik Usta",
+      "plate": "34 USTA 1978",
+      "car": "hehwwe",
+      "locationCity": "istt",
+      "locationDetails": "wtat",
+      "issueType": "aku",
+      "description": "herhehs",
+      "phone": "gfsgsgsq",
+      "status": "active",
+      "createdAt": "2026-09-20T22:09:07.211Z"
+    },
     {
       "id": "sos_1",
       "userId": "usr_beta_1",

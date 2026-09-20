@@ -438,37 +438,44 @@
 
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
           <div class="form-group">
-            <label class="form-label">Model / Motor:</label>
-            <input id="thread-model-input" class="form-control" type="text" placeholder="Örn: Megane 4 1.5 dCi EDC" list="model-suggestions">
+            <label class="form-label">Araç Modeli:</label>
+            <input id="thread-model-input" class="form-control" type="text" placeholder="Örn: Superb, Octavia..." list="model-suggestions" oninput="App.onModelInputChange(this.value)">
             <datalist id="model-suggestions"></datalist>
           </div>
           <div class="form-group">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-              <label class="form-label" style="margin-bottom:0;">OBD-II Arıza Kodu (Varsa):</label>
-              <button type="button" id="btn-toggle-custom-obd" class="btn btn-secondary btn-sm" style="font-size:0.72rem; padding:2px 8px;" onclick="Forum.toggleCustomObd()">
-                Manuel Giriş
+            <label class="form-label">Motor & Yakıt Tipi:</label>
+            <input id="thread-engine-input" class="form-control" type="text" placeholder="Örn: 1.5 TSI ACT (150 HP), 2.0 TDI..." list="engine-suggestions">
+            <datalist id="engine-suggestions"></datalist>
+            <div id="quick-engine-chips" class="quick-engine-chips-container"></div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <label class="form-label" style="margin-bottom:0;">OBD-II Arıza Kodu (Varsa):</label>
+            <button type="button" id="btn-toggle-custom-obd" class="btn btn-secondary btn-sm" style="font-size:0.72rem; padding:2px 8px;" onclick="Forum.toggleCustomObd()">
+              Manuel Giriş
+            </button>
+          </div>
+
+          <!-- 1. Standart Kapsamlı Liste -->
+          <div id="obd-select-wrap">
+            <select id="thread-obd-select" class="form-control" onchange="Forum.onObdSelectChange(this.value)">
+              <!-- JS optgroup & Kodlar -->
+            </select>
+          </div>
+
+          <!-- 2. Manuel / Serbest Kod Girişi -->
+          <div id="obd-custom-wrap" style="display:none; margin-top:8px;">
+            <div style="display:flex; gap:8px;">
+              <input id="thread-obd-custom-input" class="form-control" type="text" placeholder="Örn: P2452, DF053, 00532, B1001..." style="text-transform:uppercase; font-family:var(--font-plate); font-weight:800; letter-spacing:1px;">
+              <button type="button" class="btn btn-secondary btn-sm" onclick="Forum.toggleCustomObd(false)" title="Listeye Geri Dön">
+                Listeden Seç
               </button>
             </div>
-
-            <!-- 1. Standart Kapsamlı Liste -->
-            <div id="obd-select-wrap">
-              <select id="thread-obd-select" class="form-control" onchange="Forum.onObdSelectChange(this.value)">
-                <!-- JS optgroup & Kodlar -->
-              </select>
-            </div>
-
-            <!-- 2. Manuel / Serbest Kod Girişi -->
-            <div id="obd-custom-wrap" style="display:none; margin-top:8px;">
-              <div style="display:flex; gap:8px;">
-                <input id="thread-obd-custom-input" class="form-control" type="text" placeholder="Örn: P2452, DF053, 00532, B1001..." style="text-transform:uppercase; font-family:var(--font-plate); font-weight:800; letter-spacing:1px;">
-                <button type="button" class="btn btn-secondary btn-sm" onclick="Forum.toggleCustomObd(false)" title="Listeye Geri Dön">
-                  Listeden Seç
-                </button>
-              </div>
-              <span style="font-size:0.72rem; color:var(--text-muted); display:block; margin-top:4px;">
-                Standart OBD-II veya marka özel arıza kodunu serbestçe yazabilirsiniz.
-              </span>
-            </div>
+            <span style="font-size:0.72rem; color:var(--text-muted); display:block; margin-top:4px;">
+              Standart OBD-II veya marka özel arıza kodunu serbestçe yazabilirsiniz.
+            </span>
           </div>
         </div>
 

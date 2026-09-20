@@ -326,8 +326,9 @@ const App = {
         customInput.focus();
         customInput.required = true;
       }
-      if (modelInput) modelInput.placeholder = 'Örn: Model ve Motor Detayı';
+      if (modelInput) modelInput.placeholder = 'Örn: Özel Model Adı';
       if (modelSuggestions) modelSuggestions.innerHTML = '';
+      this.updateEngineOptions('', '');
       return;
     }
 
@@ -343,13 +344,111 @@ const App = {
         modelInput.placeholder = `Örn: ${brandObj.popularModels.slice(0, 3).join(', ')}...`;
       }
       if (modelSuggestions) {
-        modelSuggestions.innerHTML = brandObj.popularModels.map(m => `<option value="${m}">`).join('');
+        // Hem baz modelleri hem de o modelin bilinen motor kombinasyonlarını datalist'e ekle
+        const allSuggestions = [];
+        brandObj.popularModels.forEach(m => {
+          allSuggestions.push(m);
+          // Modelin motorlarını getir
+          const engines = APP_DATA.getEnginesFor ? APP_DATA.getEnginesFor(brandName, m) : [];
+          if (engines && engines.length > 0) {
+            engines.slice(0, 4).forEach(eng => {
+              // "Superb 1.5 TSI ACT (150 HP)" gibi bileşik öneriler
+              const cleanEng = eng.split('DSG')[0].split('EDC')[0].split('DCT')[0].split('Benzin')[0].split('Dizel')[0].trim();
+              const combo = `${m} ${cleanEng}`;
+              if (!allSuggestions.includes(combo)) {
+                allSuggestions.push(combo);
+              }
+            });
+          }
+        });
+        modelSuggestions.innerHTML = allSuggestions.map(s => `<option value="${s}">`).join('');
       }
     } else {
-      if (modelInput) modelInput.placeholder = 'Örn: Megane 4 1.5 dCi EDC';
+      if (modelInput) modelInput.placeholder = 'Örn: Megane, Golf, Egea, Superb...';
       if (modelSuggestions) modelSuggestions.innerHTML = '';
     }
+
+    // Seçilen markaya göre motor alanını ve hızlı çipleri yenile
+    const currentModel = modelInput ? modelInput.value.trim() : '';
+    this.updateEngineOptions(brandName, currentModel);
   },
+
+  onModelInputChange(modelVal) {
+    const brandSelect = document.getElementById('thread-brand-select');
+    let brandName = brandSelect ? brandSelect.value : '';
+    const customBrandWrap = document.getElementById('brand-custom-wrap');
+    const customBrandInput = document.getElementById('thread-brand-custom-input');
+    if (customBrandWrap && customBrandWrap.style.display !== 'none') {
+      brandName = customBrandInput ? customBrandInput.value.trim() : '';
+    }
+
+    const modelInput = document.getElementById('thread-model-input');
+    const engineInput = document.getElementById('thread-engine-input');
+
+    // Eğer kullanıcı datalist'ten bileşik seçim yaptıysa (örn: "Superb 1.5 TSI ACT (150 HP)")
+    if (modelVal && modelVal.includes(' ')) {
+      const parts = modelVal.split(' ');
+      const firstWord = parts[0];
+      const rest = parts.slice(1).join(' ');
+
+      if (/TSI|TDI|dCi|Multijet|EcoBoost|PureTech|BlueHDi|CRDi|HP|kW|Hybrid|Hibrit|d\b|i\b/i.test(rest)) {
+        if (modelInput) modelInput.value = firstWord;
+        if (engineInput) engineInput.value = rest;
+        modelVal = firstWord;
+      }
+    }
+
+    this.updateEngineOptions(brandName, modelVal);
+  },
+
+  updateEngineOptions(brandName, modelName) {
+    const engineInput = document.getElementById('thread-engine-input');
+    const engineSuggestions = document.getElementById('engine-suggestions');
+    const chipsContainer = document.getElementById('quick-engine-chips');
+    if (!engineSuggestions) return;
+
+    const engines = APP_DATA.getEnginesFor ? APP_DATA.getEnginesFor(brandName, modelName) : (APP_DATA.genericEngines || []);
+
+    // 1. Motor datalist'ini doldur
+    engineSuggestions.innerHTML = engines.map(e => `<option value="${e}">`).join('');
+
+    // 2. Placeholder ayarla
+    if (engineInput && engines.length > 0) {
+      const sample = engines.slice(0, 2).map(e => e.split('(')[0].trim()).join(', ');
+      engineInput.placeholder = `Örn: ${sample}...`;
+    }
+
+    // 3. Tek tıkla hızlı motor seçim çipleri (Hızlı Seçim)
+    if (chipsContainer) {
+      if (engines.length === 0) {
+        chipsContainer.innerHTML = '';
+        return;
+      }
+
+      const topEngines = engines.slice(0, 6);
+      chipsContainer.innerHTML = topEngines.map(e => {
+        let chipLabel = e.split('DSG')[0].split('EDC')[0].split('DCT')[0].split('Benzin')[0].split('Dizel')[0].trim();
+        if (chipLabel.length > 22) {
+          chipLabel = chipLabel.substring(0, 22) + '...';
+        }
+        const safeEngineStr = e.replace(/'/g, "\\'");
+        return `<span class="engine-quick-chip" onclick="App.setEngine('${safeEngineStr}', this)">${chipLabel}</span>`;
+      }).join('');
+    }
+  },
+
+  setEngine(engineStr, chipEl) {
+    const engineInput = document.getElementById('thread-engine-input');
+    if (engineInput) {
+      engineInput.value = engineStr;
+      engineInput.focus();
+    }
+    if (chipEl && chipEl.parentElement) {
+      chipEl.parentElement.querySelectorAll('.engine-quick-chip').forEach(c => c.classList.remove('active'));
+      chipEl.classList.add('active');
+    }
+  },
+
 
   toggleCustomBrand(forceShow) {
     const selectWrap = document.getElementById('brand-select-wrap');
@@ -454,7 +553,16 @@ document.addEventListener('DOMContentLoaded', () => {
         brand = (customBrandInput && customBrandInput.value.trim()) || 'Diğer';
       }
 
-      const model = document.getElementById('thread-model-input').value.trim();
+      let model = document.getElementById('thread-model-input').value.trim();
+      let engine = document.getElementById('thread-engine-input') ? document.getElementById('thread-engine-input').value.trim() : '';
+
+      // Model kutusuna bileşik yazıldıysa (örn: Superb 1.5 TSI ACT) ve motor boşsa akıllı ayrıştır:
+      if (model && !engine && model.includes(' ') && /TSI|TDI|dCi|Multijet|EcoBoost|PureTech|BlueHDi|CRDi|HP|kW|Hybrid|Hibrit|d\b|i\b/i.test(model)) {
+        const parts = model.split(' ');
+        model = parts[0];
+        engine = parts.slice(1).join(' ');
+      }
+
       // OBD-II Kodu: Seçim listesinden veya manuel özel yazımdan al
       let obdCode = document.getElementById('thread-obd-select').value;
       const customWrap = document.getElementById('obd-custom-wrap');
@@ -475,10 +583,12 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       Forum.createThread({
-        title, category, brand, model, obdCode, content, allowCommentsFrom, hasAudio
+        title, category, brand, model, engine, obdCode, content, allowCommentsFrom, hasAudio
       });
 
       newThreadForm.reset();
+      const chipsContainer = document.getElementById('quick-engine-chips');
+      if (chipsContainer) chipsContainer.innerHTML = '';
       if (typeof Forum.toggleCustomObd === 'function') {
         Forum.toggleCustomObd(false);
       }

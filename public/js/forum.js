@@ -51,6 +51,7 @@ const Forum = {
         (t.content && t.content.toLowerCase().includes(this.searchQuery)) ||
         (t.brand && t.brand.toLowerCase().includes(this.searchQuery)) ||
         (t.model && t.model.toLowerCase().includes(this.searchQuery)) ||
+        (t.engine && t.engine.toLowerCase().includes(this.searchQuery)) ||
         (t.obdCode && t.obdCode.toLowerCase().includes(this.searchQuery)) ||
         (t.authorUsername && t.authorUsername.toLowerCase().includes(this.searchQuery))
       );
@@ -106,7 +107,7 @@ const Forum = {
 
             <div class="thread-info-bar">
               <span class="thread-author-name" onclick="event.stopPropagation(); Profile.open('${t.authorId}')" title="Kullanıcı Profilini Aç" style="cursor:pointer;">${escapeHtml(t.authorUsername)}</span>
-              ${t.brand ? `<span class="thread-vehicle-tag">${escapeHtml(t.brand)} ${escapeHtml(t.model || '')}</span>` : ''}
+              ${t.brand ? `<span class="thread-vehicle-tag">${escapeHtml(t.brand)} ${escapeHtml(t.model || '')}${t.engine ? ' • ' + escapeHtml(t.engine) : ''}</span>` : ''}
               ${t.obdCode ? `<span class="thread-obd-tag">${escapeHtml(t.obdCode)}</span>` : ''}
               ${isMechanicsOnly ? `<span class="thread-mech-tag">Usta Yanıtlı</span>` : ''}
               ${t.audioUrl ? `<span class="thread-audio-tag">Ses Kaydı</span>` : ''}
@@ -261,7 +262,7 @@ const Forum = {
         </h1>
 
         <div class="thread-tags" style="margin-bottom:16px;">
-          ${thread.brand ? `<span class="thread-tag">${escapeHtml(thread.brand)} ${escapeHtml(thread.model || '')}</span>` : ''}
+          ${thread.brand ? `<span class="thread-tag">${escapeHtml(thread.brand)} ${escapeHtml(thread.model || '')}${thread.engine ? ' • ' + escapeHtml(thread.engine) : ''}</span>` : ''}
           ${thread.obdCode ? `<span class="thread-tag tag-obd">OBD: ${escapeHtml(thread.obdCode)}</span>` : ''}
           ${isMechanicsOnly ? `<span class="thread-tag tag-mechanic-only">Sadece Usta Yorumu</span>` : ''}
           ${thread.isSolved ? `<span class="thread-tag tag-solved">Sorun Çözüldü</span>` : ''}
@@ -372,6 +373,7 @@ const Forum = {
           category: formData.category,
           brand: formData.brand,
           model: formData.model,
+          engine: formData.engine || '',
           obdCode: formData.obdCode,
           allowCommentsFrom: formData.allowCommentsFrom,
           content: formData.content,

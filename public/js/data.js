@@ -198,5 +198,523 @@ const APP_DATA = {
     kalfa: { min: 100, max: 299, title: 'Kalfa', badgeClass: 'badge-level-kalfa' },
     usta: { min: 300, max: 699, title: 'Usta', badgeClass: 'badge-level-usta' },
     master: { min: 700, max: 99999, title: 'Master', badgeClass: 'badge-level-master' }
+  },
+
+  // Popüler Model Bazlı Motor & Güç Seçenekleri
+  modelEngines: {
+    // Škoda
+    'superb': [
+      '1.5 TSI ACT (150 HP) DSG Benzin',
+      '1.6 TDI (120 HP) DSG Dizel',
+      '2.0 TDI CR (150 HP) DSG Dizel',
+      '2.0 TDI CR (190 HP) 4x4 DSG Dizel',
+      '2.0 TDI CR (200 HP) 4x4 DSG Dizel',
+      '1.4 TSI (125 / 150 HP) ACT Benzin',
+      '2.0 TSI (280 HP) 4x4 DSG Benzin',
+      '1.4 TSI iV Plug-in Hybrid (218 HP)',
+      '1.5 eTSI mHEV (150 HP) Hafif Hibrit'
+    ],
+    'octavia': [
+      '1.5 TSI / 1.5 eTSI (150 HP) DSG Benzin',
+      '1.6 TDI CR (105 / 115 HP) DSG Dizel',
+      '1.0 TSI / 1.0 eTSI (110 / 115 HP) DSG',
+      '2.0 TDI CR (150 / 200 HP RS) Dizel',
+      '1.4 TSI (140 / 150 HP) Benzin',
+      '2.0 TSI RS (245 HP) DSG'
+    ],
+    'fabia': [
+      '1.0 TSI (95 / 110 HP) DSG Benzin',
+      '1.0 MPI (65 / 75 / 80 HP) Atmosferik Benzin',
+      '1.2 TSI (90 / 110 HP) Benzin',
+      '1.4 TDI (75 / 90 / 105 HP) Dizel',
+      '1.5 TSI (150 HP) DSG Benzin'
+    ],
+    'kodiaq': [
+      '1.5 TSI ACT (150 HP) DSG Benzin',
+      '2.0 TDI CR (150 HP) DSG Dizel',
+      '2.0 TDI CR (190 / 200 HP) 4x4 Dizel',
+      '2.0 BiTDI RS (240 HP) 4x4 Dizel',
+      '2.0 TSI (190 HP) 4x4 Benzin'
+    ],
+    'kamiq': [
+      '1.5 TSI ACT (150 HP) DSG Benzin',
+      '1.0 TSI (110 / 115 HP) DSG Benzin',
+      '1.6 TDI (115 HP) DSG Dizel'
+    ],
+    'karoq': [
+      '1.5 TSI ACT (150 HP) DSG Benzin',
+      '1.6 TDI (115 HP) DSG Dizel',
+      '2.0 TDI (150 HP) 4x4 DSG Dizel'
+    ],
+    'scala': [
+      '1.5 TSI ACT (150 HP) DSG Benzin',
+      '1.0 TSI (110 / 115 HP) DSG Benzin',
+      '1.6 TDI (115 HP) DSG Dizel'
+    ],
+
+    // Volkswagen
+    'passat': [
+      '1.6 TDI CR (105 / 120 HP) DSG Dizel',
+      '2.0 TDI CR (150 HP) DSG Dizel',
+      '2.0 TDI CR (190 / 200 HP) 4Motion DSG Dizel',
+      '1.5 TSI EVO ACT (150 HP) DSG Benzin',
+      '1.4 TSI (122 / 125 / 150 HP ACT) Benzin',
+      '2.0 BiTDI (240 HP) 4Motion Dizel',
+      '2.0 TSI (220 / 280 HP) 4Motion Benzin',
+      '1.9 TDI (105 / 130 HP) Dizel'
+    ],
+    'golf': [
+      '1.6 TDI CR (105 / 115 HP) DSG Dizel',
+      '1.5 TSI / 1.5 eTSI ACT (150 HP) DSG Benzin',
+      '1.0 TSI / 1.0 eTSI (110 / 115 HP) Benzin',
+      '2.0 TDI (150 / 184 / 200 HP GTD) Dizel',
+      '1.4 TSI (122 / 125 / 140 / 150 HP) Benzin',
+      '1.2 TSI (105 / 110 HP) Benzin',
+      '2.0 TSI GTI / R (245 / 320 HP) Benzin'
+    ],
+    'polo': [
+      '1.0 TSI (95 / 110 HP) DSG Benzin',
+      '1.0 MPI (65 / 80 HP) Benzin',
+      '1.6 TDI (80 / 90 / 95 HP) Dizel',
+      '1.4 TDI (75 / 90 HP) Dizel',
+      '1.2 TSI (90 / 105 HP) Benzin',
+      '1.4 16V (85 HP) Benzin'
+    ],
+    'tiguan': [
+      '1.5 TSI / 1.5 eTSI (150 HP) DSG Benzin',
+      '2.0 TDI CR (150 / 190 / 200 HP) 4Motion Dizel',
+      '1.4 TSI (125 / 150 HP) Benzin',
+      '1.6 TDI (115 HP) Dizel',
+      '2.0 TSI (190 / 245 HP) 4Motion'
+    ],
+    'caddy': [
+      '2.0 TDI (102 / 122 HP) DSG Dizel',
+      '1.6 TDI (102 HP) Dizel',
+      '1.9 TDI (105 HP Pumpe-Düse) Dizel',
+      '1.5 TSI (114 HP) Benzin',
+      '2.0 SDI Atmosferik Dizel'
+    ],
+    'transporter': [
+      '2.0 TDI (102 / 140 / 150 HP) Dizel',
+      '2.0 BiTDI (180 / 199 / 204 HP 4Motion) Dizel',
+      '1.9 TDI (105 HP) Dizel',
+      '2.5 TDI (130 / 174 HP) 5 Silindir Dizel'
+    ],
+    'jetta': [
+      '1.6 TDI (105 HP) DSG Dizel',
+      '1.4 TSI (122 / 125 / 150 HP) DSG Benzin',
+      '1.2 TSI (105 HP) Benzin',
+      '1.6 Düz Atmosferik (102 HP) Hit Motor / LPG'
+    ],
+
+    // Renault
+    'megane': [
+      '1.5 dCi (90 / 110 / 115 HP) EDC Dizel',
+      '1.3 TCe (140 HP) EDC Benzin',
+      '1.6 16V (115 HP) Benzin / LPG',
+      '1.2 TCe (130 HP) Benzin',
+      '1.6 dCi (130 / 160 HP) EDC Dizel',
+      '1.0 TCe (115 HP) Benzin',
+      '1.6 E-Tech Plug-in Hybrid (160 HP)'
+    ],
+    'clio': [
+      '1.5 dCi (75 / 90 HP) Dizel',
+      '1.0 TCe (90 / 100 HP) X-Tronic Benzin',
+      '1.0 SCe (65 / 72 HP) Atmosferik Benzin',
+      '0.9 TCe (90 HP) Turbo Benzin',
+      '1.2 16V (75 HP) Benzin / LPG',
+      '1.6 E-Tech Full Hybrid (145 HP)'
+    ],
+    'fluence': [
+      '1.5 dCi (90 / 110 HP) EDC Dizel',
+      '1.6 16V (110 / 115 HP) Otomatik / Manuel Benzin',
+      '1.6 dCi (130 HP) Dizel'
+    ],
+    'symbol': [
+      '1.5 dCi (75 / 90 HP) Dizel',
+      '0.9 TCe (90 HP) Turbo Benzin',
+      '1.2 16V (75 HP) Benzin',
+      '1.0 SCe (73 HP) Benzin'
+    ],
+    'duster': [
+      '1.5 dCi (110 / 115 HP) 4x2 / 4x4 Dizel',
+      '1.0 TCe ECO-G (100 HP) Fabrikasyon LPG',
+      '1.3 TCe (130 / 150 HP) EDC Benzin',
+      '1.2 TCe Mild Hybrid 48V (130 HP)',
+      '1.6 SCe (115 HP) Benzin'
+    ],
+    'austral': [
+      '1.2 E-Tech Full Hybrid (200 HP) Otomatik',
+      '1.3 TCe Mild Hybrid (160 HP) X-Tronic'
+    ],
+    'captur': [
+      '1.3 TCe (140 / 155 HP) EDC Benzin',
+      '1.5 dCi (90 / 115 HP) EDC Dizel',
+      '1.0 TCe (100 HP) Benzin',
+      '1.2 TCe (120 HP) EDC Benzin'
+    ],
+
+    // Fiat
+    'egea': [
+      '1.3 Multijet (95 HP) Dizel',
+      '1.6 Multijet (120 / 130 HP) DCT Otomatik Dizel',
+      '1.4 Fire (95 HP) 6 İleri Manuel Benzin',
+      '1.5 T4 Hibrit (130 HP) 7 İleri Otomatik',
+      '1.0 FireFly (100 HP) Turbo Benzin',
+      '1.6 E-Torq (110 HP) AT6 Otomatik Benzin'
+    ],
+    'doblo': [
+      '1.3 Multijet (90 / 95 HP) Dizel',
+      '1.6 Multijet (105 / 120 HP) Dizel',
+      '1.5 BlueHDi (100 / 130 HP) EAT8 Dizel',
+      '1.9 JTD / Multijet (105 HP) Dizel',
+      '2.0 Multijet (135 HP) Dizel',
+      '1.4 Fire (95 HP) Benzin'
+    ],
+    'fiorino': [
+      '1.3 Multijet (75 / 95 HP) Dizel',
+      '1.4 Fire (77 HP) Benzin / Eko LPG'
+    ],
+    'linea': [
+      '1.3 Multijet (90 / 95 HP) Dizel',
+      '1.6 Multijet (105 HP) Dizel',
+      '1.4 Fire (77 HP) Benzin',
+      '1.4 T-Jet (120 HP) Turbo Benzin'
+    ],
+    'punto': [
+      '1.3 Multijet (75 / 90 / 95 HP) Dizel',
+      '1.4 Fire (77 HP) Dualogic Benzin',
+      '1.2 8V (65 / 69 HP) Benzin'
+    ],
+
+    // Ford
+    'focus': [
+      '1.5 EcoBlue (120 HP) 8 İleri Otomatik Dizel',
+      '1.6 TDCi (95 / 115 HP) Dizel',
+      '1.0 EcoBoost (100 / 125 HP) mHEV Benzin',
+      '1.5 EcoBoost (150 / 182 HP) Benzin',
+      '1.6 Ti-VCT Duratec (125 HP) Benzin / LPG',
+      '2.0 TDCi (150 / 185 HP) Dizel'
+    ],
+    'courier': [
+      '1.5 TDCi / EcoBlue (75 / 100 HP) Dizel',
+      '1.6 TDCi (95 HP) Dizel',
+      '1.0 EcoBoost (100 / 125 HP) Benzin'
+    ],
+    'fiesta': [
+      '1.4 TDCi (68 / 70 HP) Dizel',
+      '1.5 TDCi (75 / 85 HP) Dizel',
+      '1.0 EcoBoost (100 HP) Powershift Benzin',
+      '1.25 Duratec (82 HP) Benzin',
+      '1.4 16V (96 HP) Otomatik Benzin'
+    ],
+    'transit': [
+      '2.0 EcoBlue (130 / 170 / 185 HP) Dizel',
+      '2.2 TDCi Puma (100 / 125 / 155 HP) Dizel',
+      '2.4 TDCi (140 HP) Arkadan İtiş Dizel'
+    ],
+    'mondeo': [
+      '2.0 TDCi (140 / 150 / 163 / 180 HP) Dizel',
+      '1.5 EcoBoost (160 HP) Otomatik Benzin',
+      '1.6 TDCi (115 HP) Dizel',
+      '2.0 Hybrid (187 HP) e-CVT'
+    ],
+
+    // Toyota
+    'corolla': [
+      '1.8 Hybrid (122 / 140 HP) e-CVT Hibrit',
+      '1.6 Valvematic (132 HP) Multidrive S Benzin',
+      '1.5 Dynamic Force (123 HP) Multidrive S Benzin',
+      '1.4 D-4D (90 HP) M/M Dizel',
+      '1.6 VVT-i (110 / 124 HP) Benzin',
+      '2.0 Hybrid (184 HP) e-CVT'
+    ],
+    'yaris': [
+      '1.5 Hybrid (116 HP) e-CVT',
+      '1.5 Benzinli (125 HP) Multidrive S',
+      '1.0 Benzinli (72 HP)',
+      '1.4 D-4D (90 HP) Dizel',
+      '1.33 Dual VVT-i (99 HP)'
+    ],
+    'c-hr': [
+      '1.8 Hybrid (122 / 140 HP) e-CVT',
+      '2.0 Hybrid (197 HP) e-CVT',
+      '1.2 Turbo (116 HP) Benzin'
+    ],
+    'hilux': [
+      '2.4 D-4D (150 HP) 4x2 / 4x4 Dizel',
+      '2.8 D-4D (204 HP) 4x4 Otomatik Dizel',
+      '2.5 D-4D (144 HP) Dizel',
+      '3.0 D-4D (171 HP) 4x4 Dizel'
+    ],
+
+    // BMW
+    '3-serisi': [
+      '320d 2.0 Dizel (N47 184 HP / B47 190 HP)',
+      '320i 1.6 Turbo (N13 170 HP) Benzin',
+      '320i 2.0 Turbo (B48 170 / 184 HP) Benzin',
+      '316i 1.6 Turbo (N13 136 HP) Benzin',
+      '318d 2.0 Dizel (143 / 150 HP)',
+      '330i 2.0 Turbo (252 / 258 HP) Benzin',
+      '330e Plug-in Hybrid (292 HP)',
+      '330d 3.0 6 Silindir Dizel (258 HP)'
+    ],
+    '5-serisi': [
+      '520d 2.0 Dizel (N47 184 HP / B47 190 HP)',
+      '520i 1.6 Turbo (N13 170 HP) Benzin',
+      '520i 2.0 Turbo (B48 184 HP) Benzin',
+      '525d 2.0 Twin Turbo Dizel (218 HP)',
+      '530d 3.0 6 Silindir Dizel (258 / 265 HP)',
+      '530i 2.0 Turbo (252 HP) Benzin',
+      '530e Plug-in Hybrid (252 / 292 HP)'
+    ],
+    '1-serisi': [
+      '116d 1.5 3 Silindir Dizel (116 HP)',
+      '118i 1.5 Turbo Benzin (136 / 140 HP)',
+      '116i 1.6 Turbo Benzin (136 HP)',
+      '120d 2.0 Dizel (177 / 190 HP)'
+    ],
+
+    // Mercedes-Benz
+    'c-serisi': [
+      'C200d 1.6 Dizel (OM626 136 HP / OM654 160 HP)',
+      'C200 1.5 Mild Hybrid (184 / 204 HP 4MATIC)',
+      'C180 1.6 Turbo (156 HP) 7G / 9G-Tronic',
+      'C220d 2.0 Dizel (170 / 194 / 200 HP 4MATIC)'
+    ],
+    'e-serisi': [
+      'E220d 2.0 Dizel (OM654 194 / 200 HP)',
+      'E200d 1.6 / 2.0 Dizel (160 HP)',
+      'E180 1.6 Turbo Benzin (156 HP)',
+      'E200 2.0 Turbo Benzin (184 / 197 HP)',
+      'E350d 3.0 V6 Dizel (258 HP)'
+    ],
+
+    // Audi
+    'a3': [
+      '1.6 TDI (105 / 110 / 115 HP) S tronic Dizel',
+      '1.5 TFSI / 35 TFSI (150 HP) S tronic Benzin',
+      '1.0 TFSI / 30 TFSI (110 / 116 HP) Benzin',
+      '1.4 TFSI (125 / 150 HP COD) Benzin',
+      '2.0 TDI (150 / 184 HP quattro) Dizel'
+    ],
+    'a4': [
+      '2.0 TDI (143 / 150 / 177 / 190 / 204 HP quattro) Dizel',
+      '2.0 TFSI / 40 TFSI (190 / 204 HP) S tronic',
+      '1.4 TFSI (150 HP) S tronic Benzin',
+      '3.0 TDI V6 (218 / 272 HP quattro) Dizel'
+    ],
+    'a6': [
+      '2.0 TDI / 40 TDI (177 / 190 / 204 HP) S tronic',
+      '3.0 TDI V6 (245 / 272 / 313 HP BiTDI quattro)',
+      '2.0 TFSI / 45 TFSI (245 / 265 HP)'
+    ],
+
+    // Hyundai
+    'i20': [
+      '1.4 MPI (100 HP) Otomatik Benzin',
+      '1.0 T-GDI (100 / 120 HP) 48V DCT Benzin',
+      '1.2 D-CVVT (84 HP) Manuel Benzin',
+      '1.4 CRDi (90 HP) Dizel'
+    ],
+    'tucson': [
+      '1.6 CRDi (136 HP) 4x2 / 4x4 DCT Dizel',
+      '1.6 T-GDI (177 / 180 HP) 4x4 DCT Benzin',
+      '1.6 HEV Hibrit (230 HP) Otomatik',
+      '2.0 CRDi (185 HP) 4x4 Dizel'
+    ],
+    'elantra': [
+      '1.6 MPI (123 HP) CVT Otomatik Benzin',
+      '1.6 D-CVVT (127 HP) Benzin',
+      '1.6 CRDi (136 HP) DCT Dizel'
+    ],
+
+    // Honda
+    'civic': [
+      '1.6 i-VTEC Eco (125 HP) Otomatik Fabrikasyon LPG',
+      '1.5 VTEC Turbo (182 HP) CVT Benzin',
+      '1.6 i-DTEC (120 HP) 9 İleri Otomatik Dizel',
+      '2.0 e:HEV Full Hybrid (184 HP)',
+      '1.8 i-VTEC (140 HP) Otomatik Benzin'
+    ],
+
+    // Opel
+    'astra': [
+      '1.6 CDTI (110 / 136 HP) Dizel',
+      '1.4 Turbo (140 / 150 HP) Otomatik Benzin',
+      '1.5 Dizel (122 / 130 HP) AT8 Otomatik',
+      '1.2 Turbo PureTech (110 / 130 HP) Benzin',
+      '1.3 CDTI (90 / 95 HP) Dizel',
+      '1.6 16V Ecotec (115 HP) Benzin'
+    ],
+    'corsa': [
+      '1.2 Benzinli (75 HP) Manuel',
+      '1.2 Turbo (100 / 130 HP) AT8 Otomatik',
+      '1.5 Dizel (102 HP) Manuel',
+      '1.3 CDTI (75 / 90 / 95 HP) Dizel',
+      '1.4 16V (90 / 100 HP) Otomatik',
+      'Elektrikli 100 kW / 136 HP'
+    ],
+    'insignia': [
+      '1.6 CDTI (136 HP) Otomatik Dizel',
+      '2.0 CDTI (160 / 170 / 195 HP BiTurbo) Dizel',
+      '1.5 Turbo (165 HP) Otomatik Benzin',
+      '1.6 Turbo (180 / 200 HP) Benzin'
+    ],
+
+    // Peugeot
+    '3008': [
+      '1.5 BlueHDi (130 HP) EAT8 Dizel',
+      '1.6 BlueHDi (120 HP) EAT6 Dizel',
+      '1.2 PureTech (130 HP) EAT8 Benzin',
+      '1.6 THP / PureTech (165 / 180 HP) EAT8 Benzin',
+      '1.6 Plug-in Hybrid (225 / 300 HP AWD)'
+    ],
+    '208': [
+      '1.5 BlueHDi (100 / 130 HP) Dizel',
+      '1.2 PureTech (75 / 100 / 130 HP) EAT8 Benzin',
+      '1.6 BlueHDi (100 HP) Dizel',
+      '1.4 HDi (68 HP) Dizel',
+      'e-208 Elektrikli (136 / 156 HP)'
+    ],
+    '2008': [
+      '1.5 BlueHDi (130 HP) EAT8 Dizel',
+      '1.2 PureTech (130 HP) EAT8 Benzin',
+      'e-2008 Elektrikli (136 / 156 HP)'
+    ],
+
+    // TOGG
+    't10x': [
+      'RWD Tek Motor Standart Menzil (218 HP / 160 kW / 52.4 kWh)',
+      'RWD Tek Motor Uzun Menzil (218 HP / 160 kW / 88.5 kWh)',
+      'AWD Çift Motor (435 HP / 320 kW)'
+    ],
+    't10f': [
+      'RWD Tek Motor (218 HP / 160 kW)',
+      'AWD Çift Motor (435 HP / 320 kW)'
+    ],
+
+    // Tesla
+    'model-y': [
+      'RWD Tek Motor Arkadan İtiş (LFP 60 kWh)',
+      'Long Range Çift Motor AWD (78.1 kWh)',
+      'Performance Çift Motor AWD (534 HP)'
+    ],
+    'model-3': [
+      'RWD Tek Motor Standart Menzil',
+      'Long Range Çift Motor AWD',
+      'Performance AWD'
+    ],
+
+    // Chery
+    'tiggo-7-pro': [
+      '1.6 TGDI (183 HP) 7DCT Benzin',
+      '1.5 TCI (147 / 156 HP) CVT'
+    ],
+    'tiggo-8-pro': [
+      '1.6 TGDI (183 HP) 7DCT Benzin',
+      '2.0 TGDI (254 HP) AWD Benzin'
+    ],
+    'omoda-5': [
+      '1.6 TGDI (183 HP) 7DCT Benzin',
+      'Elektrikli EV (204 HP / 61 kWh)'
+    ],
+
+    // BYD
+    'atto-3': [
+      'Tam Elektrikli 150 kW (204 HP / 60.5 kWh Blade Batarya)'
+    ],
+    'seal': [
+      'RWD Tek Motor 230 kW (313 HP / 82.5 kWh)',
+      'AWD Çift Motor 390 kW (530 HP Excellence)'
+    ],
+    'seal-u': [
+      '1.5 DM-i Şarj Edilebilir Hibrit (218 HP)',
+      'Tam Elektrikli EV (218 HP / 87 kWh)'
+    ],
+
+    // Tofaş
+    'sahin': [
+      '1.6 ie Enjeksiyonlu (SOHC) LPG/Benzin',
+      '1.6 Karbüratörlü Düz Motor',
+      '1.4 Karbüratörlü'
+    ],
+    'dogan': [
+      '1.6 ie SLX Enjeksiyonlu (SOHC) LPG/Benzin',
+      '1.6 SLX Karbüratörlü',
+      '1.6 Düz Karbüratörlü'
+    ],
+    'kartal': [
+      '1.6 ie SLX Enjeksiyonlu',
+      '1.6 SLX Karbüratörlü',
+      '1.6 Düz Motor'
+    ]
+  },
+
+  // Standart Genel Motor Seçenekleri
+  genericEngines: [
+    '1.0 Turbo Benzin (TSI / TCe / EcoBoost / PureTech)',
+    '1.2 Turbo Benzin (PureTech / TSI / TCe)',
+    '1.3 Multijet / CDTI Dizel',
+    '1.4 Turbo Benzin (TSI / Fire / T-Jet / T-GDI)',
+    '1.5 dCi / BlueHDi / EcoBlue Dizel',
+    '1.5 Turbo Benzin / Hibrit (TSI / VVT-i / T-GDI)',
+    '1.6 TDI / BlueHDi / CRDi / Multijet Dizel',
+    '1.6 Atmosferik Benzin & LPG (i-VTEC / 16V / Valvematic)',
+    '1.6 Turbo Benzin (THP / PureTech / T-GDI / VTEC Turbo)',
+    '1.8 Hibrit (HEV / PHEV)',
+    '2.0 Turbo Dizel (TDI / BlueHDi / d / D-4D / Duratorq)',
+    '2.0 Turbo Benzin (TSI / TFSI / EcoBoost / BMW Turbo)',
+    '2.2 / 2.5 / 2.8 Ticari & Kamyonet Dizel',
+    '3.0 V6 Dizel / Benzin',
+    'Tam Elektrikli (EV)',
+    'Plug-in Hybrid (PHEV)'
+  ],
+
+  // Marka veya modele göre motor listesi getiren akıllı yardımcı
+  getEnginesFor(brandName, modelName) {
+    const cleanStr = (s) => (s || '').toLowerCase()
+      .replace(/[\u0131]/g, 'i')
+      .replace(/[\u015f]/g, 's')
+      .replace(/[\u011f]/g, 'g')
+      .replace(/[\u00fc]/g, 'u')
+      .replace(/[\u00f6]/g, 'o')
+      .replace(/[\u00e7]/g, 'c')
+      .replace(/[^a-z0-9]/g, '');
+
+    const cModel = cleanStr(modelName);
+    const cBrand = cleanStr(brandName);
+
+    // 1. Model eşleşmesi ara
+    if (cModel) {
+      for (const [key, engines] of Object.entries(this.modelEngines)) {
+        const cKey = cleanStr(key);
+        if (cModel.includes(cKey) || cKey.includes(cModel)) {
+          return engines;
+        }
+      }
+    }
+
+    // 2. Marka özel popüler motorları birleştir
+    const brandEngines = [];
+    if (cBrand) {
+      for (const [key, engines] of Object.entries(this.modelEngines)) {
+        // Markanın modelleriyle eşleşiyor mu?
+        const brandObj = this.brands.find(b => cleanStr(b.name) === cBrand || cleanStr(b.id) === cBrand);
+        if (brandObj && brandObj.popularModels) {
+          const isModelOfBrand = brandObj.popularModels.some(m => cleanStr(m).includes(cleanStr(key)) || cleanStr(key).includes(cleanStr(m)));
+          if (isModelOfBrand) {
+            engines.forEach(e => { if (!brandEngines.includes(e)) brandEngines.push(e); });
+          }
+        }
+      }
+    }
+
+    if (brandEngines.length > 0) {
+      return brandEngines;
+    }
+
+    return this.genericEngines;
   }
 };
+

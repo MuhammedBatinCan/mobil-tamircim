@@ -977,6 +977,7 @@ const server = http.createServer(async (req, res) => {
           category: body.category || 'genel',
           brand: body.brand || '',
           model: body.model || '',
+          engine: body.engine || '',
           obdCode: body.obdCode || '',
           authorId: body.authorId || 'usr_normal_1',
           authorUsername: body.authorUsername || 'Anonim',

@@ -1883,3 +1883,43 @@ body {
   font-size: 1.1rem;
   flex-shrink: 0;
 }
+
+/* Hızlı Motor Seçim Çipleri */
+.quick-engine-chips-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 6px;
+  min-height: 20px;
+}
+
+.engine-quick-chip {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: var(--radius-xs);
+  background: rgba(56, 189, 248, 0.08);
+  border: 1px solid rgba(56, 189, 248, 0.22);
+  color: #38BDF8;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.engine-quick-chip:hover {
+  background: rgba(56, 189, 248, 0.18);
+  border-color: #38BDF8;
+  color: #FFF;
+  transform: translateY(-1px);
+}
+
+.engine-quick-chip.active {
+  background: #38BDF8;
+  color: #0F172A;
+  font-weight: 700;
+  border-color: #38BDF8;
+}
+
