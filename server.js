@@ -314,57 +314,241 @@ const initialData = {
   // Sanayi & Usta Rehberi
   directory: [
     {
-      id: 'dir_1',
-      shopName: 'Çelik Oto VAG Özel Servis',
-      ownerName: 'Ahmet Çelik Usta',
-      city: 'İstanbul',
-      district: 'Sarıyer',
-      sanayiSite: 'Maslak Atatürk Oto Sanayi 2. Kısım',
-      address: '2. Kısım 34. Sokak No: 12 Maslak / İstanbul',
-      phone: '0532 555 10 20',
-      whatsapp: '905325551020',
-      categories: ['Motor & Mekanik', 'Otomatik Şanzıman', 'VAG Grubu'],
-      rating: 4.9,
-      reviewCount: 48,
-      verified: true,
-      isOpenWeekend: false,
-      badge: 'verified_mechanic'
+        "id": "dir_1",
+        "shopName": "Çelik Oto VAG Özel Servis",
+        "ownerName": "Ahmet Çelik Usta",
+        "city": "İstanbul",
+        "district": "Sarıyer",
+        "sanayiSite": "Maslak Atatürk Oto Sanayi 2. Kısım",
+        "address": "2. Kısım 34. Sokak No: 12 Maslak / İstanbul",
+        "coordinates": {
+            "lat": 41.1118,
+            "lng": 29.0205
+        },
+        "phone": "0532 555 10 20",
+        "whatsapp": "905325551020",
+        "categories": [
+            "Motor & Mekanik",
+            "Otomatik Şanzıman",
+            "VAG Grubu"
+        ],
+        "rating": 4.9,
+        "reviewCount": 48,
+        "verified": true,
+        "isOpenWeekend": false,
+        "experienceYears": 24,
+        "badge": "verified_mechanic"
     },
     {
-      id: 'dir_2',
-      shopName: 'Şaşmaz BMW & Mini Klinik',
-      ownerName: 'Salih Usta',
-      city: 'Ankara',
-      district: 'Etimesgut',
-      sanayiSite: 'Şaşmaz Oto Sanayi Sitesi',
-      address: 'Şaşmaz Oto Sanayi 2552. Cadde No: 18 Ankara',
-      phone: '0533 777 44 55',
-      whatsapp: '905337774455',
-      categories: ['BMW & Mini', 'Motor Revizyonu', 'Oto Elektrik & Beyin'],
-      rating: 4.8,
-      reviewCount: 36,
-      verified: true,
-      isOpenWeekend: true, // Pazar açık!
-      badge: 'verified_mechanic'
+        "id": "dir_2",
+        "shopName": "Şaşmaz BMW & Mini Klinik",
+        "ownerName": "Salih Usta",
+        "city": "Ankara",
+        "district": "Etimesgut",
+        "sanayiSite": "Şaşmaz Oto Sanayi Sitesi",
+        "address": "Şaşmaz Oto Sanayi 2552. Cadde No: 18 Etimesgut / Ankara",
+        "coordinates": {
+            "lat": 39.9405,
+            "lng": 32.7212
+        },
+        "phone": "0533 777 44 55",
+        "whatsapp": "905337774455",
+        "categories": [
+            "BMW & Mini",
+            "Motor Revizyonu",
+            "Oto Elektrik & Beyin"
+        ],
+        "rating": 4.8,
+        "reviewCount": 36,
+        "verified": true,
+        "isOpenWeekend": true,
+        "experienceYears": 17,
+        "badge": "verified_mechanic"
     },
     {
-      id: 'dir_3',
-      shopName: 'Ege Dizel Enjektör & Turbo Pompa',
-      ownerName: 'Mustafa Usta',
-      city: 'İzmir',
-      district: 'Bornova',
-      sanayiSite: 'İzmir 1. Sanayi Sitesi',
-      address: '2822 Sokak No: 41 1. Sanayi Bornova / İzmir',
-      phone: '0542 333 99 88',
-      whatsapp: '905423339988',
-      categories: ['Dizel Enjektör', 'Turbo Tamiri', 'Pompa Ayarı'],
-      rating: 4.7,
-      reviewCount: 29,
-      verified: true,
-      isOpenWeekend: false,
-      badge: 'verified_mechanic'
+        "id": "dir_3",
+        "shopName": "Ege Dizel Enjektör & Turbo Pompa",
+        "ownerName": "Mustafa Usta",
+        "city": "İzmir",
+        "district": "Bornova",
+        "sanayiSite": "İzmir 1. Sanayi Sitesi",
+        "address": "2822 Sokak No: 41 1. Sanayi Bornova / İzmir",
+        "coordinates": {
+            "lat": 38.4315,
+            "lng": 27.1725
+        },
+        "phone": "0542 333 99 88",
+        "whatsapp": "905423339988",
+        "categories": [
+            "Dizel Enjektör",
+            "Turbo Tamiri",
+            "Pompa Ayarı"
+        ],
+        "rating": 4.7,
+        "reviewCount": 29,
+        "verified": true,
+        "isOpenWeekend": false,
+        "experienceYears": 22,
+        "badge": "verified_mechanic"
+    },
+    {
+        "id": "dir_4",
+        "shopName": "İkitelli Japon & Kore Mekanik",
+        "ownerName": "Hüseyin Kaya Usta",
+        "city": "İstanbul",
+        "district": "Başakşehir",
+        "sanayiSite": "İkitelli OSB Bağcılar Güngören San. Sit.",
+        "address": "Bağcılar Güngören Sanayi Sitesi 14. Blok No: 28 Başakşehir / İstanbul",
+        "coordinates": {
+            "lat": 41.0725,
+            "lng": 28.7985
+        },
+        "phone": "0535 444 88 12",
+        "whatsapp": "905354448812",
+        "categories": [
+            "Toyota & Honda",
+            "Hyundai & Kia",
+            "Periyodik Bakım"
+        ],
+        "rating": 4.8,
+        "reviewCount": 52,
+        "verified": true,
+        "isOpenWeekend": true,
+        "experienceYears": 19,
+        "badge": "verified_mechanic"
+    },
+    {
+        "id": "dir_5",
+        "shopName": "Bostancı Otomatik Şanzıman & DSG Klinik",
+        "ownerName": "Serkan Demir Usta",
+        "city": "İstanbul",
+        "district": "Kadıköy",
+        "sanayiSite": "Bostancı Oto Sanayi Sitesi",
+        "address": "Huzur Hoca Caddesi No: 44 Bostancı Oto Sanayi / İstanbul",
+        "coordinates": {
+            "lat": 40.9745,
+            "lng": 29.112
+        },
+        "phone": "0533 222 77 99",
+        "whatsapp": "905332227799",
+        "categories": [
+            "Otomatik Şanzıman",
+            "DSG & EDC Mekatronik",
+            "Tork Konvertörü"
+        ],
+        "rating": 4.9,
+        "reviewCount": 64,
+        "verified": true,
+        "isOpenWeekend": false,
+        "experienceYears": 21,
+        "badge": "verified_mechanic"
+    },
+    {
+        "id": "dir_6",
+        "shopName": "Başkent Turbo & Common Rail Pompa",
+        "ownerName": "Kemal Yıldız Usta",
+        "city": "Ankara",
+        "district": "Yenimahalle",
+        "sanayiSite": "İvedik Organize Sanayi Bölgesi",
+        "address": "1354. Cadde 1422. Sokak No: 7 İvedik OSB Yenimahalle / Ankara",
+        "coordinates": {
+            "lat": 39.988,
+            "lng": 32.7485
+        },
+        "phone": "0530 888 33 21",
+        "whatsapp": "905308883321",
+        "categories": [
+            "Dizel Enjektör",
+            "Turbo Tamiri",
+            "Partikül & EGR Temizliği"
+        ],
+        "rating": 4.9,
+        "reviewCount": 41,
+        "verified": true,
+        "isOpenWeekend": false,
+        "experienceYears": 26,
+        "badge": "verified_mechanic"
+    },
+    {
+        "id": "dir_7",
+        "shopName": "Çiğli Fransız & İtalyan Servisi (Renault-Fiat)",
+        "ownerName": "Erhan Aksoy Usta",
+        "city": "İzmir",
+        "district": "Çiğli",
+        "sanayiSite": "AOSB Çiğli 2. Sanayi Sitesi",
+        "address": "10014 Sokak No: 19 Çiğli Atatürk OSB / İzmir",
+        "coordinates": {
+            "lat": 38.4985,
+            "lng": 27.052
+        },
+        "phone": "0536 111 44 77",
+        "whatsapp": "905361114477",
+        "categories": [
+            "Renault & Dacia",
+            "Fiat & Alfa",
+            "Ön Düzen & Fren"
+        ],
+        "rating": 4.8,
+        "reviewCount": 38,
+        "verified": true,
+        "isOpenWeekend": true,
+        "experienceYears": 16,
+        "badge": "verified_mechanic"
+    },
+    {
+        "id": "dir_8",
+        "shopName": "Otosansit İtalyan & Yerli Oto Tamir (Tofaş-Fiat)",
+        "ownerName": "Cemal Varol Usta",
+        "city": "Bursa",
+        "district": "Yıldırım",
+        "sanayiSite": "Otosansit Sanayi Sitesi",
+        "address": "Otosansit 17. Blok No: 22 Yıldırım / Bursa",
+        "coordinates": {
+            "lat": 40.1895,
+            "lng": 29.135
+        },
+        "phone": "0537 999 55 44",
+        "whatsapp": "905379995544",
+        "categories": [
+            "Tofaş & Fiat",
+            "Motor & Mekanik",
+            "LPG Ayar & Gaz Bakımı"
+        ],
+        "rating": 4.9,
+        "reviewCount": 57,
+        "verified": true,
+        "isOpenWeekend": true,
+        "experienceYears": 30,
+        "badge": "verified_mechanic"
+    },
+    {
+        "id": "dir_9",
+        "shopName": "Akdeniz Oto Klima & Elektronik Beyin",
+        "ownerName": "Hakan Öztürk Usta",
+        "city": "Antalya",
+        "district": "Kepez",
+        "sanayiSite": "Akdeniz Yeni Sanayi Sitesi",
+        "address": "5036. Sokak No: 8 Akdeniz Sanayi Kepez / Antalya",
+        "coordinates": {
+            "lat": 36.938,
+            "lng": 30.665
+        },
+        "phone": "0544 666 22 11",
+        "whatsapp": "905446662211",
+        "categories": [
+            "Oto Klima & Gaz",
+            "Elektrik & Beyin",
+            "Arıza Tespiti (OBD)"
+        ],
+        "rating": 4.9,
+        "reviewCount": 45,
+        "verified": true,
+        "isOpenWeekend": true,
+        "experienceYears": 18,
+        "badge": "verified_mechanic"
     }
-  ],
+],
+
 
   // Piyasa Fiyat Analizi (Piyasa Ne Diyor?)
   priceBenchmarks: [
