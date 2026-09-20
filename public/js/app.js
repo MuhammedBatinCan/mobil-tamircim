@@ -125,19 +125,31 @@ const App = {
     document.querySelectorAll('.mobile-nav-btn').forEach(b => {
       const id = b.id;
       if (id === 'mnav-forum' && viewId === 'view-forum') b.classList.add('active');
-      else if (id === 'mnav-obd' && viewId === 'view-obd') b.classList.add('active');
-      else if (id !== 'mnav-profile' && id !== 'mnav-ai') b.classList.remove('active');
+      else if (id === 'mnav-profile' && viewId === 'view-profile') b.classList.add('active');
+      else if (id !== 'mnav-ai') b.classList.remove('active');
     });
 
     if (viewId === 'view-forum') {
       Forum.activeBrandFilter = null;
       Forum.renderThreadList();
+    } else if (viewId === 'view-profile' && typeof Profile !== 'undefined') {
+      Profile.render();
+    }
+  },
+
+  openUserProfile(userId) {
+    if (typeof Profile !== 'undefined' && Profile.open) {
+      Profile.open(userId);
+    } else {
+      this.switchView('view-profile');
     }
   },
 
   refreshCurrentView() {
     if (this.currentView === 'view-forum') {
       Forum.renderThreadList();
+    } else if (this.currentView === 'view-profile' && typeof Profile !== 'undefined') {
+      Profile.render();
     } else if (this.currentView === 'view-thread-detail' && Forum.activeThreadId) {
       const thread = Forum.threads.find(t => t.id === Forum.activeThreadId);
       if (thread) Forum.renderThreadDetail(thread);

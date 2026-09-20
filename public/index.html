@@ -87,7 +87,7 @@
     <aside class="sidebar-left">
       <!-- Kullanıcı Mini Profil Kartı -->
       <div class="sidebar-card profile-box">
-        <div style="display:flex; align-items:center; gap:10px; width:100%; text-align:left;">
+        <div style="display:flex; align-items:center; gap:10px; width:100%; text-align:left; cursor:pointer;" onclick="App.openUserProfile()" title="Twitter Tarzı Profilimi Aç">
           <img id="sidebar-avatar" class="profile-avatar-large" src="" alt="Profil">
           <div style="min-width:0; flex:1;">
             <h3 id="sidebar-name" style="font-size:0.92rem; font-weight:700; color:#FFF; margin:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Ahmet Çelik Usta</h3>
@@ -97,14 +97,14 @@
         </div>
         
         <div style="display:flex; gap:6px; width:100%; margin-top:10px;">
-          <button class="btn btn-secondary btn-sm" style="flex:1; font-size:0.75rem;" onclick="openAuthModal('login')">
-            Giriş Yap
+          <button class="btn btn-primary btn-sm" style="flex:1; font-size:0.75rem;" onclick="App.openUserProfile()">
+            Profilim
+          </button>
+          <button class="btn btn-secondary btn-sm" style="padding:0 8px; font-size:0.75rem;" onclick="openModal('user-switcher-modal')" title="Hesap Değiştir">
+            Değiştir
           </button>
           <button class="btn btn-secondary btn-sm" style="padding:0 8px; font-size:0.75rem;" onclick="Auth.logout()" title="Oturumu Kapat">
             Çıkış
-          </button>
-          <button class="btn btn-secondary btn-sm" style="padding:0 8px; font-size:0.75rem;" onclick="openModal('verification-modal')" title="Usta Doğrulama Talebi">
-            Doğrulama
           </button>
         </div>
       </div>
@@ -258,6 +258,71 @@
           </div>
         </div>
         <div id="sos-feed"></div>
+      </div>
+
+      <!-- 7. GÖRÜNÜM: Twitter / X Tarzı Kullanıcı Profili -->
+      <div id="view-profile" class="view-section">
+        <!-- Twitter Top Bar -->
+        <div class="profile-top-bar">
+          <button class="profile-back-btn" onclick="App.switchView('view-forum')" title="Geri">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          </button>
+          <div>
+            <h2 id="profile-top-name" class="profile-top-name">Kullanıcı Profili</h2>
+            <span id="profile-top-count" class="profile-top-count">0 Konu • 0 Yanıt</span>
+          </div>
+        </div>
+
+        <!-- Twitter Cover Banner -->
+        <div id="profile-cover-banner" class="profile-cover-banner"></div>
+
+        <!-- Twitter Profile Header Meta Area -->
+        <div class="profile-header-card">
+          <!-- Overlap Avatar & Action Buttons Row -->
+          <div class="profile-avatar-row">
+            <div class="profile-avatar-overlap">
+              <img id="profile-avatar-img" src="" alt="Avatar">
+            </div>
+            <div id="profile-actions-wrap" class="profile-actions-wrap">
+              <!-- JS render buttons -->
+            </div>
+          </div>
+
+          <!-- User Details Block -->
+          <div class="profile-user-block">
+            <h1 id="profile-name-text" class="profile-name-text">Yükleniyor...</h1>
+            <div id="profile-handle-text" class="profile-handle-text">@kullanici</div>
+            <p id="profile-bio-text" class="profile-bio-text"></p>
+
+            <!-- Meta Grid (Location, Vehicle, Shop, Date) -->
+            <div id="profile-meta-grid" class="profile-meta-grid"></div>
+
+            <!-- Stats (Following, Followers, XP, Solutions) -->
+            <div id="profile-stats-row" class="profile-stats-row"></div>
+          </div>
+
+          <!-- Twitter Sticky Tabs Bar -->
+          <div class="profile-tabs-nav">
+            <button id="ptab-btn-threads" class="profile-tab-btn active" data-tab="threads" onclick="Profile.setTab('threads')">
+              Konular
+            </button>
+            <button id="ptab-btn-replies" class="profile-tab-btn" data-tab="replies" onclick="Profile.setTab('replies')">
+              Yanıtlar
+            </button>
+            <button id="ptab-btn-garage" class="profile-tab-btn" data-tab="garage" onclick="Profile.setTab('garage')">
+              Garajım
+            </button>
+            <button id="ptab-btn-solutions" class="profile-tab-btn" data-tab="solutions" onclick="Profile.setTab('solutions')">
+              Çözümler
+            </button>
+            <button id="ptab-btn-badges" class="profile-tab-btn" data-tab="badges" onclick="Profile.setTab('badges')">
+              Rozetler
+            </button>
+          </div>
+        </div>
+
+        <!-- Feed Content Area -->
+        <div id="profile-feed-content" class="profile-feed-content"></div>
       </div>
 
     </section>
@@ -640,7 +705,60 @@
     </div>
   </div>
 
-  <!-- 6. AI USTA SOHBET MODALI (CANLI YAPAY ZEKA DESTEKLİ) -->
+  <!-- 6. PROFİLİ DÜZENLE MODALI (Twitter / X Tarzı) -->
+  <div id="edit-profile-modal" class="modal-overlay">
+    <div class="modal-content" style="max-width:520px;">
+      <div class="modal-header">
+        <h3 style="font-size:1.15rem; font-weight:800; color:#FFF;">Profili Düzenle</h3>
+        <button class="modal-close" onclick="closeModal('edit-profile-modal')">&times;</button>
+      </div>
+      <form id="edit-profile-form" onsubmit="Profile.saveEdit(event)">
+        <div class="form-group">
+          <label class="form-label">Görünen Ad Soyad:</label>
+          <input id="edit-profile-name" class="form-control" type="text" placeholder="Adınız Soyadınız" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Biyografi (Hakkımda):</label>
+          <textarea id="edit-profile-bio" class="form-control" rows="3" placeholder="Aracınız, uzmanlığınız veya sanayi tecrübenizden bahsedin..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Aktif Kullandığınız Araç:</label>
+          <input id="edit-profile-car" class="form-control" type="text" placeholder="Örn: 2022 Volkswagen Golf 1.5 eTSI">
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+          <div class="form-group">
+            <label class="form-label">Şehir:</label>
+            <input id="edit-profile-city" class="form-control" type="text" placeholder="Örn: İstanbul">
+          </div>
+          <div class="form-group">
+            <label class="form-label">İlçe / Bölge:</label>
+            <input id="edit-profile-district" class="form-control" type="text" placeholder="Örn: Sarıyer">
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+          <div class="form-group">
+            <label class="form-label">İşyeri / Sanayi Dükkanı (Varsa):</label>
+            <input id="edit-profile-shop" class="form-control" type="text" placeholder="Örn: Çelik Oto Servis">
+          </div>
+          <div class="form-group">
+            <label class="form-label">İletişim Telefonu:</label>
+            <input id="edit-profile-phone" class="form-control" type="text" placeholder="0532 ...">
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:16px;">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('edit-profile-modal')">Vazgeç</button>
+          <button type="submit" class="btn btn-primary">Değişiklikleri Kaydet</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 7. AI USTA SOHBET MODALI (CANLI YAPAY ZEKA DESTEKLİ) -->
   <div id="ai-assistant-modal" class="modal-overlay">
     <div class="modal-content" style="max-width:620px; padding:22px; display:flex; flex-direction:column; max-height:88vh;">
       
@@ -1001,11 +1119,11 @@
       </span>
       <span class="mnav-label">Danışman</span>
     </button>
-    <button class="mobile-nav-btn" id="mnav-profile" onclick="openModal('user-switcher-modal')">
+    <button class="mobile-nav-btn" id="mnav-profile" onclick="App.openUserProfile()">
       <span class="mnav-icon">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
       </span>
-      <span class="mnav-label">Hesabım</span>
+      <span class="mnav-label">Profilim</span>
     </button>
   </nav>
 
@@ -1070,6 +1188,7 @@
   <!-- Scriptler -->
   <script src="js/data.js"></script>
   <script src="js/auth.js"></script>
+  <script src="js/profile.js"></script>
   <script src="js/forum.js"></script>
   <script src="js/ai-assistant.js"></script>
   <script src="js/directory.js"></script>

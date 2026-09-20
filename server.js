@@ -797,6 +797,41 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
+    // 1.E Users: Update Profile (İsim, Bio, Araç, Konum, Telefon vb.)
+    if (pathname === '/api/users/update-profile' && method === 'POST') {
+      try {
+        const body = await parseBody(req);
+        const userId = body.userId;
+        const user = db.users.find(u => u.id === userId);
+
+        if (!user) {
+          res.writeHead(404);
+          res.end(JSON.stringify({ success: false, error: 'Kullanıcı bulunamadı.' }));
+          return;
+        }
+
+        if (body.name) user.name = body.name.trim();
+        if (body.bio !== undefined) user.bio = body.bio.trim();
+        if (body.car !== undefined) user.car = body.car.trim();
+        if (body.city !== undefined) user.city = body.city.trim();
+        if (body.district !== undefined) user.district = body.district.trim();
+        if (body.shopName !== undefined) user.shopName = body.shopName.trim();
+        if (body.sanayiSite !== undefined) user.sanayiSite = body.sanayiSite.trim();
+        if (body.phone !== undefined) user.phone = body.phone.trim();
+        if (body.avatar) user.avatar = body.avatar.trim();
+        if (body.banner) user.banner = body.banner.trim();
+
+        saveDb();
+
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, user }));
+      } catch (err) {
+        res.writeHead(500);
+        res.end(JSON.stringify({ success: false, error: err.message }));
+      }
+      return;
+    }
+
     // 1.C Admin: Login
     if (pathname === '/api/admin/login' && method === 'POST') {
       try {

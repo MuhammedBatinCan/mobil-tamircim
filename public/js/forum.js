@@ -105,7 +105,7 @@ const Forum = {
             <p class="thread-preview-text">${escapeHtml(t.content)}</p>
 
             <div class="thread-info-bar">
-              <span class="thread-author-name">${escapeHtml(t.authorUsername)}</span>
+              <span class="thread-author-name" onclick="event.stopPropagation(); Profile.open('${t.authorId}')" title="Kullanıcı Profilini Aç" style="cursor:pointer;">${escapeHtml(t.authorUsername)}</span>
               ${t.brand ? `<span class="thread-vehicle-tag">${escapeHtml(t.brand)} ${escapeHtml(t.model || '')}</span>` : ''}
               ${t.obdCode ? `<span class="thread-obd-tag">${escapeHtml(t.obdCode)}</span>` : ''}
               ${isMechanicsOnly ? `<span class="thread-mech-tag">Usta Yanıtlı</span>` : ''}
@@ -219,7 +219,7 @@ const Forum = {
         <div class="comment-item ${isSol ? 'is-solution' : ''}" id="comment-${c.id}">
           <div class="comment-header">
             <div class="author-meta">
-              <strong>${escapeHtml(c.authorUsername)}</strong>
+              <strong style="cursor:pointer;" onclick="Profile.open('${c.authorId}')" title="Kullanıcı Profilini Aç">${escapeHtml(c.authorUsername)}</strong>
               ${Auth.renderPlate(c.authorPlate, 'sm')}
               ${Auth.renderBadges(c.authorBadges, c.authorLevel)}
             </div>
@@ -248,7 +248,7 @@ const Forum = {
       <div class="thread-detail-container">
         <div class="thread-header" style="margin-bottom:14px;">
           <div class="author-meta">
-            <span style="font-size:1rem; font-weight:800;">${escapeHtml(thread.authorUsername)}</span>
+            <span style="font-size:1rem; font-weight:800; cursor:pointer;" onclick="Profile.open('${thread.authorId}')" title="Kullanıcı Profilini Aç">${escapeHtml(thread.authorUsername)}</span>
             ${Auth.renderPlate(thread.authorPlate)}
             ${Auth.renderBadges(thread.authorBadges)}
           </div>

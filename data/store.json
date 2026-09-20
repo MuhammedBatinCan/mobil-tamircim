@@ -94,7 +94,7 @@
       "isMechanicVerified": false,
       "isDealerVerified": false,
       "isUserVerified": true,
-      "bio": "Otomobil tutkunu, kendi küçük bakımlarını garajında yapan bir sürücü.",
+      "bio": "Otomobil tutkunu, kendi k���k bakimlarini garajinda yapan bir s�r�c�.",
       "email": "canersurucu@mobiltamircim.com",
       "isEmailVerified": true
     },
@@ -239,7 +239,7 @@
       "badges": [
         "beta_tester"
       ],
-      "reputationPoints": 25,
+      "reputationPoints": 40,
       "level": "Çırak",
       "isMechanicVerified": false,
       "isDealerVerified": false,
@@ -250,6 +250,30 @@
     }
   ],
   "threads": [
+    {
+      "id": "thr_1789941649508",
+      "title": "kğkoğjğ",
+      "category": "ariza-teshis",
+      "brand": "Škoda",
+      "model": "Super",
+      "obdCode": "",
+      "authorId": "usr_1789941375341",
+      "authorUsername": "Muhammed Batın",
+      "authorPlate": "",
+      "authorCar": "",
+      "authorBadges": [
+        "beta_tester"
+      ],
+      "createdAt": "2026-09-20T22:00:49.508Z",
+      "allowCommentsFrom": "all",
+      "isSolved": false,
+      "solvedCommentId": null,
+      "views": 1,
+      "likes": 0,
+      "content": "nlşjşjşp",
+      "audioUrl": "motor_sesi_yuklendi.mp3",
+      "commentsCount": 0
+    },
     {
       "id": "thr_1789941206489",
       "title": "jjpjşpnp",
