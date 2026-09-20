@@ -94,7 +94,7 @@
       "isMechanicVerified": false,
       "isDealerVerified": false,
       "isUserVerified": true,
-      "bio": "Otomobil tutkunu, kendi k���k bakimlarini garajinda yapan bir s�r�c�.",
+      "bio": "Otomobil tutkunu, kendi küçük bakımlarını garajında yapan bir sürücü.",
       "email": "canersurucu@mobiltamircim.com",
       "isEmailVerified": true
     },
@@ -253,7 +253,7 @@
   "threads": [
     {
       "id": "thr_1789942202384",
-      "title": "Skoda Superb 1.5 TSI Sogukken Titreme",
+      "title": "Skoda Superb 1.5 TSI Soğukken Titreme",
       "category": "ariza-teshis",
       "brand": "Skoda",
       "model": "Superb",
@@ -270,7 +270,7 @@
       "solvedCommentId": null,
       "views": 1,
       "likes": 0,
-      "content": "Superb 1.5 TSI aracimda sabah ilk �alistirmada 10-15 saniye hafif sarsinti oluyor. Tecr�besi olan usta var midir?",
+      "content": "Superb 1.5 TSI aracımda sabah ilk çalıştırmada 10-15 saniye hafif sarsıntı oluyor. Tecrübesi olan usta var mıdır?",
       "audioUrl": null,
       "commentsCount": 0
     },
@@ -496,7 +496,7 @@
       "createdAt": "2026-09-18T20:50:42.589Z",
       "likes": 0,
       "isSolution": false,
-      "content": "Kavrama �atali ve mekatronik basincini �l�t�rmelisin.",
+      "content": "Kavrama çatalı ve mekatronik basıncını ölçtürmelisin.",
       "aiModeration": {
         "status": "approved",
         "safetyScore": 0.95,

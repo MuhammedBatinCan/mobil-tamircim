@@ -669,17 +669,21 @@ function runAiContentAudit(text) {
   };
 }
 
-// Simple JSON body parser
+// Robust UTF-8 body parser
 function parseBody(req) {
   return new Promise((resolve, reject) => {
-    let body = '';
+    const chunks = [];
+    let byteLength = 0;
     req.on('data', chunk => {
-      body += chunk.toString();
-      if (body.length > 2e6) { // 2MB limit
+      chunks.push(chunk);
+      byteLength += chunk.length;
+      if (byteLength > 2e6) { // 2MB limit
         reject(new Error('Body too large'));
       }
     });
     req.on('end', () => {
+      if (chunks.length === 0) return resolve({});
+      const body = Buffer.concat(chunks).toString('utf8');
       if (!body) return resolve({});
       try {
         resolve(JSON.parse(body));
