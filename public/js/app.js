@@ -186,16 +186,19 @@ const App = {
     }
 
     container.innerHTML = list.map(b => `
-      <div class="sidebar-card brand-card" style="cursor:pointer; transition:transform 0.15s, border-color 0.15s; margin-bottom:0;" onclick="App.filterByBrand('${b.name}')">
-        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;">
-          <div class="brand-monogram-badge">${b.logo}</div>
-          ${b.popular ? '<span style="font-size:0.68rem; font-weight:700; color:var(--accent-amber); background:rgba(245,158,11,0.1); padding:2px 6px; border-radius:4px; border:1px solid rgba(245,158,11,0.2);">Popüler</span>' : ''}
+      <div class="sidebar-card brand-card" onclick="App.filterByBrand('${escapeHtml(b.name)}')">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
+          <div class="brand-logo-wrap">
+            <img class="brand-logo-img" src="${b.logoUrl || ('/img/brands/' + b.id + '.png')}" alt="${escapeHtml(b.name)}" loading="lazy" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='inline-flex';" />
+            <div class="brand-monogram-badge fallback" style="display:none;">${b.logo || b.name.substring(0,3).toUpperCase()}</div>
+          </div>
+          ${b.popular ? '<span class="brand-popular-tag">Popüler</span>' : ''}
         </div>
-        <h3 style="font-size:1.02rem; font-weight:700; color:#FFF; margin-bottom:4px;">${b.name} Kulübü</h3>
-        <p style="font-size:0.76rem; color:var(--text-dim); margin-bottom:12px; line-height:1.4; min-height:32px;">
-          ${b.popularModels ? b.popularModels.slice(0, 4).join(', ') : ''}
+        <h3 class="brand-card-title">${escapeHtml(b.name)} Kulübü</h3>
+        <p class="brand-card-models">
+          ${b.popularModels && b.popularModels.length ? b.popularModels.slice(0, 4).join(', ') : 'Model tartışmaları ve teknik destek'}
         </p>
-        <div style="font-size:0.78rem; color:var(--accent-amber); font-weight:600;">
+        <div class="brand-card-link">
           Tartışmaları İncele &rarr;
         </div>
       </div>
@@ -203,8 +206,8 @@ const App = {
   },
 
   filterByBrand(brandName) {
-    Forum.setBrandFilter(brandName);
     this.switchView('view-forum');
+    Forum.setBrandFilter(brandName);
     showToast(`${brandName} Kulübü Konuları Filtrelendi`);
   },
 
