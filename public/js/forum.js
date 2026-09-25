@@ -108,7 +108,7 @@ const Forum = {
             <div class="thread-info-bar">
               <span class="thread-author-name" onclick="event.stopPropagation(); Profile.open('${t.authorId}')" title="Kullanıcı Profilini Aç" style="cursor:pointer;">${escapeHtml(t.authorUsername)}</span>
               ${t.brand ? `<span class="thread-vehicle-tag">${escapeHtml(t.brand)} ${escapeHtml(t.model || '')}${t.engine ? ' • ' + escapeHtml(t.engine) : ''}</span>` : ''}
-              ${t.obdCode ? `<span class="thread-obd-tag">${escapeHtml(t.obdCode)}</span>` : ''}
+              ${t.obdCode ? `<span class="thread-obd-tag interactive" onclick="event.stopPropagation(); if(window.OBD) OBD.openModal('${escapeHtml(t.obdCode)}');" title="OBD-II Arıza Teşhis Hub'ında Gör">⚡ ${escapeHtml(t.obdCode)}</span>` : ''}
               ${isMechanicsOnly ? `<span class="thread-mech-tag">Usta Yanıtlı</span>` : ''}
               ${t.audioUrl ? `<span class="thread-audio-tag">Ses Kaydı</span>` : ''}
               <span class="thread-time-tag">${formatDate(t.createdAt)}</span>
@@ -331,7 +331,7 @@ const Forum = {
 
         <div class="thread-tags" style="margin-bottom:16px;">
           ${thread.brand ? `<span class="thread-tag">${escapeHtml(thread.brand)} ${escapeHtml(thread.model || '')}${thread.engine ? ' • ' + escapeHtml(thread.engine) : ''}</span>` : ''}
-          ${thread.obdCode ? `<span class="thread-tag tag-obd">OBD: ${escapeHtml(thread.obdCode)}</span>` : ''}
+          ${thread.obdCode ? `<span class="thread-tag tag-obd interactive" onclick="if(window.OBD) OBD.openModal('${escapeHtml(thread.obdCode)}');" style="cursor:pointer;" title="OBD-II Teknik Teşhis & Sanayi Maliyetini Gör">⚡ OBD: ${escapeHtml(thread.obdCode)}</span>` : ''}
           ${isMechanicsOnly ? `<span class="thread-tag tag-mechanic-only">Sadece Usta Yorumu</span>` : ''}
           ${thread.isSolved ? `<span class="thread-tag tag-solved">Sorun Çözüldü</span>` : ''}
         </div>

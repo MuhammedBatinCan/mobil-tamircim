@@ -1458,12 +1458,14 @@ const server = http.createServer(async (req, res) => {
         car: body.car,
         locationCity: body.locationCity,
         locationDetails: body.locationDetails,
+        coordinates: body.coordinates || null,
         issueType: body.issueType,
         description: body.description,
         phone: body.phone,
         status: 'active',
         createdAt: new Date().toISOString()
       };
+      if (!Array.isArray(db.sosRequests)) db.sosRequests = [];
       db.sosRequests.unshift(newSos);
       saveDb();
       res.writeHead(201);
@@ -1473,7 +1475,7 @@ const server = http.createServer(async (req, res) => {
 
     if (pathname.match(/^\/api\/sos\/([a-zA-Z0-9_-]+)\/resolve$/) && method === 'POST') {
       const sosId = pathname.split('/')[2];
-      const item = db.sosRequests.find(s => s.id === sosId);
+      const item = (db.sosRequests || []).find(s => s.id === sosId);
       if (item) {
         item.status = 'resolved';
         item.resolvedAt = new Date().toISOString();
@@ -1484,6 +1486,62 @@ const server = http.createServer(async (req, res) => {
         res.writeHead(404);
         res.end(JSON.stringify({ success: false, error: 'SOS kaydı bulunamadı' }));
       }
+      return;
+    }
+
+    // 9.B Usta Değerlendirme & Yorum Sistemi (Mechanic Reviews)
+    if (pathname.match(/^\/api\/directory\/([a-zA-Z0-9_-]+)\/reviews$/) && method === 'GET') {
+      const mechanicId = pathname.split('/')[3];
+      if (!Array.isArray(db.mechanicReviews)) db.mechanicReviews = [];
+      const reviews = db.mechanicReviews.filter(r => String(r.mechanicId) === String(mechanicId));
+      res.writeHead(200);
+      res.end(JSON.stringify({ success: true, reviews }));
+      return;
+    }
+
+    if (pathname.match(/^\/api\/directory\/([a-zA-Z0-9_-]+)\/reviews$/) && method === 'POST') {
+      const mechanicId = pathname.split('/')[3];
+      const item = (db.directory || []).find(d => String(d.id) === String(mechanicId));
+      if (!item) {
+        res.writeHead(404);
+        res.end(JSON.stringify({ success: false, error: 'Usta bulunamadı' }));
+        return;
+      }
+
+      const body = await parseBody(req);
+      const rating = Math.min(5, Math.max(1, Number(body.rating) || 5));
+      const comment = (body.comment || '').trim();
+      if (!comment) {
+        res.writeHead(400);
+        res.end(JSON.stringify({ success: false, error: 'Lütfen ustanın işçiliği veya deneyiminiz hakkında bir yorum yazın.' }));
+        return;
+      }
+
+      const newReview = {
+        id: 'mrev_' + Date.now(),
+        mechanicId: String(mechanicId),
+        userId: body.userId || 'usr_anon',
+        authorName: (body.authorName || 'Anonim Sürücü').trim(),
+        authorCar: (body.authorCar || '').trim(),
+        rating,
+        serviceType: (body.serviceType || 'Genel Bakım & Onarım').trim(),
+        cost: (body.cost || '').trim(),
+        comment,
+        createdAt: new Date().toISOString()
+      };
+
+      if (!Array.isArray(db.mechanicReviews)) db.mechanicReviews = [];
+      db.mechanicReviews.unshift(newReview);
+
+      // Recalculate average rating & review count for this mechanic
+      const allReviewsForMech = db.mechanicReviews.filter(r => String(r.mechanicId) === String(mechanicId));
+      const sum = allReviewsForMech.reduce((acc, r) => acc + (Number(r.rating) || 5), 0);
+      item.reviewCount = allReviewsForMech.length;
+      item.rating = Number((sum / allReviewsForMech.length).toFixed(1));
+
+      saveDb();
+      res.writeHead(201);
+      res.end(JSON.stringify({ success: true, review: newReview, mechanic: item }));
       return;
     }
 

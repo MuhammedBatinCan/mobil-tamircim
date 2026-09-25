@@ -718,3 +718,5 @@ const APP_DATA = {
   }
 };
 
+window.APP_DATA = APP_DATA;
+

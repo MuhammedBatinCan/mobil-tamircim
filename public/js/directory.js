@@ -157,9 +157,9 @@ const Directory = {
                 ${item.experienceYears ? `<span class="dir-exp-tag">${item.experienceYears} Yıl Deneyim</span>` : ''}
               </div>
             </div>
-            <div class="dir-rating-box">
+            <div class="dir-rating-box clickable" onclick="Directory.openReviewsList('${item.id}')" title="Müşteri Değerlendirmelerini ve Yorumları Oku">
               <div class="dir-rating-star">★ ${item.rating}</div>
-              <div class="dir-review-count">${item.reviewCount} Değerlendirme</div>
+              <div class="dir-review-count">${item.reviewCount} Değerlendirme &rarr;</div>
             </div>
           </div>
 
@@ -243,11 +243,240 @@ const Directory = {
               💬 WhatsApp ile Yaz
             </a>
           </div>
+
+          <!-- Usta Değerlendirme & Yorum Yap Eylemi -->
+          <div style="display:flex; gap:8px; margin-top:10px;">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="Directory.openReviewsList('${item.id}')" style="flex:1; font-size:0.8rem; background:rgba(255,255,255,0.04);">
+              💬 Yorumları Gör (${item.reviewCount || 0})
+            </button>
+            <button type="button" class="btn btn-warning btn-sm" onclick="Directory.openReviewModal('${item.id}')" style="flex:1.2; font-size:0.8rem; background:rgba(245,158,11,0.12); color:#F59E0B; border:1px solid rgba(245,158,11,0.3); font-weight:600;">
+              ⭐ Ustayı Değerlendir
+            </button>
+          </div>
         </div>
       `;
     }).join('');
+  },
+
+  currentReviewMechanicId: null,
+  selectedStarRating: 5,
+
+  openReviewModal(mechanicId) {
+    const item = this.items.find(i => String(i.id) === String(mechanicId));
+    if (!item) return;
+
+    this.currentReviewMechanicId = mechanicId;
+    this.selectedStarRating = 5;
+
+    const titleEl = document.getElementById('dir-review-mechanic-name') || document.getElementById('review-modal-shop-title');
+    const descEl = document.getElementById('dir-review-mechanic-shop') || document.getElementById('review-modal-shop-desc');
+    const idInput = document.getElementById('dir-review-mechanic-id');
+    if (idInput) idInput.value = mechanicId;
+
+    if (titleEl) titleEl.textContent = `${item.shopName} - ${item.ownerName}`;
+    if (descEl) descEl.textContent = `${item.city} / ${item.sanayiSite}`;
+
+    this.updateStarRatingUi(5);
+
+    // Auto fill user car if logged in
+    const carInput = document.getElementById('dir-review-car-input') || document.getElementById('review-user-car');
+    if (carInput && window.Auth && Auth.currentUser && Auth.currentUser.car) {
+      carInput.value = Auth.currentUser.car;
+    }
+
+    if (typeof openModal === 'function') openModal('dir-review-modal');
+    else {
+      const modal = document.getElementById('dir-review-modal');
+      if (modal) modal.classList.add('active');
+    }
+  },
+
+  closeReviewModal() {
+    if (typeof closeModal === 'function') closeModal('dir-review-modal');
+    else {
+      const modal = document.getElementById('dir-review-modal');
+      if (modal) modal.classList.remove('active');
+    }
+    this.currentReviewMechanicId = null;
+  },
+
+  setStarRating(rating) {
+    this.selectedStarRating = rating;
+    this.updateStarRatingUi(rating);
+  },
+
+  updateStarRatingUi(rating) {
+    const stars = document.querySelectorAll('.star-picker-btn');
+    const label = document.getElementById('dir-star-label') || document.getElementById('star-rating-label');
+    stars.forEach((s, idx) => {
+      const r = parseInt(s.getAttribute('data-rating') || (idx + 1));
+      if (r <= rating) {
+        s.classList.add('active');
+        s.style.color = '#F59E0B';
+      } else {
+        s.classList.remove('active');
+        s.style.color = 'var(--text-dim)';
+      }
+    });
+
+    const labels = {
+      1: '1 Yıldız - Memnun Kalmadım',
+      2: '2 Yıldız - Yetersiz / Geliştirilmeli',
+      3: '3 Yıldız - Ortalama İşçilik',
+      4: '4 Yıldız - İyi ve Temiz Esnaf',
+      5: '5 Yıldız - Mükemmel Ustalık & Kesinlikle Tavsiye'
+    };
+    if (label) label.textContent = labels[rating] || `${rating} Yıldız`;
+  },
+
+  async submitReview(event) {
+    if (event) event.preventDefault();
+    const idInput = document.getElementById('dir-review-mechanic-id');
+    const mechanicId = this.currentReviewMechanicId || (idInput ? idInput.value : null);
+    if (!mechanicId) return;
+
+    const rating = this.selectedStarRating;
+    const serviceType = (document.getElementById('dir-review-service-input')?.value || document.getElementById('review-service-type')?.value || 'Genel Bakım & Onarım').trim();
+    const cost = (document.getElementById('dir-review-cost-input')?.value || document.getElementById('review-cost')?.value || '').trim();
+    const comment = (document.getElementById('dir-review-comment-input')?.value || document.getElementById('review-comment')?.value || '').trim();
+    const userCar = (document.getElementById('dir-review-car-input')?.value || document.getElementById('review-user-car')?.value || '').trim();
+
+    if (!comment) {
+      showToast('Lütfen ustanın işçiliği veya deneyiminiz hakkında bir yorum yazın.', 'error');
+      return;
+    }
+
+    const currentUser = (window.Auth && Auth.currentUser) ? Auth.currentUser : { id: 'usr_anon', name: 'Ziyaretçi Sürücü' };
+
+    try {
+      const res = await fetch(`/api/directory/${mechanicId}/reviews`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: currentUser.id,
+          authorName: currentUser.name,
+          authorCar: userCar || currentUser.car || '',
+          rating,
+          serviceType,
+          cost,
+          comment
+        })
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        showToast('Değerlendirmeniz ve yorumunuz başarıyla kaydedildi! Teşekkür ederiz.');
+        this.closeReviewModal();
+
+        // Update local item rating
+        const item = this.items.find(i => String(i.id) === String(mechanicId));
+        if (item && data.mechanic) {
+          item.rating = data.mechanic.rating;
+          item.reviewCount = data.mechanic.reviewCount;
+        }
+        this.renderDirectory();
+      } else {
+        showToast(data.error || 'Yorum kaydedilirken bir hata oluştu', 'error');
+      }
+    } catch (err) {
+      console.error(err);
+      showToast('Bağlantı hatası oluştu', 'error');
+    }
+  },
+
+  async openReviewsList(mechanicId) {
+    const item = this.items.find(i => String(i.id) === String(mechanicId));
+    if (!item) return;
+
+    const titleEl = document.getElementById('dir-list-mechanic-name') || document.getElementById('reviews-list-shop-title');
+    const badgeEl = document.getElementById('dir-list-mechanic-stats') || document.getElementById('reviews-list-rating-badge');
+    const feedEl = document.getElementById('dir-reviews-items-container') || document.getElementById('reviews-list-feed');
+    const addBtn = document.getElementById('dir-list-add-review-btn') || document.getElementById('reviews-list-add-btn');
+
+    if (titleEl) titleEl.textContent = `${item.shopName} - Müşteri Yorumları`;
+    if (badgeEl) badgeEl.innerHTML = `★ ${item.rating} (${item.reviewCount || 0} Değerlendirme)`;
+    if (addBtn) addBtn.onclick = () => {
+      this.closeReviewsListModal();
+      this.openReviewModal(item.id);
+    };
+
+    if (feedEl) {
+      feedEl.innerHTML = `
+        <div style="text-align:center; padding:30px; color:var(--text-muted);">
+          Yorumlar yükleniyor...
+        </div>
+      `;
+    }
+
+    if (typeof openModal === 'function') openModal('dir-reviews-list-modal');
+    else {
+      const modal = document.getElementById('dir-reviews-list-modal');
+      if (modal) modal.classList.add('active');
+    }
+
+    try {
+      const res = await fetch(`/api/directory/${mechanicId}/reviews`);
+      const data = await res.json();
+      const reviews = (data && data.reviews) ? data.reviews : [];
+
+      if (!feedEl) return;
+
+      if (reviews.length === 0) {
+        feedEl.innerHTML = `
+          <div style="text-align:center; padding: 36px 20px; color: var(--text-dim); background: var(--bg-card); border-radius: var(--radius-md); border: 1px dashed var(--border-color);">
+            <div style="font-size:2rem; margin-bottom:8px;">💬</div>
+            <div style="font-weight:700; color:#FFF;">Henüz Değerlendirme Yapılmamış</div>
+            <p style="font-size:0.85rem; margin-top:4px; color:var(--text-muted);">
+              Bu ustadan hizmet aldıysanız ilk deneyim yorumunu siz paylaşın.
+            </p>
+            <button class="btn btn-primary btn-sm" style="margin-top:12px;" onclick="Directory.closeReviewsListModal(); Directory.openReviewModal('${item.id}');">
+              İlk Yorumu Sen Yap &rarr;
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      feedEl.innerHTML = reviews.map(r => `
+        <div class="sidebar-card review-item-card" style="margin-bottom:12px; padding:14px; background:var(--bg-input);">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:6px;">
+            <div>
+              <div style="font-weight:700; color:#FFF; font-size:0.95rem;">${escapeHtml(r.authorName)}</div>
+              ${r.authorCar ? `<div style="font-size:0.75rem; color:var(--accent-amber);">🚗 ${escapeHtml(r.authorCar)}</div>` : ''}
+            </div>
+            <div style="text-align:right;">
+              <span class="badge" style="background:rgba(245,158,11,0.15); color:#F59E0B; border:1px solid rgba(245,158,11,0.3); font-weight:700;">
+                ★ ${r.rating}.0
+              </span>
+              <div style="font-size:0.7rem; color:var(--text-dim); margin-top:2px;">${formatDate(r.createdAt)}</div>
+            </div>
+          </div>
+
+          <div style="display:flex; gap:8px; flex-wrap:wrap; margin:8px 0;">
+            ${r.serviceType ? `<span class="thread-tag" style="background:rgba(59,130,246,0.12); color:#60A5FA; border:1px solid rgba(59,130,246,0.25);">${escapeHtml(r.serviceType)}</span>` : ''}
+            ${r.cost ? `<span class="thread-tag" style="background:rgba(16,185,129,0.12); color:#34D399; border:1px solid rgba(16,185,129,0.25);">💰 ${escapeHtml(r.cost)}</span>` : ''}
+          </div>
+
+          <p style="font-size:0.88rem; color:#E2E8F0; line-height:1.5; margin:0;">
+            "${escapeHtml(r.comment)}"
+          </p>
+        </div>
+      `).join('');
+    } catch (err) {
+      console.error(err);
+      if (feedEl) feedEl.innerHTML = `<div style="color:#EF4444; padding:20px; text-align:center;">Yorumlar yüklenirken bir hata oluştu.</div>`;
+    }
+  },
+
+  closeReviewsListModal() {
+    if (typeof closeModal === 'function') closeModal('dir-reviews-list-modal');
+    else {
+      const modal = document.getElementById('dir-reviews-list-modal');
+      if (modal) modal.classList.remove('active');
+    }
   }
 };
 
 // Global Export
 window.Directory = Directory;
+

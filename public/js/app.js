@@ -20,6 +20,9 @@ const App = {
         Directory.init(this.state.directory);
         PriceAnalysis.init(this.state.priceBenchmarks);
         SOS.init(this.state.sosRequests);
+        if (typeof OBD !== 'undefined' && OBD.init) {
+          OBD.init(this.state.obdCodes || (typeof APP_DATA !== 'undefined' ? APP_DATA.obdCodes : []));
+        }
 
         this.setupEventListeners();
         this.renderBrandGrid();
@@ -134,6 +137,8 @@ const App = {
       Forum.renderThreadList();
     } else if (viewId === 'view-profile' && typeof Profile !== 'undefined') {
       Profile.render();
+    } else if (viewId === 'view-obd' && typeof OBD !== 'undefined') {
+      OBD.render();
     }
   },
 
@@ -632,8 +637,20 @@ document.addEventListener('DOMContentLoaded', () => {
       const phone = document.getElementById('sos-phone-input').value.trim();
       const description = document.getElementById('sos-desc-input').value.trim();
 
-      SOS.createAlert({ city, locationDetails, plate, car, issueType, phone, description });
+      const latVal = document.getElementById('sos-lat-input') ? document.getElementById('sos-lat-input').value : '';
+      const lngVal = document.getElementById('sos-lng-input') ? document.getElementById('sos-lng-input').value : '';
+      const coordinates = (latVal && lngVal) ? { lat: parseFloat(latVal), lng: parseFloat(lngVal) } : null;
+
+      SOS.createAlert({ city, locationDetails, plate, car, issueType, phone, description, coordinates });
       sosForm.reset();
+      const statusEl = document.getElementById('sos-gps-status');
+      if (statusEl) statusEl.innerHTML = 'Konumunuzu tek tıkla çekici ve ustalara navigasyon olarak iletin.';
+      const gpsBtn = document.getElementById('sos-gps-btn');
+      if (gpsBtn) {
+        gpsBtn.innerHTML = '📍 Konumumu Al';
+        gpsBtn.style.borderColor = 'rgba(239,68,68,0.4)';
+        gpsBtn.style.color = '#FCA5A5';
+      }
     });
   }
 

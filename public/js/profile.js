@@ -251,7 +251,7 @@ const Profile = {
             <p class="thread-preview-text">${escapeHtml(t.content)}</p>
             <div class="thread-info-bar">
               ${t.brand ? `<span class="thread-vehicle-tag">${escapeHtml(t.brand)} ${escapeHtml(t.model || '')}</span>` : ''}
-              ${t.obdCode ? `<span class="thread-obd-tag">${escapeHtml(t.obdCode)}</span>` : ''}
+              ${t.obdCode ? `<span class="thread-obd-tag interactive" onclick="event.stopPropagation(); if(window.OBD) OBD.openModal('${escapeHtml(t.obdCode)}');" title="OBD-II Arıza Teşhis Hub'ında Gör">⚡ ${escapeHtml(t.obdCode)}</span>` : ''}
               ${t.audioUrl ? `<span class="thread-audio-tag">Ses Kaydı</span>` : ''}
               <span class="thread-time-tag">${formatDate(t.createdAt)}</span>
             </div>

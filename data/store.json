@@ -36,7 +36,7 @@
         "developer",
         "beta_tester"
       ],
-      "reputationPoints": 2515,
+      "reputationPoints": 2525,
       "level": "Master",
       "isMechanicVerified": true,
       "isDealerVerified": false,
@@ -240,7 +240,7 @@
       "badges": [
         "beta_tester"
       ],
-      "reputationPoints": 40,
+      "reputationPoints": 50,
       "level": "Çırak",
       "isMechanicVerified": false,
       "isDealerVerified": false,
@@ -369,7 +369,7 @@
       "likes": 18,
       "audioUrl": "motor_sesi_ornek.mp3",
       "content": "Arkadaşlar selamlar. Sabahları ilk çalıştırmada motor soğukken enjektör kütüğünün oradan belirgin bir madeni şıkırtı sesi geliyor. Araç 145.000 km'de. Ses kaydını ekledim, dinleyip fikir verebilecek ustalarımız var mıdır? OBD cihazında P0201 (Silindir 1 Enjektör Devresi) kodu düştü.",
-      "commentsCount": 4
+      "commentsCount": 5
     },
     {
       "id": "thr_2",
@@ -414,7 +414,7 @@
       "views": 780,
       "likes": 54,
       "content": "Değerli forum üyeleri, servisimize gelen birçok BMW 320d ve 520d aracın zincir koparma tehlikesiyle karşılaştığını görüyoruz. N47 motorlarda motorun arkasında yer alan triger zincirinin hışırtı sesi 150-180 bin km arasında başlar. İhmal edilirse motor bloğuna kadar hasar verir. Ses testi nasıl yapılır ve hangi parçalar orijinal OEM seçilmelidir, detayları aşağıya ekliyorum...",
-      "commentsCount": 4
+      "commentsCount": 5
     }
   ],
   "comments": [
@@ -526,6 +526,50 @@
         "flagged": false,
         "reason": "Temiz içerik"
       }
+    },
+    {
+      "id": "cmt_1790016146969",
+      "threadId": "thr_1",
+      "authorId": "usr_mech_1",
+      "authorUsername": "Ahmet Çelik Usta",
+      "authorPlate": "34 USTA 1978",
+      "authorBadges": [
+        "verified_mechanic",
+        "developer",
+        "beta_tester"
+      ],
+      "authorLevel": "Master",
+      "createdAt": "2026-09-21T18:42:26.969Z",
+      "likes": 0,
+      "isSolution": false,
+      "content": "tadfgsdafadfadf",
+      "aiModeration": {
+        "status": "approved",
+        "safetyScore": 0.95,
+        "flagged": false,
+        "reason": "Temiz içerik"
+      }
+    },
+    {
+      "id": "cmt_1790373376357",
+      "threadId": "thr_3",
+      "authorId": "usr_1789941375341",
+      "authorUsername": "Muhammed Batın",
+      "authorPlate": "",
+      "authorBadges": [
+        "beta_tester"
+      ],
+      "authorLevel": "Çırak",
+      "createdAt": "2026-09-25T21:56:16.357Z",
+      "likes": 0,
+      "isSolution": false,
+      "content": "kgnwkşgjgşdajfpajfadjfadjfpşadjp",
+      "aiModeration": {
+        "status": "approved",
+        "safetyScore": 0.95,
+        "flagged": false,
+        "reason": "Temiz içerik"
+      }
     }
   ],
   "verifications": [
@@ -625,7 +669,11 @@
       "description": "Hararet aniden 110 dereceye fırladı, sağa çektim radyatör alt hortumundan su damlatıyor. Acil usta veya çekici lazım.",
       "phone": "0530 111 22 33",
       "status": "active",
-      "createdAt": "2026-09-18T22:15:00.000Z"
+      "createdAt": "2026-09-18T22:15:00.000Z",
+      "coordinates": {
+        "lat": 40.7381,
+        "lng": 31.4287
+      }
     }
   ],
   "directory": [
@@ -648,8 +696,8 @@
         "Otomatik Şanzıman",
         "VAG Grubu"
       ],
-      "rating": 4.9,
-      "reviewCount": 48,
+      "rating": 5,
+      "reviewCount": 2,
       "verified": true,
       "isOpenWeekend": false,
       "experienceYears": 24,
@@ -674,8 +722,8 @@
         "Motor Revizyonu",
         "Oto Elektrik & Beyin"
       ],
-      "rating": 4.8,
-      "reviewCount": 36,
+      "rating": 5,
+      "reviewCount": 1,
       "verified": true,
       "isOpenWeekend": true,
       "experienceYears": 17,
@@ -700,8 +748,8 @@
         "Turbo Tamiri",
         "Pompa Ayarı"
       ],
-      "rating": 4.7,
-      "reviewCount": 29,
+      "rating": 5,
+      "reviewCount": 1,
       "verified": true,
       "isOpenWeekend": false,
       "experienceYears": 22,
@@ -927,5 +975,55 @@
       "resolution": "Antigravity canlı geliştirici motoru tarafından analiz edildi ve sistem yapılandırmasına uygulandı."
     }
   ],
-  "livePatches": []
+  "livePatches": [],
+  "mechanicReviews": [
+    {
+      "id": "mrev_1",
+      "mechanicId": "dir_1",
+      "userId": "usr_beta_1",
+      "authorName": "Murat Kara",
+      "authorCar": "2019 Passat 2.0 TDI",
+      "rating": 5,
+      "serviceType": "Triger Seti & Devirdaim Değişimi",
+      "cost": "8.200 TL",
+      "comment": "Ahmet Usta Maslak sanayide VAG grubunda bir numara. Triger ve periyodik bakımı 4 saatte orijinal parçalarla teslim etti, araç saat gibi oldu.",
+      "createdAt": "2026-09-22T22:00:26.474Z"
+    },
+    {
+      "id": "mrev_2",
+      "mechanicId": "dir_1",
+      "userId": "usr_beta_2",
+      "authorName": "Serdar Yılmaz",
+      "authorCar": "2021 Golf 8 1.5 eTSI",
+      "rating": 5,
+      "serviceType": "DSG Kavrama & Yazılım Adaptasyonu",
+      "cost": "14.500 TL",
+      "comment": "2. viteste vuruntu şikayetiyle gittim. Yetkili servis komple şanzıman demişti, Ahmet usta sadece kavrama ayarı ve yazılım adaptasyonuyla problemi çözdü. Esnaflığı 10 numara.",
+      "createdAt": "2026-09-18T22:00:26.474Z"
+    },
+    {
+      "id": "mrev_3",
+      "mechanicId": "dir_2",
+      "userId": "usr_beta_3",
+      "authorName": "Emre Çakır",
+      "authorCar": "2017 BMW 320i ED",
+      "rating": 5,
+      "serviceType": "Turbo Revizyonu & Hortum Değişimi",
+      "cost": "12.000 TL",
+      "comment": "Gaza yüklenince ıslık sesi geliyordu. Turbo pallerinde boşluk tespit edildi, revizyon sonrası çekiş ilk günkü haline döndü.",
+      "createdAt": "2026-09-20T22:00:26.474Z"
+    },
+    {
+      "id": "mrev_4",
+      "mechanicId": "dir_3",
+      "userId": "usr_beta_4",
+      "authorName": "Hakan Şentürk",
+      "authorCar": "2020 Renault Megane 1.5 dCi",
+      "rating": 5,
+      "serviceType": "Enjektör Temizliği & Pul Değişimi",
+      "cost": "3.400 TL",
+      "comment": "Soğuk havalarda ilk marşta tekleme vardı. Mazot filtresi ve enjektör pulları değişti, sabah tek marşta sorunsuz çalışıyor.",
+      "createdAt": "2026-09-13T22:00:26.474Z"
+    }
+  ]
 }
