@@ -637,6 +637,7 @@ const mimeTypes = {
   '.jpeg': 'image/jpeg',
   '.svg': 'image/svg+xml',
   '.mp3': 'audio/mpeg',
+  '.wav': 'audio/wav',
   '.ico': 'image/x-icon'
 };
 
@@ -1233,6 +1234,8 @@ const server = http.createServer(async (req, res) => {
         const newComment = {
           id: 'cmt_' + Date.now(),
           threadId: thread.id,
+          parentId: body.parentId || null,
+          replyToUsername: body.replyToUsername || null,
           authorId: body.authorId,
           authorUsername: body.authorUsername || (author ? author.username : 'Üye'),
           authorPlate: author ? author.plate : '',
@@ -1240,6 +1243,9 @@ const server = http.createServer(async (req, res) => {
           authorLevel: author ? author.level : 'Çırak',
           createdAt: new Date().toISOString(),
           likes: 0,
+          dislikes: 0,
+          likedBy: [],
+          dislikedBy: [],
           isSolution: false,
           content: body.content,
           aiModeration: {
@@ -1279,6 +1285,74 @@ const server = http.createServer(async (req, res) => {
 
         res.writeHead(201);
         res.end(JSON.stringify({ success: true, comment: newComment }));
+      } catch (err) {
+        res.writeHead(500);
+        res.end(JSON.stringify({ success: false, error: err.message }));
+      }
+      return;
+    }
+
+    // 3.B Comment Like/Dislike (Vote) System
+    if (pathname.match(/^\/api\/comments\/([a-zA-Z0-9_-]+)\/vote$/) && method === 'POST') {
+      const commentId = pathname.split('/')[3];
+      const comment = (db.comments || []).find(c => c.id === commentId);
+      if (!comment) {
+        res.writeHead(404);
+        res.end(JSON.stringify({ success: false, error: 'Yorum bulunamadı' }));
+        return;
+      }
+
+      try {
+        const body = await parseBody(req);
+        const userId = body.userId || 'usr_anon';
+        const voteType = body.voteType; // 'like' or 'dislike'
+
+        if (!Array.isArray(comment.likedBy)) {
+          comment.likedBy = [];
+          // If legacy likes existed, don't drop the count
+          if (comment.likes > 0 && comment.likedBy.length === 0) {
+            for (let i = 0; i < comment.likes; i++) comment.likedBy.push('legacy_usr_' + i);
+          }
+        }
+        if (!Array.isArray(comment.dislikedBy)) comment.dislikedBy = [];
+
+        const hasLiked = comment.likedBy.includes(userId);
+        const hasDisliked = comment.dislikedBy.includes(userId);
+
+        if (voteType === 'like') {
+          if (hasLiked) {
+            // Toggle off like
+            comment.likedBy = comment.likedBy.filter(id => id !== userId);
+          } else {
+            // Add like, remove dislike if exists
+            comment.likedBy.push(userId);
+            comment.dislikedBy = comment.dislikedBy.filter(id => id !== userId);
+          }
+        } else if (voteType === 'dislike') {
+          if (hasDisliked) {
+            // Toggle off dislike
+            comment.dislikedBy = comment.dislikedBy.filter(id => id !== userId);
+          } else {
+            // Add dislike, remove like if exists
+            comment.dislikedBy.push(userId);
+            comment.likedBy = comment.likedBy.filter(id => id !== userId);
+          }
+        }
+
+        comment.likes = comment.likedBy.length;
+        comment.dislikes = comment.dislikedBy.length;
+
+        saveDb();
+
+        res.writeHead(200);
+        res.end(JSON.stringify({
+          success: true,
+          commentId: comment.id,
+          likes: comment.likes,
+          dislikes: comment.dislikes,
+          userVote: comment.likedBy.includes(userId) ? 'like' : (comment.dislikedBy.includes(userId) ? 'dislike' : null),
+          comment
+        }));
       } catch (err) {
         res.writeHead(500);
         res.end(JSON.stringify({ success: false, error: err.message }));

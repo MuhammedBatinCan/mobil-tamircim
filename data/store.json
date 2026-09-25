@@ -110,8 +110,8 @@
         "email_verified",
         "verified_mechanic"
       ],
-      "reputationPoints": 95,
-      "level": "Çırak",
+      "reputationPoints": 105,
+      "level": "Kalfa",
       "isMechanicVerified": true,
       "isDealerVerified": false,
       "isUserVerified": false,
@@ -159,7 +159,7 @@
         "email_verified",
         "verified_mechanic"
       ],
-      "reputationPoints": 85,
+      "reputationPoints": 95,
       "level": "Çırak",
       "isMechanicVerified": true,
       "isDealerVerified": false,
@@ -367,9 +367,10 @@
       "solvedCommentId": "cmt_1_1",
       "views": 342,
       "likes": 18,
-      "audioUrl": "motor_sesi_ornek.mp3",
+      "audioUrl": "/audio/engine_sound.wav",
       "content": "Arkadaşlar selamlar. Sabahları ilk çalıştırmada motor soğukken enjektör kütüğünün oradan belirgin bir madeni şıkırtı sesi geliyor. Araç 145.000 km'de. Ses kaydını ekledim, dinleyip fikir verebilecek ustalarımız var mıdır? OBD cihazında P0201 (Silindir 1 Enjektör Devresi) kodu düştü.",
-      "commentsCount": 5
+      "commentsCount": 7,
+      "hasAudio": true
     },
     {
       "id": "thr_2",
@@ -430,14 +431,21 @@
       ],
       "authorLevel": "Master",
       "createdAt": "2026-09-17T15:10:00.000Z",
-      "likes": 24,
+      "likes": 0,
       "isSolution": true,
       "content": "Caner kardeşim ses kaydını dinledim. Ses doğrudan 1. silindirin piezo enjektör bobininden kaynaklanıyor. P0201 kodu da bunu teyit ediyor. İlk etapta enjektörü değiştirmek yerine tesisat soketini ve soket tırnağını kontrol ettir. Temassızlık veya oksitlenme yoksa enjektör geri dönüş testi (enjektör tezgahı) yaptırılmalı. Geri dönüş normalse sadece bobin revizyonuyla kurtarır, sıfır enjektöre 8.000 TL vermene gerek kalmaz.",
       "aiModeration": {
         "status": "approved",
         "safetyScore": 0.99,
         "flagged": false
-      }
+      },
+      "likedBy": [],
+      "dislikedBy": [
+        "usr_normal_1"
+      ],
+      "dislikes": 1,
+      "parentId": null,
+      "replyToUsername": null
     },
     {
       "id": "cmt_1_2",
@@ -452,14 +460,21 @@
       ],
       "authorLevel": "Master",
       "createdAt": "2026-09-17T16:00:00.000Z",
-      "likes": 6,
+      "likes": 1,
       "isSolution": false,
       "content": "Ahmet Usta'nın dediği gibi soket kontrolü en ucuz ve en etkili başlangıç. Geçmiş olsun, sonucu buradan da paylaşırsan seviniriz.",
       "aiModeration": {
         "status": "approved",
         "safetyScore": 0.98,
         "flagged": false
-      }
+      },
+      "likedBy": [
+        "usr_1789765735571"
+      ],
+      "dislikedBy": [],
+      "dislikes": 0,
+      "parentId": null,
+      "replyToUsername": null
     },
     {
       "id": "cmt_2_1",
@@ -480,7 +495,12 @@
         "status": "approved",
         "safetyScore": 0.97,
         "flagged": false
-      }
+      },
+      "likedBy": [],
+      "dislikedBy": [],
+      "dislikes": 0,
+      "parentId": null,
+      "replyToUsername": null
     },
     {
       "id": "cmt_1789764642589",
@@ -502,7 +522,12 @@
         "safetyScore": 0.95,
         "flagged": false,
         "reason": "Temiz içerik"
-      }
+      },
+      "likedBy": [],
+      "dislikedBy": [],
+      "dislikes": 0,
+      "parentId": null,
+      "replyToUsername": null
     },
     {
       "id": "cmt_1789942943161",
@@ -525,7 +550,12 @@
         "safetyScore": 0.95,
         "flagged": false,
         "reason": "Temiz içerik"
-      }
+      },
+      "likedBy": [],
+      "dislikedBy": [],
+      "dislikes": 0,
+      "parentId": null,
+      "replyToUsername": null
     },
     {
       "id": "cmt_1790016146969",
@@ -548,7 +578,12 @@
         "safetyScore": 0.95,
         "flagged": false,
         "reason": "Temiz içerik"
-      }
+      },
+      "likedBy": [],
+      "dislikedBy": [],
+      "dislikes": 0,
+      "parentId": null,
+      "replyToUsername": null
     },
     {
       "id": "cmt_1790373376357",
@@ -564,6 +599,94 @@
       "likes": 0,
       "isSolution": false,
       "content": "kgnwkşgjgşdajfpajfadjfadjfpşadjp",
+      "aiModeration": {
+        "status": "approved",
+        "safetyScore": 0.95,
+        "flagged": false,
+        "reason": "Temiz içerik"
+      },
+      "likedBy": [],
+      "dislikedBy": [],
+      "dislikes": 0,
+      "parentId": null,
+      "replyToUsername": null
+    },
+    {
+      "id": "cmt_1_reply_1",
+      "threadId": "thr_1",
+      "parentId": "cmt_1_1",
+      "replyToUsername": "AhmetUsta_VAG",
+      "authorId": "usr_beta_1",
+      "authorUsername": "CanerSurucu",
+      "authorPlate": "35 KS 882",
+      "authorBadges": [
+        "verified_user"
+      ],
+      "authorLevel": "Çırak",
+      "createdAt": "2026-09-17T15:45:00.000Z",
+      "likes": 5,
+      "dislikes": 0,
+      "likedBy": [
+        "usr_mech_1",
+        "usr_dev_1"
+      ],
+      "dislikedBy": [],
+      "isSolution": false,
+      "content": "Ahmet Usta çok sağ olasın! Dediğin gibi 1. enjektör soketini çıkarıp temizledik, tırnağında hafif gevşeme varmış. Tesisatı elden geçirince şıkırtı sesi tamamen kesildi. Emeğine sağlık usta.",
+      "aiModeration": {
+        "status": "approved",
+        "safetyScore": 0.99,
+        "flagged": false
+      }
+    },
+    {
+      "id": "cmt_1790375259578",
+      "threadId": "thr_1",
+      "parentId": "cmt_1_1",
+      "replyToUsername": "AhmetUsta_VAG",
+      "authorId": "usr_normal_1",
+      "authorUsername": "AliEmre",
+      "authorPlate": "16 BRS 412",
+      "authorBadges": [
+        "email_verified",
+        "verified_mechanic"
+      ],
+      "authorLevel": "Çırak",
+      "createdAt": "2026-09-25T22:27:39.578Z",
+      "likes": 0,
+      "dislikes": 0,
+      "likedBy": [],
+      "dislikedBy": [],
+      "isSolution": false,
+      "content": "Çok teşekkürler Ahmet Usta, soketi kontrol ettim ve temassızlığı giderince arıza ışığı söndü!",
+      "aiModeration": {
+        "status": "approved",
+        "safetyScore": 0.95,
+        "flagged": false,
+        "reason": "Temiz içerik"
+      }
+    },
+    {
+      "id": "cmt_1790375290023",
+      "threadId": "thr_1",
+      "parentId": null,
+      "replyToUsername": null,
+      "authorId": "usr_1789765735571",
+      "authorUsername": "Test Pilotu",
+      "authorPlate": "34 TST 99",
+      "authorBadges": [
+        "beta_tester",
+        "email_verified",
+        "verified_mechanic"
+      ],
+      "authorLevel": "Çırak",
+      "createdAt": "2026-09-25T22:28:10.023Z",
+      "likes": 0,
+      "dislikes": 0,
+      "likedBy": [],
+      "dislikedBy": [],
+      "isSolution": false,
+      "content": "Ahmet Usta dediklerinize harfiyen uyarak tesisat soketini düzelttim ve arıza ışığı söndü, çok teşekkürler!",
       "aiModeration": {
         "status": "approved",
         "safetyScore": 0.95,

@@ -8,6 +8,8 @@ const Forum = {
   activeCategory: null,
   activeThreadId: null,
   searchQuery: '',
+  activeReplyTarget: null,
+  currentAudio: null,
 
   init(stateThreads, stateComments) {
     this.threads = stateThreads || [];
@@ -201,10 +203,13 @@ const Forum = {
     if (thread.audioUrl) {
       audioBoxHtml = `
         <div class="audio-player-box">
-          <button class="audio-play-btn" onclick="Forum.playDemoAudio(this)">▶</button>
+          <button class="audio-play-btn" id="audio-play-btn" onclick="Forum.playDemoAudio(this, '${escapeHtml(thread.audioUrl)}')">▶</button>
           <div style="flex:1;">
-            <div style="font-size:0.82rem; font-weight:700; color:#FFF; margin-bottom:4px;">Motor Sesi Kaydı (0:24)</div>
-            <div class="audio-wave">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+              <span style="font-size:0.82rem; font-weight:700; color:#FFF;">Motor Sesi Kaydı (Dizel / Mekanik Teşhis)</span>
+              <span id="audio-time-label" style="font-size:0.75rem; color:var(--accent-amber); font-weight:600;">0:04</span>
+            </div>
+            <div class="audio-wave" id="audio-wave-container">
               <span class="wave-bar" style="height:8px;"></span>
               <span class="wave-bar" style="height:16px;"></span>
               <span class="wave-bar" style="height:22px;"></span>
@@ -226,7 +231,19 @@ const Forum = {
     if (canCurrentUserComment) {
       const curUser = (typeof Auth !== 'undefined' && Auth.currentUser) ? Auth.currentUser : null;
       commentBoxHtml = `
-        <div class="detail-reply-box">
+        <div class="detail-reply-box" id="detail-reply-box">
+          <div class="reply-target-banner" id="reply-target-banner" style="${this.activeReplyTarget ? 'display:flex;' : 'display:none;'}">
+            <div style="display:flex; align-items:center; gap:6px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--accent-amber);">
+                <polyline points="9 17 4 12 9 7"></polyline>
+                <path d="M20 18v-2a4 4 0 0 0-4-4H4"></path>
+              </svg>
+              <span style="font-size:0.82rem; color:#E2E8F0;">
+                <strong id="reply-target-name">@${this.activeReplyTarget ? escapeHtml(this.activeReplyTarget.authorUsername) : ''}</strong> kullanıcısına yanıt veriyorsunuz
+              </span>
+            </div>
+            <button type="button" class="btn-cancel-reply" onclick="Forum.cancelReplyTarget()">✕ İptal</button>
+          </div>
           <div class="reply-box-header">
             <div style="display:flex; align-items:center; gap:8px;">
               <span style="font-weight:700; font-size:0.95rem; color:#FFF;">Cevap / Çözüm Yaz</span>
@@ -234,7 +251,7 @@ const Forum = {
             </div>
             <span style="font-size:0.75rem; color:var(--accent-amber); font-weight:600;">+10 İtibar Puanı</span>
           </div>
-          <textarea id="comment-input" class="form-control" rows="3" placeholder="Arıza tespiti, tecrübenizi veya çözüm önerinizi paylaşın..."></textarea>
+          <textarea id="comment-input" class="form-control" rows="3" placeholder="${this.activeReplyTarget ? '@' + escapeHtml(this.activeReplyTarget.authorUsername) + ' kullanıcısına yanıtınızı yazın...' : 'Arıza tespiti, tecrübenizi veya çözüm önerinizi paylaşın...'}"></textarea>
           <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px; flex-wrap:wrap; gap:10px;">
             <span style="font-size:0.76rem; color:var(--text-muted);">
               ${curUser ? `Yanıtlayan: <strong>${escapeHtml(curUser.name)}</strong>` : 'Yorum yazarak konuya katkıda bulunuyorsunuz.'}
@@ -258,10 +275,97 @@ const Forum = {
       `;
     }
 
-    // Render list of comments
-    let commentsListHtml = threadComments.map(c => {
+    // Current user id for like/dislike active states
+    const curUserId = (typeof Auth !== 'undefined' && Auth.currentUser) ? Auth.currentUser.id : null;
+
+    // Helper to render action buttons for any comment or reply
+    const renderCommentActions = (c, isReply = false) => {
+      const hasLiked = Array.isArray(c.likedBy) && curUserId && c.likedBy.includes(curUserId);
+      const hasDisliked = Array.isArray(c.dislikedBy) && curUserId && c.dislikedBy.includes(curUserId);
+      const likesCount = (typeof c.likes === 'number') ? c.likes : (c.likedBy ? c.likedBy.length : 0);
+      const dislikesCount = (typeof c.dislikes === 'number') ? c.dislikes : (c.dislikedBy ? c.dislikedBy.length : 0);
+      const replyTargetId = isReply ? (c.parentId || c.id) : c.id;
+
+      return `
+        <div class="comment-actions-bar">
+          <button type="button" class="comment-vote-btn vote-like ${hasLiked ? 'active-like' : ''}" 
+                  id="vote-like-${c.id}" 
+                  onclick="Forum.voteComment('${c.id}', 'like')" 
+                  title="Faydalı / Beğen">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path>
+            </svg>
+            <span class="vote-count">${likesCount}</span>
+          </button>
+
+          <button type="button" class="comment-vote-btn vote-dislike ${hasDisliked ? 'active-dislike' : ''}" 
+                  id="vote-dislike-${c.id}" 
+                  onclick="Forum.voteComment('${c.id}', 'dislike')" 
+                  title="Faydasız / Beğenme">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"></path>
+            </svg>
+            <span class="vote-count">${dislikesCount}</span>
+          </button>
+
+          <button type="button" class="comment-reply-btn" 
+                  onclick="Forum.startReplyToComment('${replyTargetId}', '${escapeHtml(c.authorUsername || 'Üye')}')"
+                  title="Bu yoruma doğrudan yanıt yaz">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="9 17 4 12 9 7"></polyline>
+              <path d="M20 18v-2a4 4 0 0 0-4-4H4"></path>
+            </svg>
+            <span>Yanıtla</span>
+          </button>
+        </div>
+      `;
+    };
+
+    // Separate parent comments and nested replies
+    const parentComments = threadComments.filter(c => !c.parentId);
+    const parentIdsSet = new Set(parentComments.map(c => c.id));
+    // Include any orphan replies whose parentId doesn't exist as parents
+    threadComments.forEach(c => {
+      if (c.parentId && !parentIdsSet.has(c.parentId)) {
+        parentComments.push(c);
+      }
+    });
+
+    let commentsListHtml = parentComments.map(c => {
       const isSol = c.isSolution || c.id === thread.solvedCommentId;
       const initial = (c.authorUsername || 'U').charAt(0).toUpperCase();
+
+      // Find nested replies for this comment
+      const replies = threadComments.filter(r => r.parentId === c.id);
+      let repliesHtml = '';
+      if (replies.length > 0) {
+        repliesHtml = `
+          <div class="comment-replies-container">
+            ${replies.map(r => {
+              const rInitial = (r.authorUsername || 'U').charAt(0).toUpperCase();
+              return `
+                <div class="comment-reply-item" id="comment-${r.id}">
+                  <div class="comment-header">
+                    <div class="author-meta" style="display:flex; align-items:center; gap:8px;">
+                      <div class="comment-author-avatar" style="width:28px; height:28px; font-size:0.75rem;">${rInitial}</div>
+                      <div>
+                        <strong style="cursor:pointer; font-size:0.85rem;" onclick="Profile.open('${r.authorId}')" title="Kullanıcı Profilini Aç">${escapeHtml(r.authorUsername)}</strong>
+                        ${typeof Auth !== 'undefined' ? Auth.renderBadges(r.authorBadges, r.authorLevel) : ''}
+                      </div>
+                    </div>
+                    <span class="thread-time" style="font-size:0.75rem;">${formatDate(r.createdAt)}</span>
+                  </div>
+                  <div style="font-size:0.88rem; line-height:1.55; color:#E2E8F0; margin-top:6px; white-space:pre-wrap;">
+                    ${r.replyToUsername ? `<span class="reply-to-tag" onclick="Forum.startReplyToComment('${c.id}', '${escapeHtml(r.authorUsername)}')">@${escapeHtml(r.replyToUsername)}</span>` : ''}${escapeHtml(r.content)}
+                  </div>
+                  ${renderCommentActions(r, true)}
+                </div>
+              `;
+            }).join('')}
+          </div>
+        `;
+      }
+
       return `
         <div class="comment-item ${isSol ? 'is-solution' : ''}" id="comment-${c.id}">
           <div class="comment-header">
@@ -283,6 +387,8 @@ const Forum = {
             </div>
           </div>
           <p style="font-size:0.92rem; line-height:1.6; color:#F1F5F9; margin-top:8px; white-space:pre-wrap;">${escapeHtml(c.content)}</p>
+          ${renderCommentActions(c, false)}
+          ${repliesHtml}
         </div>
       `;
     }).join('');
@@ -372,7 +478,34 @@ const Forum = {
     `;
   },
 
-  // Yorum Gönderme
+  // Yorum / Yanıt Hedefini Başlat
+  startReplyToComment(commentId, authorUsername) {
+    this.activeReplyTarget = { commentId, authorUsername };
+    const banner = document.getElementById('reply-target-banner');
+    const nameEl = document.getElementById('reply-target-name');
+    const input = document.getElementById('comment-input');
+    
+    if (banner) banner.style.display = 'flex';
+    if (nameEl) nameEl.textContent = '@' + authorUsername;
+    if (input) {
+      input.placeholder = `@${authorUsername} kullanıcısına yanıtınızı yazın...`;
+      input.focus();
+      input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  },
+
+  // Yanıt Hedefini İptal Et
+  cancelReplyTarget() {
+    this.activeReplyTarget = null;
+    const banner = document.getElementById('reply-target-banner');
+    const input = document.getElementById('comment-input');
+    if (banner) banner.style.display = 'none';
+    if (input) {
+      input.placeholder = 'Arıza tespiti, tecrübenizi veya çözüm önerinizi paylaşın...';
+    }
+  },
+
+  // Yorum Gönderme (Normal ve Yanıt)
   async submitComment(threadId) {
     const input = document.getElementById('comment-input');
     if (!input || !input.value.trim()) {
@@ -392,13 +525,18 @@ const Forum = {
     if (submitBtn) submitBtn.disabled = true;
 
     try {
+      const parentId = this.activeReplyTarget ? this.activeReplyTarget.commentId : null;
+      const replyToUsername = this.activeReplyTarget ? this.activeReplyTarget.authorUsername : null;
+
       const res = await fetch(`/api/threads/${threadId}/comments`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           authorId: user.id,
           authorUsername: user.name || user.username,
-          content: content
+          content: content,
+          parentId: parentId,
+          replyToUsername: replyToUsername
         })
       });
 
@@ -413,7 +551,8 @@ const Forum = {
         user.reputationPoints = (user.reputationPoints || 0) + 10;
         if (typeof Auth !== 'undefined' && Auth.updateUserUI) Auth.updateUserUI();
 
-        showToast('Yorumunuz başarıyla paylaşıldı (+10 XP).');
+        this.activeReplyTarget = null;
+        showToast(parentId ? 'Yanıtınız başarıyla paylaşıldı (+10 XP).' : 'Yorumunuz başarıyla paylaşıldı (+10 XP).');
         if (thr) this.renderThreadDetail(thr);
       } else {
         showToast(data.error || 'Yorum gönderilemedi', 'error');
@@ -423,6 +562,72 @@ const Forum = {
       showToast('Bağlantı hatası', 'error');
     } finally {
       if (submitBtn) submitBtn.disabled = false;
+    }
+  },
+
+  // Yorum Beğenme / Beğenmeme (Vote)
+  async voteComment(commentId, voteType) {
+    const user = (typeof Auth !== 'undefined' && Auth.currentUser) ? Auth.currentUser : null;
+    if (!user) {
+      showToast('Yorumları oylayabilmek için giriş yapmalısınız.', 'error');
+      if (typeof openModal === 'function') openModal('auth-modal');
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/comments/${commentId}/vote`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: user.id, voteType: voteType })
+      });
+      const data = await res.json();
+      if (data.success) {
+        // Update comment in local cache
+        const comment = this.comments.find(c => String(c.id) === String(commentId));
+        if (comment) {
+          comment.likes = data.likes;
+          comment.dislikes = data.dislikes;
+          if (data.comment) {
+            comment.likedBy = data.comment.likedBy || [];
+            comment.dislikedBy = data.comment.dislikedBy || [];
+          }
+        }
+
+        // Direct DOM update for smooth UX without page reload
+        const likeBtn = document.getElementById(`vote-like-${commentId}`);
+        const dislikeBtn = document.getElementById(`vote-dislike-${commentId}`);
+        if (likeBtn) {
+          const countEl = likeBtn.querySelector('.vote-count');
+          if (countEl) countEl.textContent = data.likes;
+          if (data.userVote === 'like') {
+            likeBtn.classList.add('active-like');
+          } else {
+            likeBtn.classList.remove('active-like');
+          }
+        }
+        if (dislikeBtn) {
+          const countEl = dislikeBtn.querySelector('.vote-count');
+          if (countEl) countEl.textContent = data.dislikes;
+          if (data.userVote === 'dislike') {
+            dislikeBtn.classList.add('active-dislike');
+          } else {
+            dislikeBtn.classList.remove('active-dislike');
+          }
+        }
+
+        if (data.userVote === 'like') {
+          showToast('Yorumu beğendiniz 👍');
+        } else if (data.userVote === 'dislike') {
+          showToast('Yorumu beğenmediniz 👎');
+        } else {
+          showToast('Oyunuz geri alındı.');
+        }
+      } else {
+        showToast(data.error || 'Oylama başarısız oldu.', 'error');
+      }
+    } catch (err) {
+      console.error('Vote error:', err);
+      showToast('Sunucu bağlantı hatası', 'error');
     }
   },
 
@@ -470,7 +675,7 @@ const Forum = {
           obdCode: formData.obdCode,
           allowCommentsFrom: formData.allowCommentsFrom,
           content: formData.content,
-          audioUrl: formData.hasAudio ? 'motor_sesi_yuklendi.mp3' : null,
+          audioUrl: formData.hasAudio ? '/audio/engine_sound.wav' : null,
           authorId: user.id,
           authorUsername: user.name,
           authorPlate: user.plate,
@@ -497,15 +702,130 @@ const Forum = {
     }
   },
 
-  playDemoAudio(btn) {
-    if (btn.textContent === '▶') {
-      btn.textContent = '⏸';
-      showToast('Motor sesi kaydı oynatılıyor...');
-      setTimeout(() => {
-        btn.textContent = '▶';
-      }, 3000);
-    } else {
+  // Gerçek Motor Sesi Oynatıcı & Fallback Sentezleyici
+  playDemoAudio(btn, audioUrl) {
+    const waveContainer = document.getElementById('audio-wave-container') || (btn.parentElement ? btn.parentElement.querySelector('.audio-wave') : null);
+    const timeLabel = document.getElementById('audio-time-label');
+
+    // If currently playing, stop/pause it
+    if (this.currentAudio && !this.currentAudio.paused) {
+      this.currentAudio.pause();
+      this.currentAudio.currentTime = 0;
       btn.textContent = '▶';
+      if (waveContainer) waveContainer.classList.remove('playing');
+      return;
+    }
+
+    const soundPath = (audioUrl && audioUrl.endsWith('.wav')) ? audioUrl : '/audio/engine_sound.wav';
+
+    // Reset previous instance
+    if (this.currentAudio) {
+      try { this.currentAudio.pause(); } catch(e){}
+    }
+
+    try {
+      this.currentAudio = new Audio(soundPath);
+      
+      this.currentAudio.addEventListener('timeupdate', () => {
+        if (timeLabel && this.currentAudio) {
+          const current = Math.floor(this.currentAudio.currentTime || 0);
+          const total = Math.floor(this.currentAudio.duration || 4);
+          timeLabel.textContent = `0:0${current} / 0:0${isNaN(total) ? 4 : total}`;
+        }
+      });
+
+      this.currentAudio.addEventListener('ended', () => {
+        btn.textContent = '▶';
+        if (waveContainer) waveContainer.classList.remove('playing');
+        if (timeLabel) timeLabel.textContent = '0:04';
+      });
+
+      this.currentAudio.addEventListener('error', (e) => {
+        console.warn('HTML5 Audio file error, falling back to Web Audio API engine sound:', e);
+        this.synthesizeEngineSound(btn, waveContainer, timeLabel);
+      });
+
+      const playPromise = this.currentAudio.play();
+      if (playPromise !== undefined) {
+        playPromise.then(() => {
+          btn.textContent = '⏸';
+          if (waveContainer) waveContainer.classList.add('playing');
+          showToast('Motor sesi çalınıyor 🔊 (1.5 dCi Enjektör Sesi)');
+        }).catch(err => {
+          console.warn('Audio play restricted or failed:', err);
+          this.synthesizeEngineSound(btn, waveContainer, timeLabel);
+        });
+      }
+    } catch (err) {
+      console.warn('Audio construction failed:', err);
+      this.synthesizeEngineSound(btn, waveContainer, timeLabel);
+    }
+  },
+
+  synthesizeEngineSound(btn, waveContainer, timeLabel) {
+    try {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) {
+        showToast('Tarayıcınız ses çalmayı desteklemiyor.', 'error');
+        return;
+      }
+      const ctx = new AudioCtx();
+      if (ctx.state === 'suspended') ctx.resume();
+
+      btn.textContent = '⏸';
+      if (waveContainer) waveContainer.classList.add('playing');
+      showToast('Motor sesi çalınıyor 🔊 (Rolanti Simülasyonu)');
+
+      // Create engine rumble oscillator (65Hz low engine hum)
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(65, ctx.currentTime);
+
+      // Low pass filter to simulate engine block muffling
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(220, ctx.currentTime);
+
+      gain.gain.setValueAtTime(0.18, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 4);
+
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start();
+      osc.stop(ctx.currentTime + 4);
+
+      // Injector tick pulses
+      for (let i = 0; i < 16; i++) {
+        const tickOsc = ctx.createOscillator();
+        const tickGain = ctx.createGain();
+        tickOsc.frequency.setValueAtTime(1800, ctx.currentTime + (i * 0.25));
+        tickGain.gain.setValueAtTime(0.08, ctx.currentTime + (i * 0.25));
+        tickGain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + (i * 0.25) + 0.04);
+        tickOsc.connect(tickGain);
+        tickGain.connect(ctx.destination);
+        tickOsc.start(ctx.currentTime + (i * 0.25));
+        tickOsc.stop(ctx.currentTime + (i * 0.25) + 0.05);
+      }
+
+      let elapsed = 0;
+      const interval = setInterval(() => {
+        elapsed++;
+        if (timeLabel) timeLabel.textContent = `0:0${elapsed} / 0:04`;
+        if (elapsed >= 4) {
+          clearInterval(interval);
+          btn.textContent = '▶';
+          if (waveContainer) waveContainer.classList.remove('playing');
+          if (timeLabel) timeLabel.textContent = '0:04';
+          ctx.close();
+        }
+      }, 1000);
+    } catch (e) {
+      console.error('Audio synthesizer failed:', e);
+      btn.textContent = '▶';
+      if (waveContainer) waveContainer.classList.remove('playing');
     }
   },
 
