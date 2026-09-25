@@ -635,6 +635,7 @@ const mimeTypes = {
   '.png': 'image/png',
   '.jpg': 'image/jpeg',
   '.jpeg': 'image/jpeg',
+  '.webp': 'image/webp',
   '.svg': 'image/svg+xml',
   '.mp3': 'audio/mpeg',
   '.wav': 'audio/wav',
@@ -678,7 +679,7 @@ function parseBody(req) {
     req.on('data', chunk => {
       chunks.push(chunk);
       byteLength += chunk.length;
-      if (byteLength > 2e6) { // 2MB limit
+      if (byteLength > 10e6) { // 10MB limit for image uploads
         reject(new Error('Body too large'));
       }
     });
@@ -986,7 +987,7 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
-    // 1.E Users: Update Profile (İsim, Bio, Araç, Konum, Telefon vb.)
+    // 1.E Users: Update Profile (İsim, Bio, Araç, Konum, Telefon, Avatar, Banner vb.)
     if (pathname === '/api/users/update-profile' && method === 'POST') {
       try {
         const body = await parseBody(req);
@@ -999,7 +1000,48 @@ const server = http.createServer(async (req, res) => {
           return;
         }
 
-        if (body.name) user.name = body.name.trim();
+        const uploadsDir = path.join(__dirname, 'public', 'uploads');
+        if (!fs.existsSync(uploadsDir)) {
+          fs.mkdirSync(uploadsDir, { recursive: true });
+        }
+
+        // Handle Avatar (file upload base64 or URL)
+        if (body.avatar !== undefined) {
+          if (body.avatar && body.avatar.startsWith('data:image/')) {
+            const matches = body.avatar.match(/^data:image\/([a-zA-Z0-9+]+);base64,(.+)$/);
+            if (matches) {
+              const ext = matches[1] === 'jpeg' ? 'jpg' : matches[1].replace('+xml', '');
+              const filename = `avatar_${user.id}_${Date.now()}.${ext}`;
+              const filePath = path.join(uploadsDir, filename);
+              fs.writeFileSync(filePath, Buffer.from(matches[2], 'base64'));
+              user.avatar = `/uploads/${filename}`;
+            } else {
+              user.avatar = body.avatar;
+            }
+          } else {
+            user.avatar = body.avatar;
+          }
+        }
+
+        // Handle Banner (file upload base64 or URL)
+        if (body.banner !== undefined) {
+          if (body.banner && body.banner.startsWith('data:image/')) {
+            const matches = body.banner.match(/^data:image\/([a-zA-Z0-9+]+);base64,(.+)$/);
+            if (matches) {
+              const ext = matches[1] === 'jpeg' ? 'jpg' : matches[1].replace('+xml', '');
+              const filename = `banner_${user.id}_${Date.now()}.${ext}`;
+              const filePath = path.join(uploadsDir, filename);
+              fs.writeFileSync(filePath, Buffer.from(matches[2], 'base64'));
+              user.banner = `/uploads/${filename}`;
+            } else {
+              user.banner = body.banner;
+            }
+          } else {
+            user.banner = body.banner;
+          }
+        }
+
+        if (body.name !== undefined) user.name = body.name.trim();
         if (body.bio !== undefined) user.bio = body.bio.trim();
         if (body.car !== undefined) user.car = body.car.trim();
         if (body.city !== undefined) user.city = body.city.trim();
@@ -1007,14 +1049,13 @@ const server = http.createServer(async (req, res) => {
         if (body.shopName !== undefined) user.shopName = body.shopName.trim();
         if (body.sanayiSite !== undefined) user.sanayiSite = body.sanayiSite.trim();
         if (body.phone !== undefined) user.phone = body.phone.trim();
-        if (body.avatar) user.avatar = body.avatar.trim();
-        if (body.banner) user.banner = body.banner.trim();
 
         saveDb();
 
         res.writeHead(200);
         res.end(JSON.stringify({ success: true, user }));
       } catch (err) {
+        console.error('Update profile error:', err);
         res.writeHead(500);
         res.end(JSON.stringify({ success: false, error: err.message }));
       }
@@ -1397,6 +1438,7 @@ const server = http.createServer(async (req, res) => {
       }
       return;
     }
+
 
     // 5. Admin: Update badges (Developer, Beta Tester, Tamirci, Galerici, etc.)
     if (pathname === '/api/users/update-badges' && method === 'POST') {

@@ -22,3 +22,8 @@ scratch/
 
 # Database backups (keep store.json, ignore automated backups)
 data/backup_store_*.json
+
+# User uploads
+public/uploads/*
+!public/uploads/.gitkeep
+

@@ -4,6 +4,28 @@ const Profile = {
   activeUserId: null,
   activeTab: 'threads', // 'threads', 'replies', 'garage', 'solutions', 'badges'
   followingMap: {}, // Takip edilen kullanıcılar
+  pendingAvatar: null,
+  pendingBanner: null,
+
+  avatarPresets: [
+    { name: 'Usta / Mekanik', url: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=200&auto=format&fit=crop&q=80' },
+    { name: 'Yarış Pilotu', url: 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=200&auto=format&fit=crop&q=80' },
+    { name: 'Spor Garaj', url: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=200&auto=format&fit=crop&q=80' },
+    { name: 'Klasik Sürücü', url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80' },
+    { name: 'Genç Usta', url: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&auto=format&fit=crop&q=80' },
+    { name: 'Oto Teşhis', url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80' },
+    { name: 'Motor Bloğu', url: 'https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=200&auto=format&fit=crop&q=80' },
+    { name: 'Karizmatik', url: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&auto=format&fit=crop&q=80' }
+  ],
+
+  bannerPresets: [
+    { name: 'Maslak Liftli Garaj', url: 'https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=1200&auto=format&fit=crop&q=80' },
+    { name: 'Gece Otobanı & Işıklar', url: 'https://images.unsplash.com/photo-1508974239320-0a029497e820?w=1200&auto=format&fit=crop&q=80' },
+    { name: 'Sanayi Takım Tezgahı', url: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=1200&auto=format&fit=crop&q=80' },
+    { name: 'Yarış Pisti & Viraj', url: 'https://images.unsplash.com/photo-1511919884226-fd3cad34687c?w=1200&auto=format&fit=crop&q=80' },
+    { name: 'Klasik Amerikan Garajı', url: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=1200&auto=format&fit=crop&q=80' },
+    { name: 'Neon Cyberpunk Garaj', url: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=1200&auto=format&fit=crop&q=80' }
+  ],
 
   init() {
     // Sayfa ilk açılışta veya oturum değiştiğinde profil modülü hazır olsun
@@ -60,11 +82,29 @@ const Profile = {
     if (bannerEl) {
       const defaultBanner = 'https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=1200&auto=format&fit=crop&q=80';
       bannerEl.style.backgroundImage = `linear-gradient(to bottom, rgba(11,15,23,0.1), rgba(11,15,23,0.85)), url('${user.banner || defaultBanner}')`;
+      if (isOwn) {
+        bannerEl.innerHTML = `
+          <button class="profile-banner-edit-btn" onclick="Profile.openBannerPicker()" title="Kapak Fotoğrafı / Arka Planı Değiştir">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+              <circle cx="12" cy="13" r="4"></circle>
+            </svg>
+            <span>Kapağı Değiştir</span>
+          </button>
+        `;
+      } else {
+        bannerEl.innerHTML = '';
+      }
     }
 
     const avatarEl = document.getElementById('profile-avatar-img');
     if (avatarEl) {
       avatarEl.src = user.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80';
+    }
+
+    const avatarEditBtn = document.getElementById('profile-avatar-edit-btn');
+    if (avatarEditBtn) {
+      avatarEditBtn.style.display = isOwn ? 'flex' : 'none';
     }
 
     // 3. Action Buttons (Profili Düzenle veya Takip Et)
@@ -510,6 +550,208 @@ const Profile = {
       closeModal('edit-profile-modal');
       showToast('Profil güncellendi (Yerel).', 'info');
       this.render();
+    }
+  },
+
+  openAvatarPicker() {
+    const user = Auth.currentUser;
+    if (!user) {
+      showToast('Profil resmini değiştirmek için giriş yapmalısınız.', 'error');
+      if (typeof openModal === 'function') openModal('auth-modal');
+      return;
+    }
+
+    this.pendingAvatar = user.avatar || this.avatarPresets[0].url;
+    const previewEl = document.getElementById('avatar-picker-preview');
+    if (previewEl) previewEl.src = this.pendingAvatar;
+
+    const urlInput = document.getElementById('avatar-url-input');
+    if (urlInput) urlInput.value = (user.avatar && user.avatar.startsWith('http')) ? user.avatar : '';
+
+    this.renderPresets('avatar');
+    openModal('avatar-picker-modal');
+  },
+
+  openBannerPicker() {
+    const user = Auth.currentUser;
+    if (!user) {
+      showToast('Kapak fotoğrafını değiştirmek için giriş yapmalısınız.', 'error');
+      if (typeof openModal === 'function') openModal('auth-modal');
+      return;
+    }
+
+    this.pendingBanner = user.banner || this.bannerPresets[0].url;
+    const previewEl = document.getElementById('banner-picker-preview');
+    if (previewEl) {
+      previewEl.style.backgroundImage = `linear-gradient(to bottom, rgba(11,15,23,0.1), rgba(11,15,23,0.85)), url('${this.pendingBanner}')`;
+    }
+
+    const urlInput = document.getElementById('banner-url-input');
+    if (urlInput) urlInput.value = (user.banner && user.banner.startsWith('http')) ? user.banner : '';
+
+    this.renderPresets('banner');
+    openModal('banner-picker-modal');
+  },
+
+  renderPresets(type) {
+    const container = document.getElementById(`${type}-presets-grid`);
+    if (!container) return;
+
+    const list = type === 'avatar' ? this.avatarPresets : this.bannerPresets;
+    const current = type === 'avatar' ? this.pendingAvatar : this.pendingBanner;
+
+    container.innerHTML = list.map(item => `
+      <div class="preset-item ${current === item.url ? 'active' : ''}" onclick="Profile.selectPreset('${type}', '${item.url}')" title="${escapeHtml(item.name)}">
+        <img class="${type === 'avatar' ? 'preset-avatar-img' : 'preset-banner-img'}" src="${item.url}" alt="${escapeHtml(item.name)}">
+        <div class="preset-item-label">${escapeHtml(item.name)}</div>
+      </div>
+    `).join('');
+  },
+
+  selectPreset(type, url) {
+    if (type === 'avatar') {
+      this.pendingAvatar = url;
+      const previewEl = document.getElementById('avatar-picker-preview');
+      if (previewEl) previewEl.src = url;
+      const urlInput = document.getElementById('avatar-url-input');
+      if (urlInput) urlInput.value = url;
+    } else {
+      this.pendingBanner = url;
+      const previewEl = document.getElementById('banner-picker-preview');
+      if (previewEl) {
+        previewEl.style.backgroundImage = `linear-gradient(to bottom, rgba(11,15,23,0.1), rgba(11,15,23,0.85)), url('${url}')`;
+      }
+      const urlInput = document.getElementById('banner-url-input');
+      if (urlInput) urlInput.value = url;
+    }
+    this.renderPresets(type);
+  },
+
+  onUrlInput(type, val) {
+    const trimmed = (val || '').trim();
+    if (!trimmed) return;
+    if (type === 'avatar') {
+      this.pendingAvatar = trimmed;
+      const previewEl = document.getElementById('avatar-picker-preview');
+      if (previewEl) previewEl.src = trimmed;
+    } else {
+      this.pendingBanner = trimmed;
+      const previewEl = document.getElementById('banner-picker-preview');
+      if (previewEl) {
+        previewEl.style.backgroundImage = `linear-gradient(to bottom, rgba(11,15,23,0.1), rgba(11,15,23,0.85)), url('${trimmed}')`;
+      }
+    }
+  },
+
+  handleFileUpload(input, type) {
+    if (!input.files || !input.files[0]) return;
+    const file = input.files[0];
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const dataUrl = e.target.result;
+      if (type === 'avatar') {
+        this.pendingAvatar = dataUrl;
+        const previewEl = document.getElementById('avatar-picker-preview');
+        if (previewEl) previewEl.src = dataUrl;
+      } else {
+        this.pendingBanner = dataUrl;
+        const previewEl = document.getElementById('banner-picker-preview');
+        if (previewEl) {
+          previewEl.style.backgroundImage = `linear-gradient(to bottom, rgba(11,15,23,0.1), rgba(11,15,23,0.85)), url('${dataUrl}')`;
+        }
+      }
+      showToast('Fotoğraf seçildi. Onaylamak için "Değişikliği Kaydet"e basın.');
+    };
+    reader.readAsDataURL(file);
+  },
+
+  async saveAvatar() {
+    const user = Auth.currentUser;
+    if (!user) return;
+
+    const btn = document.getElementById('btn-save-avatar');
+    if (btn) btn.disabled = true;
+
+    const newAvatar = this.pendingAvatar || (document.getElementById('avatar-url-input') ? document.getElementById('avatar-url-input').value.trim() : null);
+    if (!newAvatar) {
+      showToast('Lütfen bir profil fotoğrafı seçin veya yükleyin.', 'error');
+      if (btn) btn.disabled = false;
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/users/update-profile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: user.id, avatar: newAvatar })
+      });
+      const data = await res.json();
+      if (data.success && data.user) {
+        user.avatar = data.user.avatar;
+        if (App.state && App.state.users) {
+          const u = App.state.users.find(x => x.id === user.id);
+          if (u) u.avatar = data.user.avatar;
+        }
+        if (Auth.updateUserUI) Auth.updateUserUI();
+        closeModal('avatar-picker-modal');
+        showToast('Profil fotoğrafınız başarıyla güncellendi! 📸');
+        this.render();
+      } else {
+        showToast(data.error || 'Profil fotoğrafı güncellenemedi', 'error');
+      }
+    } catch (err) {
+      console.error(err);
+      user.avatar = newAvatar;
+      if (Auth.updateUserUI) Auth.updateUserUI();
+      closeModal('avatar-picker-modal');
+      showToast('Profil fotoğrafı güncellendi (Yerel).');
+      this.render();
+    } finally {
+      if (btn) btn.disabled = false;
+    }
+  },
+
+  async saveBanner() {
+    const user = Auth.currentUser;
+    if (!user) return;
+
+    const btn = document.getElementById('btn-save-banner');
+    if (btn) btn.disabled = true;
+
+    const newBanner = this.pendingBanner || (document.getElementById('banner-url-input') ? document.getElementById('banner-url-input').value.trim() : null);
+    if (!newBanner) {
+      showToast('Lütfen bir kapak fotoğrafı seçin veya yükleyin.', 'error');
+      if (btn) btn.disabled = false;
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/users/update-profile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: user.id, banner: newBanner })
+      });
+      const data = await res.json();
+      if (data.success && data.user) {
+        user.banner = data.user.banner;
+        if (App.state && App.state.users) {
+          const u = App.state.users.find(x => x.id === user.id);
+          if (u) u.banner = data.user.banner;
+        }
+        closeModal('banner-picker-modal');
+        showToast('Kapak fotoğrafınız başarıyla güncellendi! 🎨');
+        this.render();
+      } else {
+        showToast(data.error || 'Kapak fotoğrafı güncellenemedi', 'error');
+      }
+    } catch (err) {
+      console.error(err);
+      user.banner = newBanner;
+      closeModal('banner-picker-modal');
+      showToast('Kapak fotoğrafı güncellendi (Yerel).');
+      this.render();
+    } finally {
+      if (btn) btn.disabled = false;
     }
   }
 };

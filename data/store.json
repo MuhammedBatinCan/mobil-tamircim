@@ -153,7 +153,7 @@
       "plate": "34 TST 99",
       "car": "2022 Audi A3",
       "role": "mechanic",
-      "avatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80",
+      "avatar": "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=200&auto=format&fit=crop&q=80",
       "badges": [
         "beta_tester",
         "email_verified",
@@ -168,7 +168,8 @@
       "dealerName": "",
       "bio": "Test Pilotu - Mobil Tamircim üyesi.",
       "email": "testpilot_1789765735555@mobiltamircim.com",
-      "isEmailVerified": true
+      "isEmailVerified": true,
+      "banner": "https://images.unsplash.com/photo-1508974239320-0a029497e820?w=1200&auto=format&fit=crop&q=80"
     },
     {
       "id": "usr_1789765752596",

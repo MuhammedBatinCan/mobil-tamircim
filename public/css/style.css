@@ -2008,6 +2008,34 @@ body {
   position: relative;
 }
 
+.profile-banner-edit-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #FFF;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 5;
+}
+
+.profile-banner-edit-btn:hover {
+  background: rgba(15, 23, 42, 0.95);
+  border-color: var(--accent-amber);
+  color: var(--accent-amber);
+  transform: translateY(-1px);
+}
+
 .profile-header-card {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
@@ -2026,21 +2054,115 @@ body {
   margin-bottom: 12px;
 }
 
-.profile-avatar-overlap {
+.profile-avatar-wrap {
+  position: relative;
   width: 105px;
   height: 105px;
+  flex-shrink: 0;
+}
+
+.profile-avatar-overlap {
+  width: 100%;
+  height: 100%;
   border-radius: 50%;
   border: 4px solid var(--bg-card);
   background: #0B0F17;
   overflow: hidden;
   box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5);
-  flex-shrink: 0;
 }
 
 .profile-avatar-overlap img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.profile-avatar-edit-btn {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--accent-amber);
+  color: #000;
+  border: 3px solid var(--bg-card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  transition: all 0.2s ease;
+  z-index: 5;
+}
+
+.profile-avatar-edit-btn:hover {
+  transform: scale(1.1);
+  background: #FBBF24;
+}
+
+/* Media Presets Gallery (Avatars & Banners) */
+.media-presets-grid {
+  display: grid;
+  gap: 10px;
+  max-height: 190px;
+  overflow-y: auto;
+  padding: 4px;
+  scrollbar-width: thin;
+}
+
+.media-presets-grid.avatars-grid {
+  grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
+}
+
+.media-presets-grid.banners-grid {
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+}
+
+.preset-item {
+  border-radius: var(--radius-sm);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: rgba(15, 23, 42, 0.6);
+  position: relative;
+}
+
+.preset-item:hover {
+  border-color: var(--accent-amber);
+  transform: translateY(-2px);
+}
+
+.preset-item.active {
+  border-color: var(--accent-amber);
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.5);
+}
+
+.preset-avatar-img {
+  width: 100%;
+  aspect-ratio: 1/1;
+  object-fit: cover;
+  display: block;
+}
+
+.preset-banner-img {
+  width: 100%;
+  height: 60px;
+  object-fit: cover;
+  display: block;
+}
+
+.preset-item-label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-align: center;
+  padding: 3px 4px;
+  background: rgba(15, 23, 42, 0.9);
+  color: #FFF;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .profile-actions-wrap {

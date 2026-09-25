@@ -339,8 +339,13 @@
         <div class="profile-header-card">
           <!-- Overlap Avatar & Action Buttons Row -->
           <div class="profile-avatar-row">
-            <div class="profile-avatar-overlap">
-              <img id="profile-avatar-img" src="" alt="Avatar">
+            <div class="profile-avatar-wrap">
+              <div class="profile-avatar-overlap">
+                <img id="profile-avatar-img" src="" alt="Avatar">
+              </div>
+              <button id="profile-avatar-edit-btn" class="profile-avatar-edit-btn" onclick="Profile.openAvatarPicker()" title="Profil Resmini Değiştir" style="display:none;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+              </button>
             </div>
             <div id="profile-actions-wrap" class="profile-actions-wrap">
               <!-- JS render buttons -->
@@ -573,6 +578,171 @@
           <button type="submit" class="btn btn-primary">Konuyu Yayınla</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- PROFİLİ DÜZENLE MODALI -->
+  <div id="edit-profile-modal" class="modal-overlay">
+    <div class="modal-content" style="max-width:600px;">
+      <div class="modal-header">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <h3 style="font-size:1.15rem; font-weight:800; color:#FFF;">Profili Düzenle</h3>
+        </div>
+        <button class="modal-close" onclick="closeModal('edit-profile-modal')">&times;</button>
+      </div>
+      <form id="edit-profile-form" onsubmit="Profile.saveEdit(event)">
+        <!-- Görsel Değiştirme Kısayolları -->
+        <div style="margin-bottom:16px; padding:12px; background:rgba(255,255,255,0.02); border:1px solid var(--border-color); border-radius:var(--radius-sm); display:flex; justify-content:space-around; gap:10px; flex-wrap:wrap;">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="Profile.openAvatarPicker()" style="display:flex; align-items:center; gap:6px;">
+            <span>📸 Profil Resmini Değiştir</span>
+          </button>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="Profile.openBannerPicker()" style="display:flex; align-items:center; gap:6px;">
+            <span>🎨 Arka Planı Değiştir</span>
+          </button>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Ad Soyad / Görünen İsim:</label>
+          <input id="edit-profile-name" class="form-control" type="text" required placeholder="Adınız Soyadınız">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Biyografi (Hakkında):</label>
+          <textarea id="edit-profile-bio" class="form-control" rows="2" placeholder="Otomobiliniz, sanayi deneyiminiz veya ilgi alanlarınız..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Kullandığınız / Sahip Olduğunuz Araç:</label>
+          <input id="edit-profile-car" class="form-control" type="text" placeholder="Örn: 2021 Volkswagen Golf 1.5 eTSI">
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <div class="form-group">
+            <label class="form-label">Şehir:</label>
+            <input id="edit-profile-city" class="form-control" type="text" placeholder="İstanbul">
+          </div>
+          <div class="form-group">
+            <label class="form-label">İlçe / Sanayi Bölgesi:</label>
+            <input id="edit-profile-district" class="form-control" type="text" placeholder="Maslak">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Dükkan / Servis / Galeri Adı (Varsa):</label>
+          <input id="edit-profile-shop" class="form-control" type="text" placeholder="Örn: Çelik Otomotiv VAG Servis">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Telefon Numarası (İletişim İçin):</label>
+          <input id="edit-profile-phone" class="form-control" type="tel" placeholder="05XX XXX XX XX">
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px; border-top:1px solid var(--border-color); padding-top:14px;">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('edit-profile-modal')">İptal</button>
+          <button type="submit" class="btn btn-primary">Değişiklikleri Kaydet</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- PROFIL RESMI (PP) DEĞİŞTİRME MODALI -->
+  <div id="avatar-picker-modal" class="modal-overlay">
+    <div class="modal-content" style="max-width:560px;">
+      <div class="modal-header">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:1.3rem;">📸</span>
+          <h3 style="font-size:1.15rem; font-weight:800; color:#FFF;">Profil Resmini Değiştir</h3>
+        </div>
+        <button class="modal-close" onclick="closeModal('avatar-picker-modal')">&times;</button>
+      </div>
+
+      <!-- Canlı Önizleme -->
+      <div style="display:flex; align-items:center; justify-content:center; gap:16px; margin-bottom:18px; padding:16px; background:rgba(255,255,255,0.02); border:1px solid var(--border-color); border-radius:var(--radius-md);">
+        <div style="position:relative; width:90px; height:90px; border-radius:50%; border:3px solid var(--accent-amber); overflow:hidden; background:#0B0F17; flex-shrink:0;">
+          <img id="avatar-picker-preview" src="" alt="Avatar Önizleme" style="width:100%; height:100%; object-fit:cover;">
+        </div>
+        <div>
+          <div style="font-size:0.95rem; font-weight:700; color:#FFF; margin-bottom:4px;">Canlı Önizleme</div>
+          <div style="font-size:0.78rem; color:var(--text-muted); margin-bottom:10px;">Galeriden hazır bir resim seçin, kendi fotoğrafınızı yükleyin veya link yapıştırın.</div>
+          <label class="btn btn-secondary btn-sm" style="cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            <span>Cihazdan Fotoğraf Yükle</span>
+            <input type="file" id="avatar-file-input" accept="image/*" style="display:none;" onchange="Profile.handleFileUpload(this, 'avatar')">
+          </label>
+        </div>
+      </div>
+
+      <!-- URL Girişi -->
+      <div class="form-group">
+        <label class="form-label" style="font-size:0.8rem;">Veya Resim Bağlantısı (URL):</label>
+        <div style="display:flex; gap:8px;">
+          <input type="url" id="avatar-url-input" class="form-control" placeholder="https://... resim bağlantısı girin" oninput="Profile.onUrlInput('avatar', this.value)">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="Profile.onUrlInput('avatar', document.getElementById('avatar-url-input').value)">Önizle</button>
+        </div>
+      </div>
+
+      <!-- Hazır Otomotiv & Usta Avatarları Galerisi -->
+      <div style="margin-top:14px;">
+        <label class="form-label" style="font-size:0.8rem; margin-bottom:8px;">Hazır Sanayi &amp; Otomotiv Avatarları:</label>
+        <div id="avatar-presets-grid" class="media-presets-grid avatars-grid"></div>
+      </div>
+
+      <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px; border-top:1px solid var(--border-color); padding-top:14px;">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('avatar-picker-modal')">İptal</button>
+        <button type="button" class="btn btn-primary" id="btn-save-avatar" onclick="Profile.saveAvatar()">Değişikliği Kaydet</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ARKA PLAN / KAPAK (BANNER) DEĞİŞTİRME MODALI -->
+  <div id="banner-picker-modal" class="modal-overlay">
+    <div class="modal-content" style="max-width:640px;">
+      <div class="modal-header">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:1.3rem;">🎨</span>
+          <h3 style="font-size:1.15rem; font-weight:800; color:#FFF;">Arka Plan / Kapak Fotoğrafını Değiştir</h3>
+        </div>
+        <button class="modal-close" onclick="closeModal('banner-picker-modal')">&times;</button>
+      </div>
+
+      <!-- Canlı Önizleme -->
+      <div style="margin-bottom:18px;">
+        <div style="font-size:0.82rem; font-weight:700; color:var(--text-muted); margin-bottom:6px;">Canlı Kapak Önizlemesi:</div>
+        <div id="banner-picker-preview" style="width:100%; height:130px; border-radius:var(--radius-md); background-size:cover; background-position:center; border:1px solid var(--border-color); position:relative; overflow:hidden;">
+          <div style="position:absolute; inset:0; background:linear-gradient(to bottom, rgba(11,15,23,0.1), rgba(11,15,23,0.85));"></div>
+          <div style="position:absolute; bottom:10px; left:12px; font-size:0.75rem; color:#FFF; font-weight:600;">Kapak Görünümü</div>
+        </div>
+      </div>
+
+      <!-- Cihazdan Yükle Butonu & URL -->
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:14px;">
+        <label class="btn btn-secondary btn-sm" style="cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+          <span>Cihazdan Kapak Fotoğrafı Seç</span>
+          <input type="file" id="banner-file-input" accept="image/*" style="display:none;" onchange="Profile.handleFileUpload(this, 'banner')">
+        </label>
+        <span style="font-size:0.78rem; color:var(--text-dim);">Önerilen: 1200x400 px</span>
+      </div>
+
+      <!-- URL Girişi -->
+      <div class="form-group">
+        <label class="form-label" style="font-size:0.8rem;">Veya Kapak Resmi Bağlantısı (URL):</label>
+        <div style="display:flex; gap:8px;">
+          <input type="url" id="banner-url-input" class="form-control" placeholder="https://... arka plan resmi bağlantısı" oninput="Profile.onUrlInput('banner', this.value)">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="Profile.onUrlInput('banner', document.getElementById('banner-url-input').value)">Önizle</button>
+        </div>
+      </div>
+
+      <!-- Hazır Sanayi & Garaj Duvar Kağıtları -->
+      <div style="margin-top:14px;">
+        <label class="form-label" style="font-size:0.8rem; margin-bottom:8px;">Hazır Sanayi &amp; Garaj Temaları:</label>
+        <div id="banner-presets-grid" class="media-presets-grid banners-grid"></div>
+      </div>
+
+      <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px; border-top:1px solid var(--border-color); padding-top:14px;">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('banner-picker-modal')">İptal</button>
+        <button type="button" class="btn btn-primary" id="btn-save-banner" onclick="Profile.saveBanner()">Değişikliği Kaydet</button>
+      </div>
     </div>
   </div>
 
