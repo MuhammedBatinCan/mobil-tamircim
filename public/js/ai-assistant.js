@@ -33,7 +33,7 @@ const AiAssistant = {
   },
 
   getProvider() {
-    return localStorage.getItem('ai_provider') || 'claude';
+    return localStorage.getItem('ai_provider') || 'local';
   },
 
   getClaudeKey() {

@@ -27,3 +27,7 @@ data/backup_store_*.json
 public/uploads/*
 !public/uploads/.gitkeep
 
+# Outgoing email archives
+data/outgoing_emails/*
+!data/outgoing_emails/.gitkeep
+

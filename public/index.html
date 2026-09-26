@@ -14,6 +14,9 @@
   <link rel="manifest" href="/manifest.json">
   <link rel="apple-touch-icon" href="/icons/icon.svg">
   
+  <!-- Google AdSense Entegrasyonu -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6428319984712035" crossorigin="anonymous"></script>
+  
   <link rel="stylesheet" href="css/style.css">
   <link rel="icon" href="/icons/icon.svg">
 </head>
@@ -156,6 +159,12 @@
           <a class="sidebar-nav-item" onclick="App.switchView('view-obd');">OBD-II Kodları</a>
           <a class="sidebar-nav-item" onclick="App.switchView('view-prices');">Parça & İşçilik Fiyatları</a>
           <a class="sidebar-nav-item" onclick="App.openMobileAppModal();">Uygulamayı Telefona İndir</a>
+          <a class="sidebar-nav-item" onclick="App.openReportDeveloperModal();" style="color:var(--accent-orange); font-weight:700;">
+            <div style="display:flex; align-items:center; gap:6px;">
+              <span>🛠️</span>
+              <span>Yazılımcıya Bildir</span>
+            </div>
+          </a>
           <a id="sidebar-admin-link" class="sidebar-nav-item" href="/admin" target="_blank" style="display:none; color:#C084FC; font-weight:600;">
             <div style="display:flex; align-items:center; gap:6px;">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
@@ -183,6 +192,30 @@
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:4px;"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
             AI Danışman
           </button>
+        </div>
+
+        <!-- Google AdSense - Üst Leaderboard Banner (728x90 / Responsive) -->
+        <div class="google-ad-wrapper google-ad-header-banner" style="margin-bottom:16px;">
+          <div class="google-ad-badge">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14h2v2h-2zm0-10h2v8h-2z"/></svg>
+            <span>Google Reklamı</span>
+          </div>
+          <ins class="adsbygoogle"
+               style="display:block"
+               data-ad-client="ca-pub-6428319984712035"
+               data-ad-slot="9842105432"
+               data-ad-format="auto"
+               data-full-width-responsive="true"></ins>
+          <div class="google-ad-placeholder">
+            <div class="ad-placeholder-brand">
+              <span class="ad-logo">G</span>
+              <div class="ad-text-wrap">
+                <span class="ad-title">Castrol EDGE &amp; Liqui Moly Motor Yağlarında Sanayi İndirimi!</span>
+                <span class="ad-desc">Euro 5 ve Euro 6 partiküllü dizel/benzinli motorlara özel filtre &amp; periyodik bakım paketleri.</span>
+              </div>
+            </div>
+            <a href="https://www.google.com" target="_blank" rel="noopener noreferrer" class="ad-action-btn">Fırsatı Gör →</a>
+          </div>
         </div>
 
         <!-- Konular Akışı -->
@@ -566,6 +599,29 @@
         </div>
       </div>
 
+      <!-- Google AdSense - Sağ Kenar Çubuğu (300x250 Medium Rectangle) -->
+      <div class="sidebar-card google-ad-sidebar-card">
+        <div class="google-ad-badge" style="margin-bottom:8px;">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14h2v2h-2zm0-10h2v8h-2z"/></svg>
+          <span>Sponsorlu Reklam • Google Ads</span>
+        </div>
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-6428319984712035"
+             data-ad-slot="3485720194"
+             data-ad-format="rectangle"></ins>
+        <div class="google-ad-placeholder-sidebar">
+          <div class="ad-sidebar-visual" style="background-image:url('https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=320&auto=format&fit=crop&q=80');">
+            <span class="ad-tag">Oto Fren &amp; Mekanik</span>
+          </div>
+          <div class="ad-sidebar-body">
+            <div class="ad-sidebar-title">BOSCH &amp; Brembo Fren Disk &amp; Balata Setleri</div>
+            <div class="ad-sidebar-desc">Tüm marka ve modellere uygun orijinal fren ekipmanları aynı gün kargo avantajıyla!</div>
+            <a href="https://www.google.com" target="_blank" rel="noopener noreferrer" class="ad-action-btn" style="display:block; text-align:center; margin-top:8px;">Hemen İncele →</a>
+          </div>
+        </div>
+      </div>
+
       <!-- Doğrulanmış Sanayi Ustaları -->
       <div class="sidebar-card">
         <div class="sidebar-title">
@@ -903,6 +959,13 @@
         </button>
       </div>
       <div id="user-switcher-list" style="display:flex; flex-direction:column; gap:12px;"></div>
+      
+      <div style="margin-top:16px; border-top:1px solid var(--border-color); padding-top:12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+        <span style="font-size:0.78rem; color:var(--text-muted);">Sistemde bir arıza, aksaklık veya öneriniz mi var?</span>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeModal('user-switcher-modal'); App.openReportDeveloperModal();" style="color:var(--accent-orange); font-weight:700;">
+          🛠️ Yazılımcıya Bildir
+        </button>
+      </div>
     </div>
   </div>
 
@@ -1350,8 +1413,9 @@
               <input id="reg-name" class="form-control" type="text" placeholder="Örn: Selim Güler" required>
             </div>
             <div class="form-group">
-              <label class="form-label">Kullanıcı Adı:</label>
+              <label class="form-label">Kullanıcı Adı: *</label>
               <input id="reg-username" class="form-control" type="text" placeholder="selim_guler" required autocomplete="username">
+              <div id="reg-username-feedback" style="display:none; font-size:0.75rem; margin-top:4px; font-weight:600;"></div>
             </div>
           </div>
 
@@ -1376,7 +1440,6 @@
               <option value="user">Araç Sahibi / Sürücü</option>
               <option value="mechanic">Sanayi Tamircisi / Oto Esnafı</option>
               <option value="dealer">Otomotiv Galericisi / Satıcı</option>
-              <option value="developer">Platform Geliştiricisi</option>
             </select>
           </div>
 
@@ -2136,6 +2199,86 @@
           <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:8px;">
             <button type="button" class="btn btn-secondary" onclick="closeModal('quote-bid-modal')">İptal</button>
             <button type="submit" id="btn-submit-bid" class="btn btn-primary">Teklifi Gönder</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ======================================================= -->
+  <!-- YAZILIMCIYA BİLDİR (HATA VE ÖNERİ E-POSTA BİLDİRİMİ) -->
+  <!-- ======================================================= -->
+  <div id="report-developer-modal" class="modal-overlay">
+    <div class="modal-card" style="max-width:540px;">
+      <div class="modal-header">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:1.3rem;">🛠️</span>
+          <h3 class="modal-title">Yazılımcıya / Geliştiriciye Bildir</h3>
+        </div>
+        <button class="modal-close" onclick="closeModal('report-developer-modal')">&times;</button>
+      </div>
+      
+      <p style="font-size:0.83rem; color:var(--text-muted); margin-bottom:14px; line-height:1.5;">
+        Platformda karşılaştığınız bir hatayı, aksaklığı veya eklenmesini istediğiniz fikirleri doğrudan sistem yazılımcısına e-posta olarak iletebilirsiniz.
+      </p>
+
+      <form id="report-developer-form" onsubmit="App.submitDeveloperReport(event)">
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+            <div>
+              <label class="form-label">Bildirim Türü *</label>
+              <select id="dev-report-category" class="form-control" required>
+                <option value="Hata / Bug">🐞 Hata / Bug Bildirimi</option>
+                <option value="Yeni Özellik">💡 Yeni Özellik / Fikir Önerisi</option>
+                <option value="Tasarım / UI">🎨 Tasarım &amp; Görsel İyileştirme</option>
+                <option value="Güvenlik">🔒 Güvenlik &amp; Gizlilik</option>
+                <option value="Diğer">💬 Diğer / Genel Görüş</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label">E-Posta Adresiniz (Cevap İçin)</label>
+              <input type="email" id="dev-report-email" class="form-control" placeholder="ornek@domain.com">
+            </div>
+          </div>
+
+          <div>
+            <label class="form-label">Konu / Kısa Başlık *</label>
+            <input type="text" id="dev-report-title" class="form-control" placeholder="Örn: Profil resmi yüklerken donuyor / X sayfası açılmıyor" required>
+          </div>
+
+          <div>
+            <label class="form-label">Ayrıntılı Açıklama *</label>
+            <textarea id="dev-report-message" class="form-control" rows="4" placeholder="Ne yaparken hata oluştu? Nasıl tekrar edilebilir? Veya önerdiğiniz özellik nedir?" required></textarea>
+          </div>
+
+          <!-- Ekran Görüntüsü Yükleme -->
+          <div>
+            <label class="form-label">Ekran Görüntüsü / Resim Ekle (İsteğe Bağlı):</label>
+            <div style="display:flex; align-items:center; gap:10px;">
+              <label class="btn btn-secondary btn-sm" style="cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                <span>Görsel / Ekran Görüntüsü Seç</span>
+                <input type="file" id="dev-report-file" accept="image/*" style="display:none;" onchange="App.handleReportImageUpload(this)">
+              </label>
+              <button type="button" id="dev-report-clear-img" class="btn btn-secondary btn-sm" style="display:none; color:#EF4444;" onclick="App.clearReportImage()">✕ Kaldır</button>
+            </div>
+            <div id="dev-report-img-preview" style="display:none; margin-top:8px; max-height:120px; overflow:hidden; border-radius:var(--radius-sm); border:1px solid var(--border-color);">
+              <img id="dev-report-preview-img" src="" style="width:100%; max-height:120px; object-fit:cover;" alt="Önizleme">
+            </div>
+          </div>
+
+          <!-- Sistem Bilgilendirme Notu -->
+          <div style="background:rgba(56,189,248,0.06); border:1px solid rgba(56,189,248,0.2); border-radius:var(--radius-sm); padding:8px 12px; font-size:0.75rem; color:var(--text-muted); display:flex; align-items:center; gap:8px;">
+            <span>ℹ️</span>
+            <span>Hatanın hızlı çözülmesi için tarayıcınız ve sayfa URL bilginiz otomatik olarak rapora eklenerek geliştiriciye iletilecektir.</span>
+          </div>
+
+          <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:4px;">
+            <button type="button" class="btn btn-secondary" onclick="closeModal('report-developer-modal')">İptal</button>
+            <button type="submit" id="btn-submit-dev-report" class="btn btn-primary" style="display:flex; align-items:center; gap:6px;">
+              <span>✉️ Yazılımcıya Gönder</span>
+            </button>
           </div>
         </div>
       </form>

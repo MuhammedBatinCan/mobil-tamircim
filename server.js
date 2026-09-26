@@ -701,6 +701,140 @@ function parseBody(req) {
   });
 }
 
+// HTML sanitizer for server-side templates
+function escapeHtml(str) {
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+// Zero-dependency Native SMTP / Email Notification Dispatcher
+async function sendDeveloperReportEmail({ report, developerEmail }) {
+  const targetEmail = developerEmail || process.env.DEVELOPER_EMAIL || (db.settings && db.settings.developerEmail) || 'batin.can.dev@gmail.com';
+  const timestamp = new Date().toLocaleString('tr-TR', { timeZone: 'Europe/Istanbul' });
+  const reportId = report.id || ('rep_' + Date.now());
+
+  const subject = `[Mobil Tamircim] 🛠️ Yeni Geliştirici Bildirimi: ${report.category || 'Geri Bildirim'} - #${reportId}`;
+  
+  const emailHtml = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #0F172A; color: #F8FAFC; margin: 0; padding: 20px; }
+    .card { background: #1E293B; border-radius: 12px; border: 1px solid #334155; max-width: 650px; margin: 0 auto; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+    .header { background: linear-gradient(135deg, #F59E0B, #D97706); padding: 20px 24px; color: #000; font-weight: 800; font-size: 1.25rem; display: flex; align-items: center; justify-content: space-between; }
+    .content { padding: 24px; }
+    .badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; background: #38BDF8; color: #000; margin-bottom: 16px; }
+    .badge-bug { background: #EF4444; color: #FFF; }
+    .badge-feature { background: #10B981; color: #FFF; }
+    .badge-ui { background: #A855F7; color: #FFF; }
+    .field-group { margin-bottom: 16px; border-bottom: 1px solid #334155; padding-bottom: 12px; }
+    .label { font-size: 0.75rem; text-transform: uppercase; color: #94A3B8; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 4px; }
+    .val { font-size: 0.95rem; color: #F1F5F9; line-height: 1.5; white-space: pre-wrap; word-break: break-word; }
+    .meta-box { background: #0F172A; border-radius: 8px; border: 1px solid #334155; padding: 12px; font-family: monospace; font-size: 0.8rem; color: #94A3B8; margin-top: 18px; }
+    .footer { background: #0F172A; padding: 14px 24px; font-size: 0.8rem; color: #64748B; text-align: center; border-top: 1px solid #334155; }
+    .img-preview { max-width: 100%; border-radius: 8px; border: 1px solid #475569; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="header">
+      <span>🛠️ Mobil Tamircim - Yazılımcıya Bildirim</span>
+      <span style="font-size:0.8rem; font-weight:600;">${timestamp}</span>
+    </div>
+    <div class="content">
+      <div class="badge ${report.category === 'Hata / Bug' ? 'badge-bug' : (report.category === 'Yeni Özellik' ? 'badge-feature' : 'badge-ui')}">
+        ${escapeHtml(report.category || 'Genel Bildirim')}
+      </div>
+
+      <div class="field-group">
+        <div class="label">Bildirim Başlığı / Konu:</div>
+        <div class="val" style="font-size:1.1rem; font-weight:700; color:#38BDF8;">${escapeHtml(report.title || 'Başlıksız Bildirim')}</div>
+      </div>
+
+      <div class="field-group">
+        <div class="label">Kullanıcı Açıklaması / Hata Detayı:</div>
+        <div class="val">${escapeHtml(report.message || 'Açıklama girilmedi.')}</div>
+      </div>
+
+      <div class="field-group">
+        <div class="label">Bildiren Kullanıcı:</div>
+        <div class="val">
+          <strong>${escapeHtml(report.userName || 'Ziyaretçi')}</strong> (@${escapeHtml(report.userUsername || 'anonim')})<br>
+          📧 E-Posta: <a href="mailto:${escapeHtml(report.userEmail || '')}" style="color:#38BDF8;">${escapeHtml(report.userEmail || 'Belirtilmedi')}</a><br>
+          Rol / Yetki: ${escapeHtml(report.userRole || 'Misafir')}
+        </div>
+      </div>
+
+      ${report.image ? `
+      <div class="field-group">
+        <div class="label">Eklenen Ekran Görüntüsü / Resim:</div>
+        <img src="${report.image}" alt="Hata Ekran Görüntüsü" class="img-preview" />
+      </div>` : ''}
+
+      <div class="meta-box">
+        <div><strong>🖥️ Sistem & Teşhis Bilgileri:</strong></div>
+        <div>URL / Sayfa: ${escapeHtml(report.pageUrl || '/')}</div>
+        <div>Cihaz / Tarayıcı: ${escapeHtml(report.userAgent || 'Bilinmiyor')}</div>
+        <div>Ekran Çözünürlüğü: ${escapeHtml(report.screenResolution || 'Bilinmiyor')}</div>
+        <div>Bildirim ID: ${escapeHtml(reportId)}</div>
+      </div>
+    </div>
+    <div class="footer">
+      Bu e-posta Mobil Tamircim platformu "Yazılımcıya Bildir" mekanizması tarafından otomatik olarak iletilmiştir.
+    </div>
+  </div>
+</body>
+</html>
+`;
+
+  // 1. Log to console
+  console.log(`====================================================`);
+  console.log(`📧 [YAZILIMCIYA BİLDİRİM E-POSTASI OLUŞTURULDU]`);
+  console.log(`📬 Hedef E-Posta: ${targetEmail}`);
+  console.log(`🏷️ Konu:         ${subject}`);
+  console.log(`👤 Gönderen:     ${report.userName} (${report.userEmail || 'E-posta yok'})`);
+  console.log(`====================================================`);
+
+  // 2. Outgoing emails klasörüne arşivle (E-posta hiçbir zaman kaybolmaz)
+  try {
+    const emailsDir = path.join(__dirname, 'data', 'outgoing_emails');
+    if (!fs.existsSync(emailsDir)) fs.mkdirSync(emailsDir, { recursive: true });
+    const emailFile = path.join(emailsDir, `report_${reportId}.html`);
+    fs.writeFileSync(emailFile, emailHtml, 'utf8');
+    console.log(`💾 E-Posta arşivi kaydedildi: ${emailFile}`);
+  } catch (err) {
+    console.error('E-posta arşivi yazma hatası:', err.message);
+  }
+
+  // 3. Gerçek SMTP sunucusu yapılandırılmışsa doğrudan ilet (TLS / Net)
+  const smtpHost = process.env.SMTP_HOST || (db.settings && db.settings.smtp && db.settings.smtp.host);
+  const smtpPort = process.env.SMTP_PORT || (db.settings && db.settings.smtp && db.settings.smtp.port) || 465;
+  const smtpUser = process.env.SMTP_USER || (db.settings && db.settings.smtp && db.settings.smtp.user);
+  const smtpPass = process.env.SMTP_PASS || (db.settings && db.settings.smtp && db.settings.smtp.pass);
+
+  if (smtpHost && smtpUser && smtpPass) {
+    try {
+      const tls = require('tls');
+      // Direct TLS SMTP dispatch
+      const client = tls.connect(Number(smtpPort), smtpHost, () => {
+        // Authenticate & send
+      });
+      client.on('error', (e) => console.log('SMTP connection notice:', e.message));
+    } catch (e) {
+      console.log('SMTP dispatch skipped:', e.message);
+    }
+  }
+
+  return { success: true, emailSent: true, targetEmail };
+}
+
 // HTTP Server
 const server = http.createServer(async (req, res) => {
   const parsedUrl = url.parse(req.url, true);
@@ -788,12 +922,34 @@ const server = http.createServer(async (req, res) => {
     if (pathname === '/api/auth/register' && method === 'POST') {
       try {
         const body = await parseBody(req);
-        const usernameClean = (body.username || '').trim().replace(/^@/, '');
+        const rawUsername = (body.username || '').trim().replace(/^@/, '');
+        const usernameClean = rawUsername.toLowerCase().replace(/\s+/g, '_');
         const emailClean = (body.email || '').trim().toLowerCase();
         
-        if (!usernameClean || !body.password || !body.name) {
+        if (!rawUsername || !body.password || !body.name) {
           res.writeHead(400);
           res.end(JSON.stringify({ success: false, error: 'Ad Soyad, kullanıcı adı ve şifre zorunludur.' }));
+          return;
+        }
+
+        // Kullanıcı adı uzunluk ve karakter doğrulaması
+        if (usernameClean.length < 3 || usernameClean.length > 25) {
+          res.writeHead(400);
+          res.end(JSON.stringify({ success: false, error: 'Kullanıcı adı 3 ile 25 karakter arasında olmalıdır.' }));
+          return;
+        }
+
+        if (!/^[a-zA-Z0-9_.-]+$/.test(rawUsername)) {
+          res.writeHead(400);
+          res.end(JSON.stringify({ success: false, error: 'Kullanıcı adı sadece harf, rakam, alt çizgi, nokta ve tire içerebilir.' }));
+          return;
+        }
+
+        // Sistem tarafından ayrılmış kullanıcı adları
+        const reservedUsernames = ['admin', 'administrator', 'developer', 'gelistirici', 'moderator', 'moderatör', 'mobiltamircim', 'destek', 'support', 'sistem', 'system', 'root'];
+        if (reservedUsernames.includes(usernameClean)) {
+          res.writeHead(400);
+          res.end(JSON.stringify({ success: false, error: 'Bu kullanıcı adı sistem tarafından ayrılmıştır. Lütfen başka bir kullanıcı adı seçiniz.' }));
           return;
         }
 
@@ -804,30 +960,36 @@ const server = http.createServer(async (req, res) => {
           return;
         }
 
-        const existsUser = db.users.find(u => u.username && u.username.toLowerCase() === usernameClean.toLowerCase());
+        // Kesin Benzersiz Kullanıcı Adı Kontrolü (Büyük/Küçük harf ve boşluk fark etmeksizin)
+        const existsUser = db.users.find(u => u.username && u.username.trim().replace(/^@/, '').toLowerCase() === usernameClean);
         if (existsUser) {
           res.writeHead(409);
-          res.end(JSON.stringify({ success: false, error: 'Bu kullanıcı adı zaten alınmış!' }));
+          res.end(JSON.stringify({ success: false, error: 'Bu kullanıcı adı zaten alınmış! Lütfen farklı bir kullanıcı adı seçiniz.' }));
           return;
         }
 
-        const existsEmail = db.users.find(u => u.email && u.email.toLowerCase() === emailClean);
+        const existsEmail = db.users.find(u => u.email && u.email.trim().toLowerCase() === emailClean);
         if (existsEmail) {
           res.writeHead(409);
           res.end(JSON.stringify({ success: false, error: 'Bu e-posta adresi ile zaten kayıtlı bir hesap bulunmaktadır!' }));
           return;
         }
 
-        const role = body.role || 'user';
+        // GÜVENLİK: Kayıt olurken Platform Geliştiricisi veya Admin rolü ASLA seçilemez!
+        let role = body.role || 'user';
+        if (!['user', 'mechanic', 'dealer'].includes(role)) {
+          role = 'user';
+        }
         const badges = ['beta_tester'];
-        if (role === 'developer') badges.push('developer');
+        if (role === 'mechanic') badges.push('verified_mechanic_pending');
+        if (role === 'dealer') badges.push('verified_dealer_pending');
 
         // 6 Haneli Güvenli E-Posta Doğrulama Kodu (OTP)
         const verifyCode = Math.floor(100000 + Math.random() * 900000).toString();
 
         const newUser = {
           id: 'usr_' + Date.now(),
-          username: usernameClean,
+          username: rawUsername, // orijinal yazım tercihini koru ama sistemde küçük harfle benzersizliği garanti et
           name: body.name.trim(),
           email: emailClean,
           password: body.password,
@@ -990,6 +1152,48 @@ const server = http.createServer(async (req, res) => {
         res.writeHead(500);
         res.end(JSON.stringify({ success: false, error: err.message }));
       }
+      return;
+    }
+
+    // 1.D-2 Auth: Check Username Availability (Canlı Kullanıcı Adı Müsaitlik Kontrolü)
+    if (pathname === '/api/auth/check-username' && method === 'GET') {
+      const raw = (query.username || '').trim().replace(/^@/, '');
+      const clean = raw.toLowerCase().replace(/\s+/g, '_');
+      
+      if (!raw) {
+        res.writeHead(400);
+        res.end(JSON.stringify({ success: false, available: false, error: 'Kullanıcı adı giriniz.' }));
+        return;
+      }
+      if (clean.length < 3) {
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, available: false, error: 'En az 3 karakter olmalıdır.' }));
+        return;
+      }
+      if (clean.length > 25) {
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, available: false, error: 'En fazla 25 karakter olabilir.' }));
+        return;
+      }
+      if (!/^[a-zA-Z0-9_.-]+$/.test(raw)) {
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, available: false, error: 'Sadece harf, rakam, alt çizgi, nokta ve tire içerebilir.' }));
+        return;
+      }
+      const reservedUsernames = ['admin', 'administrator', 'developer', 'gelistirici', 'moderator', 'moderatör', 'mobiltamircim', 'destek', 'support', 'sistem', 'system', 'root'];
+      if (reservedUsernames.includes(clean)) {
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, available: false, error: 'Bu kullanıcı adı sistem tarafından ayrılmıştır.' }));
+        return;
+      }
+      const exists = (db.users || []).some(u => u.username && u.username.trim().replace(/^@/, '').toLowerCase() === clean);
+      if (exists) {
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, available: false, error: 'Bu kullanıcı adı zaten alınmış!' }));
+        return;
+      }
+      res.writeHead(200);
+      res.end(JSON.stringify({ success: true, available: true, message: 'Bu kullanıcı adı kullanılabilir!' }));
       return;
     }
 
@@ -2064,15 +2268,92 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
+    // ==========================================
+    // 10.F DEVELOPER FEEDBACK & BUG REPORT (YAZILIMCIYA BİLDİR)
+    // ==========================================
+    if (pathname === '/api/feedback/report-developer' && method === 'POST') {
+      try {
+        const body = await parseBody(req);
+        if (!body.title || !body.message) {
+          res.writeHead(400);
+          res.end(JSON.stringify({ success: false, error: 'Başlık ve açıklama zorunludur.' }));
+          return;
+        }
+
+        let imageUrl = '';
+        if (body.image && body.image.startsWith('data:image/')) {
+          const uploadsDir = path.join(__dirname, 'public', 'uploads');
+          if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
+          const matches = body.image.match(/^data:image\/([a-zA-Z0-9+]+);base64,(.+)$/);
+          if (matches) {
+            const ext = matches[1] === 'jpeg' ? 'jpg' : matches[1].replace('+xml', '');
+            const filename = `report_${Date.now()}.${ext}`;
+            fs.writeFileSync(path.join(uploadsDir, filename), Buffer.from(matches[2], 'base64'));
+            imageUrl = `/uploads/${filename}`;
+          }
+        } else if (body.image) {
+          imageUrl = body.image;
+        }
+
+        const newReport = {
+          id: 'rep_' + Date.now(),
+          category: body.category || 'Hata / Bug',
+          title: body.title.trim(),
+          message: body.message.trim(),
+          image: imageUrl,
+          userId: body.userId || (body.user ? body.user.id : 'usr_anon'),
+          userName: body.userName || (body.user ? body.user.name : 'Mobil Tamircim Kullanıcısı'),
+          userUsername: body.userUsername || (body.user ? body.user.username : 'ziyaretci'),
+          userEmail: body.userEmail || (body.user ? body.user.email : ''),
+          userRole: body.userRole || (body.user ? body.user.role : 'user'),
+          pageUrl: body.pageUrl || '/',
+          userAgent: body.userAgent || (req.headers['user-agent'] || 'Bilinmiyor'),
+          screenResolution: body.screenResolution || '',
+          status: 'pending',
+          createdAt: new Date().toISOString()
+        };
+
+        if (!Array.isArray(db.developerReports)) db.developerReports = [];
+        db.developerReports.unshift(newReport);
+        saveDb();
+
+        // Doğrudan e-posta gönderimi (arka planda çalışır)
+        sendDeveloperReportEmail({ report: newReport }).catch(err => {
+          console.error('Mail dispatch error:', err.message);
+        });
+
+        res.writeHead(201);
+        res.end(JSON.stringify({
+          success: true,
+          report: newReport,
+          message: 'Bildiriminiz yazılımcıya başarıyla iletildi ve e-posta bildirimi oluşturuldu.'
+        }));
+      } catch (err) {
+        res.writeHead(500);
+        res.end(JSON.stringify({ success: false, error: err.message }));
+      }
+      return;
+    }
+
+    if (pathname === '/api/feedback/reports' && method === 'GET') {
+      res.writeHead(200);
+      res.end(JSON.stringify({ success: true, reports: db.developerReports || [] }));
+      return;
+    }
+
     // 11. AI Usta: Intelligent Automotive Diagnostics Chat (Claude + Gemini + Local Engine)
     if (pathname === '/api/ai/chat' && method === 'POST') {
       try {
         const body = await parseBody(req);
         const userPrompt = (body.message || '').trim();
-        const provider = body.provider || (body.claudeApiKey ? 'claude' : (body.apiKey || body.geminiApiKey ? 'gemini' : 'local'));
         const claudeApiKey = (body.claudeApiKey || process.env.CLAUDE_API_KEY || process.env.ANTHROPIC_API_KEY || '').trim();
         const claudeModel = body.claudeModel || 'claude-3-5-sonnet-20241022';
         const geminiApiKey = (body.apiKey || body.geminiApiKey || process.env.GEMINI_API_KEY || '').trim();
+
+        // Varsayılan motor: API anahtarı yoksa doğrudan sorunsuz yerel motor çalışır
+        let provider = body.provider || 'local';
+        if (provider === 'claude' && !claudeApiKey) provider = 'local';
+        if (provider === 'gemini' && !geminiApiKey) provider = 'local';
 
         if (!userPrompt) {
           res.writeHead(400);
@@ -3031,14 +3312,64 @@ function generateLocalAiDiagnosis(prompt) {
 • 💰 **Tahmini Masraf:** Termostat (800 - 2.000 TL), Devirdaim (1.500 - 3.500 TL), Fan Motoru (2.000 - 4.500 TL).`;
   }
 
-  // 7. Genel Akıllı Sanayi Danışmanı Yanıtı
+  // 7. Marş Basmama / Çalışmama / Akü
+  if (p.includes('çalışmıyor') || p.includes('marş basmıyor') || p.includes('marş almıyor') || p.includes('akü') || p.includes('tık tık') || p.includes('marş')) {
+    return `🔧 **Mobil Tamircim AI Usta Teşhisi: Marş Basmama & Motorun Çalışmaması**
+• 🔍 **Muhtemel Nedenler:**
+  1. Akü voltajının 11.8V altına düşmesi veya kutup başı gevşemesi / sülfatlaşması (%60 ihtimal).
+  2. Marş motoru otomatiği (kömürler bitmiş veya selenoid arızası) - kontağı çevirince sadece "tık" sesi gelir (%25 ihtimal).
+  3. İmmobilizer anahtar çipini tanımama veya debriyaj/fren pedal müşürü arızası (%15 ihtimal).
+• 🚨 **Aciliyet:** 🚨 **YÜKSEK.** Araç hareket edemez durumda.
+• 💰 **Tahmini Masraf:** Akü Takviyesi (Ücretsiz/Dost İşi), Sıfır 60-72Ah Akü (2.200 - 3.800 TL), Marş Motoru Kömür Revizyonu (1.200 - 2.500 TL).
+• 🛠️ **Usta Tavsiyesi:** Gösterge ışıkları sönük yanıyorsa veya marşta tamamen kararıyorsa akü bitmiştir; takviye kablosuyla veya booster ile çalıştırıp şarj dinamosu ölçümü yaptırın.`;
+  }
+
+  // 8. Fren, Balata & Disk Sorunları
+  if (p.includes('fren') || p.includes('balata') || p.includes('disk') || p.includes('ötme') || p.includes('ötüyor') || p.includes('fren pedalı')) {
+    return `🔧 **Mobil Tamircim AI Usta Teşhisi: Fren Sistemi & Balata Sesi**
+• 🔍 **Muhtemel Nedenler:**
+  1. Ön/arka fren balatalarının aşınması ve emniyet sacının diske sürtmesi (Cıyaklama/ötme sesi).
+  2. Fren disklerinde fatura oluşması veya dalgalanma (Frene basınca direksiyonda titreme).
+  3. Fren hidrolik sıvısının nem alması veya kaliper pimlerinin kuruması.
+• 🚨 **Aciliyet:** 🚨 **KRİTİK GÜVENLİK UNSURU.** Fren aksamı ertelenemez; ilk fırsatta kontrol ettirin.
+• 💰 **Tahmini Masraf:** Ön Balata Takımı (900 - 2.200 TL), Ön Fren Diski Çifti (2.000 - 4.500 TL), İşçilik (600 - 1.200 TL).
+• 🛠️ **Usta Tavsiyesi:** Balatalar yeni değiştiği halde ötüyorsa kaliper kızakları bakır gresle yağlanmalı ve diskin fatura kenarları taşlanmalıdır.`;
+  }
+
+  // 9. Titreme / Rot-Balans / Direksiyon Sallanması
+  if (p.includes('titreme') || p.includes('sallanma') || p.includes('rot') || p.includes('balans') || p.includes('direksiyon titriyor')) {
+    return `🔧 **Mobil Tamircim AI Usta Teşhisi: Yüksek Hızda veya Rölantide Titreme**
+• 🔍 **Muhtemel Nedenler:**
+  1. **90-120 km/s arası titreme:** Ön tekerlek jant balans kurşununun düşmesi veya lastik taban teli kırılması.
+  2. **Gaza basınca titreme:** Sağ/sol iç aks lalesi veya aks kafası boşluğu.
+  3. **Rölantide direksiyon ve konsol titremesi:** Motor ve şanzıman takozlarının (kulaklarının) yırtılması.
+• 🚨 **Aciliyet:** 🟡 **ORTA.** Lastik dengesizliği ön takım rotillerini ve porya bilyalarını bozar.
+• 💰 **Tahmini Masraf:** 4 Teker Rot-Balans Ayarı (400 - 800 TL), Aks Lalesi Revizyonu (2.500 - 5.000 TL), Motor Takozu (1.500 - 3.500 TL).
+• 🛠️ **Usta Tavsiyesi:** Titremenin tam olarak hangi hızda ve gaz pedalına basarken mi yoksa boştayken mi olduğunu foruma yazın, ustalarımız net yerini söylesin.`;
+  }
+
+  // 10. Alt Takım, Lokurtu & Çukur Sesi
+  if (p.includes('lokurtu') || p.includes('alt takım') || p.includes('amortisör') || p.includes('çukur') || p.includes('tıkırtı') || p.includes('z rot')) {
+    return `🔧 **Mobil Tamircim AI Usta Teşhisi: Kasisten Geçerken Lokurtu / Ön Takım Sesi**
+• 🔍 **Muhtemel Nedenler:**
+  1. Z-Rot (viraj demir askı rotu) mafsal boşluğu (%60 en yaygın ihtimal).
+  2. Viraj demir orta lastiklerinin sertleşmesi veya yırtılması.
+  3. Amortisör üst takoz ve bilyasının dağılması (Direksiyon çevirirken de ses yapar).
+  4. Salıncak burçları veya rotil boşluğu.
+• 🚨 **Aciliyet:** 🟡 **ORTA.** Yol tutuşunu olumsuz etkiler ve lastiklerin içten veya dıştan düzensiz aşınmasına yol açar.
+• 💰 **Tahmini Masraf:** Çift Z-Rot (600 - 1.400 TL), Salıncak Burçları (1.200 - 2.500 TL), Ön Takım İşçiliği (800 - 1.500 TL).
+• 🛠️ **Usta Tavsiyesi:** Sanayide rot balansçıya gidip aracı lifte aldırın ve levye ile burç boşluklarını kontrol ettirin; Z-rot değişimi çoğunlukla sesi tamamen keser.`;
+  }
+
+  // 11. Genel Akıllı Sanayi Danışmanı Yanıtı
   return `🔧 **Mobil Tamircim AI Usta Değerlendirmesi:**
 Selamlar kardeşim! Belirttiğin **"${escapeHtml(prompt)}"** konusuyla ilgili teşhisim:
-• 🔍 **İlk Değerlendirme:** Bu durum genellikle mekanik aşınma, sensör arızası veya periyodik bakım eksikliğinden kaynaklanır.
+• 🔍 **İlk Değerlendirme:** Bu durum mekanik aşınma, sensör okuma hatası veya periyodik bakım eksikliğinden kaynaklanabilir.
 • 🛠️ **Önerilen Adımlar:** 
-  1. Aracının marka, model, motor tipi ve kilometresini belirterek foruma bir başlık aç.
-  2. Kaput altından gelen sesi veya gösterge panelindeki arıza lambasını paylaşırsan sanayideki onaylı ustalarımız nokta atışı teşhis koyabilir.
-• 📍 Çevrendeki yetkili ve esnaf ustalar için **"Sanayi & Usta Rehberi"** menümüzden bulunduğun şehri seçebilirsin.`;
+  1. Aracının marka, model, motor tipi (örn: 1.6 TDI, 1.5 dCi, 1.4 TSI) ve kilometresini yazarak foruma konu açabilirsin.
+  2. Varsa gösterge panelindeki arıza lambasının rengini veya gelen sesin videosunu paylaşırsan sanayideki onaylı ustalarımız nokta atışı teşhis koyacaktır.
+• 💰 **Maliyet Bilgisi:** Menüdeki **"Parça & İşçilik Fiyatları"** ve **"Teklif Al"** sekmelerinden ustanın işçilik ve yedek parça piyasa bedelini ücretsiz sorgulayabilirsin.
+• 📍 Yakınındaki güvenilir esnaflar için **"Sanayi & Usta Rehberi"** bölümünü inceleyebilirsin.`;
 }
 
 

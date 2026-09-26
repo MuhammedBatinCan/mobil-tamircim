@@ -29,6 +29,7 @@ const App = {
         if (typeof Blog !== 'undefined') Blog.init(this.state.blogPosts);
 
         this.setupEventListeners();
+        this.initUsernameLiveCheck();
         this.renderBrandGrid();
         this.renderUserSwitcherOptions();
       }
@@ -787,6 +788,13 @@ async function handleAuthRegister(event) {
     return;
   }
 
+  const usernameInput = document.getElementById('reg-username');
+  if (usernameInput && usernameInput.dataset.valid === 'false') {
+    showToast('Lütfen müsait ve geçerli bir kullanıcı adı seçiniz.', 'error');
+    usernameInput.focus();
+    return;
+  }
+
   const formData = {
     name, username, email, password, role, plate, car, city, shopName, sanayiSite, taxNumber, dealerName
   };
@@ -794,6 +802,8 @@ async function handleAuthRegister(event) {
   const res = await Auth.register(formData, rememberMe);
   if (res && res.success) {
     document.getElementById('auth-register-form').reset();
+    const feedbackEl = document.getElementById('reg-username-feedback');
+    if (feedbackEl) feedbackEl.style.display = 'none';
   }
 }
 
@@ -816,6 +826,170 @@ async function handleEmailVerifySubmit(event) {
     if (btn) btn.disabled = false;
   }
 }
+
+// ==========================================
+// CANLI KULLANICI ADI KONTROLÜ (DEBOUNCE)
+// ==========================================
+App.initUsernameLiveCheck = function() {
+  const regUserEl = document.getElementById('reg-username');
+  const feedbackEl = document.getElementById('reg-username-feedback');
+  if (!regUserEl || !feedbackEl) return;
+
+  let checkTimer = null;
+  regUserEl.addEventListener('input', () => {
+    clearTimeout(checkTimer);
+    const val = regUserEl.value.trim().replace(/^@/, '');
+    
+    if (!val) {
+      feedbackEl.style.display = 'none';
+      regUserEl.style.borderColor = '';
+      regUserEl.removeAttribute('data-valid');
+      return;
+    }
+
+    if (val.length < 3) {
+      feedbackEl.style.display = 'block';
+      feedbackEl.style.color = '#F59E0B';
+      feedbackEl.textContent = '⚠️ Kullanıcı adı en az 3 karakter olmalıdır.';
+      regUserEl.style.borderColor = '#F59E0B';
+      regUserEl.dataset.valid = 'false';
+      return;
+    }
+
+    feedbackEl.style.display = 'block';
+    feedbackEl.style.color = '#94A3B8';
+    feedbackEl.textContent = '⏳ Kontrol ediliyor...';
+
+    checkTimer = setTimeout(async () => {
+      try {
+        const res = await fetch('/api/auth/check-username?username=' + encodeURIComponent(val));
+        const data = await res.json();
+        if (data.available) {
+          feedbackEl.style.display = 'block';
+          feedbackEl.style.color = '#10B981';
+          feedbackEl.textContent = '✓ ' + (data.message || 'Bu kullanıcı adı kullanılabilir!');
+          regUserEl.style.borderColor = '#10B981';
+          regUserEl.dataset.valid = 'true';
+        } else {
+          feedbackEl.style.display = 'block';
+          feedbackEl.style.color = '#EF4444';
+          feedbackEl.textContent = '✕ ' + (data.error || 'Bu kullanıcı adı kullanılamaz!');
+          regUserEl.style.borderColor = '#EF4444';
+          regUserEl.dataset.valid = 'false';
+        }
+      } catch (e) {
+        feedbackEl.style.display = 'none';
+      }
+    }, 300);
+  });
+};
+
+// ==========================================
+// YAZILIMCIYA BİLDİR (DEVELOPER REPORT)
+// ==========================================
+App.reportImageBase64 = null;
+
+App.openReportDeveloperModal = function() {
+  const user = (window.Auth && window.Auth.currentUser) ? window.Auth.currentUser : null;
+  const emailInput = document.getElementById('dev-report-email');
+  if (emailInput && user && user.email) {
+    emailInput.value = user.email;
+  }
+  openModal('report-developer-modal');
+};
+
+App.handleReportImageUpload = function(input) {
+  if (input.files && input.files[0]) {
+    const file = input.files[0];
+    if (file.size > 5 * 1024 * 1024) {
+      showToast('Görsel boyutu 5 MB altında olmalıdır.', 'error');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      App.reportImageBase64 = e.target.result;
+      const previewWrap = document.getElementById('dev-report-img-preview');
+      const previewImg = document.getElementById('dev-report-preview-img');
+      const clearBtn = document.getElementById('dev-report-clear-img');
+      if (previewImg && previewWrap) {
+        previewImg.src = App.reportImageBase64;
+        previewWrap.style.display = 'block';
+      }
+      if (clearBtn) clearBtn.style.display = 'inline-block';
+    };
+    reader.readAsDataURL(file);
+  }
+};
+
+App.clearReportImage = function() {
+  App.reportImageBase64 = null;
+  const previewWrap = document.getElementById('dev-report-img-preview');
+  const clearBtn = document.getElementById('dev-report-clear-img');
+  const fileInput = document.getElementById('dev-report-file');
+  if (previewWrap) previewWrap.style.display = 'none';
+  if (clearBtn) clearBtn.style.display = 'none';
+  if (fileInput) fileInput.value = '';
+};
+
+App.submitDeveloperReport = async function(event) {
+  event.preventDefault();
+  const category = document.getElementById('dev-report-category').value;
+  const title = document.getElementById('dev-report-title').value.trim();
+  const message = document.getElementById('dev-report-message').value.trim();
+  const email = document.getElementById('dev-report-email') ? document.getElementById('dev-report-email').value.trim() : '';
+
+  if (!title || !message) {
+    showToast('Lütfen başlık ve açıklama alanlarını doldurunuz.', 'error');
+    return;
+  }
+
+  const btn = document.getElementById('btn-submit-dev-report');
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<span>⏳ Gönderiliyor...</span>';
+  }
+
+  try {
+    const user = (window.Auth && window.Auth.currentUser) ? window.Auth.currentUser : null;
+    const payload = {
+      category,
+      title,
+      message,
+      image: App.reportImageBase64 || '',
+      userEmail: email || (user ? user.email : ''),
+      userName: user ? user.name : 'Ziyaretçi',
+      userUsername: user ? user.username : 'ziyaretci',
+      userId: user ? user.id : 'usr_anon',
+      userRole: user ? user.role : 'guest',
+      pageUrl: window.location.href,
+      userAgent: navigator.userAgent,
+      screenResolution: `${window.innerWidth}x${window.innerHeight}`
+    };
+
+    const res = await fetch('/api/feedback/report-developer', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await res.json();
+    if (data.success) {
+      showToast('Bildiriminiz yazılımcıya başarıyla iletildi ve e-posta bildirimi oluşturuldu! Teşekkür ederiz.');
+      closeModal('report-developer-modal');
+      document.getElementById('report-developer-form').reset();
+      App.clearReportImage();
+    } else {
+      showToast(data.error || 'Bildirim iletilemedi.', 'error');
+    }
+  } catch (err) {
+    showToast('Sunucu bağlantı hatası oluştu.', 'error');
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = '<span>✉️ Yazılımcıya Gönder</span>';
+    }
+  }
+};
 
 // Global Export
 window.App = App;

@@ -1490,5 +1490,41 @@
       ],
       "content": "\n<h3>Ekspertiz Parası Vermeden Önce Bu 10 Adımı Uygulayın</h3>\n<p>İkinci el piyasasında araç bakarken satıcının yanına gittiğinizde daha 5. dakikada arabanın alınabilir olup olmadığını anlamak mümkün. İşte sanayide ustaların kaputu açar açmaz baktığı ilk göstergeler:</p>\n\n<ol>\n  <li><strong>Motor Yağ Dolum Kapağının Altı (Mayonezleşme Kontrolü):</strong> Kapağı açın, altında sarı-beyaz köpük veya mayonez kıvamında kalıntı varsa su yağa karışıyor olabilir (Silindir kapak contası yanığı şüphesi).</li>\n  <li><strong>Yağ Çubuğundan Üfleme & Duman:</strong> Motor çalışma sıcaklığına geldikten sonra yağ çubuğunu çekin. Buradan yoğun mavi/beyaz buhar ve yağ damlacıkları fışkırıyorsa segman ve piston aşınması vardır.</li>\n  <li><strong>Podye ve Kule Başları:</strong> Ön çamurluk içlerindeki fabrika punto kaynaklarına bakın. Punto kaynakları kaybolmuş, üzeri pütürlü macunla kapatılmışsa araç önden ağır kaza almıştır.</li>\n  <li><strong>Egzoz Dumanı Renkleri:</strong> Gaza ani basıldığında:\n    <ul>\n      <li><em>Mavi Duman:</em> Motor yağ yakıyor (Segman/subap lastikleri).</li>\n      <li><em>Siyah Duman:</em> Zengin karışım, hava alamıyor veya enjektör işiyor.</li>\n      <li><em>Beyaz Duman:</em> Su eksiltiyor, silindir kapağı su buharlaştırıyor.</li>\n    </ul>\n  </li>\n</ol>\n    "
     }
+  ],
+  "developerReports": [
+    {
+      "id": "rep_1790458825921",
+      "category": "Hata / Bug",
+      "title": "Profil Sayfasında Hız Optimizasyonu",
+      "message": "Fotoğraf yüklerken önizleme çok akıcı çalışıyor, mobil tarayıcıda da test ettim gayet başarılı.",
+      "image": "",
+      "userId": "usr_1789765735571",
+      "userName": "Test Pilotu",
+      "userUsername": "testpilot_1789765735555",
+      "userEmail": "caner@mobiltamircim.com",
+      "userRole": "mechanic",
+      "pageUrl": "http://localhost:3000/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36 Edg/153.0.0.0",
+      "screenResolution": "1340x857",
+      "status": "pending",
+      "createdAt": "2026-09-26T21:40:25.921Z"
+    },
+    {
+      "id": "rep_1790458580171",
+      "category": "Hata / Bug",
+      "title": "Test Hatası",
+      "message": "Bu bir test geliştirici bildirim mesajıdır.",
+      "image": "",
+      "userId": "usr_anon",
+      "userName": "Muhammed Test",
+      "userUsername": "ziyaretci",
+      "userEmail": "test@ornek.com",
+      "userRole": "user",
+      "pageUrl": "/",
+      "userAgent": "node",
+      "screenResolution": "",
+      "status": "pending",
+      "createdAt": "2026-09-26T21:36:20.171Z"
+    }
   ]
 }
