@@ -609,6 +609,11 @@ if (fs.existsSync(STORE_FILE)) {
         }
       });
     }
+    if (!Array.isArray(db.parts)) db.parts = [];
+    if (!Array.isArray(db.garageVehicles)) db.garageVehicles = [];
+    if (!Array.isArray(db.maintenanceRecords)) db.maintenanceRecords = [];
+    if (!Array.isArray(db.quoteRequests)) db.quoteRequests = [];
+    if (!Array.isArray(db.blogPosts)) db.blogPosts = [];
   } catch (err) {
     console.error('Error loading existing store, initializing defaults:', err);
     saveDb();
@@ -1680,6 +1685,381 @@ const server = http.createServer(async (req, res) => {
       saveDb();
       res.writeHead(201);
       res.end(JSON.stringify({ success: true, price: newPrice }));
+      return;
+    }
+
+    // ==========================================
+    // 10.B PARTS MARKETPLACE (PARÇA BORSASI)
+    // ==========================================
+    if (pathname === '/api/parts' && method === 'GET') {
+      const category = query.category;
+      const condition = query.condition;
+      const brand = query.brand;
+      const q = (query.q || '').toLowerCase().trim();
+
+      let results = [...(db.parts || [])];
+      if (category && category !== 'all') {
+        results = results.filter(p => p.category === category);
+      }
+      if (condition && condition !== 'all') {
+        results = results.filter(p => p.condition === condition);
+      }
+      if (brand && brand !== 'all') {
+        results = results.filter(p => p.brand.toLowerCase() === brand.toLowerCase());
+      }
+      if (q) {
+        results = results.filter(p => 
+          (p.title && p.title.toLowerCase().includes(q)) ||
+          (p.oemCode && p.oemCode.toLowerCase().includes(q)) ||
+          (p.description && p.description.toLowerCase().includes(q)) ||
+          (p.brand && p.brand.toLowerCase().includes(q))
+        );
+      }
+      res.writeHead(200);
+      res.end(JSON.stringify({ success: true, parts: results }));
+      return;
+    }
+
+    if (pathname === '/api/parts' && method === 'POST') {
+      try {
+        const body = await parseBody(req);
+        if (!body.title || !body.price) {
+          res.writeHead(400);
+          res.end(JSON.stringify({ success: false, error: 'Başlık ve fiyat zorunludur.' }));
+          return;
+        }
+
+        let imageUrl = body.image || 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=600&auto=format&fit=crop&q=80';
+        if (body.image && body.image.startsWith('data:image/')) {
+          const uploadsDir = path.join(__dirname, 'public', 'uploads');
+          if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
+          const matches = body.image.match(/^data:image\/([a-zA-Z0-9+]+);base64,(.+)$/);
+          if (matches) {
+            const ext = matches[1] === 'jpeg' ? 'jpg' : matches[1].replace('+xml', '');
+            const filename = `part_${Date.now()}.${ext}`;
+            fs.writeFileSync(path.join(uploadsDir, filename), Buffer.from(matches[2], 'base64'));
+            imageUrl = `/uploads/${filename}`;
+          }
+        }
+
+        const newPart = {
+          id: 'part_' + Date.now(),
+          title: body.title.trim(),
+          category: body.category || 'Motor & Mekanik',
+          brand: body.brand || 'Diğer',
+          model: body.model || '',
+          condition: body.condition || 'Çıkma Orijinal',
+          oemCode: body.oemCode ? body.oemCode.trim() : '',
+          price: Number(body.price) || 0,
+          currency: 'TL',
+          city: body.city || 'İstanbul',
+          district: body.district || '',
+          shipping: body.shipping || 'Elden Teslim / Kargo',
+          image: imageUrl,
+          sellerId: body.sellerId || (body.user ? body.user.id : 'usr_dev_1'),
+          sellerName: body.sellerName || (body.user ? body.user.name : 'Mobil Tamircim Üyesi'),
+          sellerShop: body.sellerShop || '',
+          sellerPhone: body.sellerPhone || '',
+          description: body.description || '',
+          createdAt: new Date().toISOString(),
+          status: 'active',
+          offers: []
+        };
+
+        if (!Array.isArray(db.parts)) db.parts = [];
+        db.parts.unshift(newPart);
+        saveDb();
+
+        res.writeHead(201);
+        res.end(JSON.stringify({ success: true, part: newPart }));
+      } catch (err) {
+        res.writeHead(500);
+        res.end(JSON.stringify({ success: false, error: err.message }));
+      }
+      return;
+    }
+
+    if (pathname.startsWith('/api/parts/') && pathname.endsWith('/offer') && method === 'POST') {
+      try {
+        const partId = pathname.replace('/api/parts/', '').replace('/offer', '');
+        const part = (db.parts || []).find(p => p.id === partId);
+        if (!part) {
+          res.writeHead(404);
+          res.end(JSON.stringify({ success: false, error: 'Parça bulunamadı.' }));
+          return;
+        }
+
+        const body = await parseBody(req);
+        const newOffer = {
+          id: 'poff_' + Date.now(),
+          userName: body.userName || 'Mobil Tamircim Kullanıcısı',
+          userPhone: body.userPhone || '',
+          offerAmount: Number(body.offerAmount) || 0,
+          message: body.message || '',
+          createdAt: new Date().toISOString()
+        };
+
+        if (!Array.isArray(part.offers)) part.offers = [];
+        part.offers.push(newOffer);
+        saveDb();
+
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, offer: newOffer, part }));
+      } catch (err) {
+        res.writeHead(500);
+        res.end(JSON.stringify({ success: false, error: err.message }));
+      }
+      return;
+    }
+
+    // ==========================================
+    // 10.C DIGITAL GARAGE & VEHICLE WALLET
+    // ==========================================
+    if (pathname === '/api/garage/vehicles' && method === 'GET') {
+      const userId = query.userId;
+      let vehicles = db.garageVehicles || [];
+      if (userId) {
+        vehicles = vehicles.filter(v => v.userId === userId);
+      }
+      res.writeHead(200);
+      res.end(JSON.stringify({ success: true, vehicles }));
+      return;
+    }
+
+    if (pathname === '/api/garage/vehicles' && method === 'POST') {
+      try {
+        const body = await parseBody(req);
+        if (!body.plate || !body.brand || !body.model) {
+          res.writeHead(400);
+          res.end(JSON.stringify({ success: false, error: 'Plaka, marka ve model zorunludur.' }));
+          return;
+        }
+
+        const newVehicle = {
+          id: 'veh_' + Date.now(),
+          userId: body.userId || 'usr_dev_1',
+          plate: body.plate.toUpperCase().trim(),
+          brand: body.brand.trim(),
+          model: body.model.trim(),
+          year: Number(body.year) || new Date().getFullYear(),
+          engine: body.engine || '',
+          currentKm: Number(body.currentKm) || 0,
+          fuelType: body.fuelType || 'Dizel',
+          inspectionDate: body.inspectionDate || '',
+          insuranceDate: body.insuranceDate || '',
+          kaskoDate: body.kaskoDate || '',
+          nextOilKm: body.nextOilKm ? Number(body.nextOilKm) : null,
+          image: body.image || 'https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?w=600&auto=format&fit=crop&q=80',
+          notes: body.notes || ''
+        };
+
+        if (!Array.isArray(db.garageVehicles)) db.garageVehicles = [];
+        db.garageVehicles.unshift(newVehicle);
+        saveDb();
+
+        res.writeHead(201);
+        res.end(JSON.stringify({ success: true, vehicle: newVehicle }));
+      } catch (err) {
+        res.writeHead(500);
+        res.end(JSON.stringify({ success: false, error: err.message }));
+      }
+      return;
+    }
+
+    if (pathname.startsWith('/api/garage/vehicles/') && method === 'DELETE') {
+      const vehId = pathname.replace('/api/garage/vehicles/', '');
+      db.garageVehicles = (db.garageVehicles || []).filter(v => v.id !== vehId);
+      db.maintenanceRecords = (db.maintenanceRecords || []).filter(r => r.vehicleId !== vehId);
+      saveDb();
+      res.writeHead(200);
+      res.end(JSON.stringify({ success: true }));
+      return;
+    }
+
+    if (pathname === '/api/garage/records' && method === 'GET') {
+      const vehicleId = query.vehicleId;
+      let records = db.maintenanceRecords || [];
+      if (vehicleId) {
+        records = records.filter(r => r.vehicleId === vehicleId);
+      }
+      res.writeHead(200);
+      res.end(JSON.stringify({ success: true, records }));
+      return;
+    }
+
+    if (pathname === '/api/garage/records' && method === 'POST') {
+      try {
+        const body = await parseBody(req);
+        if (!body.vehicleId || !body.title) {
+          res.writeHead(400);
+          res.end(JSON.stringify({ success: false, error: 'Araç ve işlem başlığı zorunludur.' }));
+          return;
+        }
+
+        const newRecord = {
+          id: 'rec_' + Date.now(),
+          vehicleId: body.vehicleId,
+          userId: body.userId || 'usr_dev_1',
+          title: body.title.trim(),
+          date: body.date || new Date().toISOString().split('T')[0],
+          km: Number(body.km) || 0,
+          cost: Number(body.cost) || 0,
+          category: body.category || 'Periyodik Bakım',
+          serviceShop: body.serviceShop || 'Özel Servis',
+          notes: body.notes || ''
+        };
+
+        if (!Array.isArray(db.maintenanceRecords)) db.maintenanceRecords = [];
+        db.maintenanceRecords.unshift(newRecord);
+
+        // Update vehicle currentKm if higher
+        const veh = (db.garageVehicles || []).find(v => v.id === body.vehicleId);
+        if (veh && newRecord.km > veh.currentKm) {
+          veh.currentKm = newRecord.km;
+        }
+
+        saveDb();
+        res.writeHead(201);
+        res.end(JSON.stringify({ success: true, record: newRecord }));
+      } catch (err) {
+        res.writeHead(500);
+        res.end(JSON.stringify({ success: false, error: err.message }));
+      }
+      return;
+    }
+
+    // ==========================================
+    // 10.D QUOTE REQUESTS (TEKLİF AL SİSTEMİ)
+    // ==========================================
+    if (pathname === '/api/quotes' && method === 'GET') {
+      res.writeHead(200);
+      res.end(JSON.stringify({ success: true, quoteRequests: db.quoteRequests || [] }));
+      return;
+    }
+
+    if (pathname === '/api/quotes' && method === 'POST') {
+      try {
+        const body = await parseBody(req);
+        if (!body.car || !body.serviceType) {
+          res.writeHead(400);
+          res.end(JSON.stringify({ success: false, error: 'Araç bilgisi ve işlem açıklaması zorunludur.' }));
+          return;
+        }
+
+        const newRequest = {
+          id: 'qreq_' + Date.now(),
+          userId: body.userId || 'usr_dev_1',
+          userName: body.userName || 'Mobil Tamircim Kullanıcısı',
+          userPlate: (body.userPlate || '').toUpperCase().trim(),
+          car: body.car.trim(),
+          city: body.city || 'İstanbul',
+          district: body.district || '',
+          serviceType: body.serviceType.trim(),
+          partPreference: body.partPreference || 'Orijinal veya Kaliteli Muadil',
+          description: body.description || '',
+          budget: body.budget || '',
+          status: 'open',
+          createdAt: new Date().toISOString(),
+          offers: []
+        };
+
+        if (!Array.isArray(db.quoteRequests)) db.quoteRequests = [];
+        db.quoteRequests.unshift(newRequest);
+        saveDb();
+
+        res.writeHead(201);
+        res.end(JSON.stringify({ success: true, request: newRequest }));
+      } catch (err) {
+        res.writeHead(500);
+        res.end(JSON.stringify({ success: false, error: err.message }));
+      }
+      return;
+    }
+
+    if (pathname.startsWith('/api/quotes/') && pathname.endsWith('/offer') && method === 'POST') {
+      try {
+        const reqId = pathname.replace('/api/quotes/', '').replace('/offer', '');
+        const qReq = (db.quoteRequests || []).find(q => q.id === reqId);
+        if (!qReq) {
+          res.writeHead(404);
+          res.end(JSON.stringify({ success: false, error: 'Talep bulunamadı.' }));
+          return;
+        }
+
+        const body = await parseBody(req);
+        const labor = Number(body.laborCost) || 0;
+        const part = Number(body.partCost) || 0;
+        const total = Number(body.totalCost) || (labor + part);
+
+        const newOffer = {
+          id: 'qoff_' + Date.now(),
+          mechanicId: body.mechanicId || 'dir_1',
+          mechanicName: body.mechanicName || 'Yetkili Servis',
+          mechanicShop: body.mechanicShop || 'Sanayi Servisi',
+          laborCost: labor,
+          partCost: part,
+          totalCost: total,
+          duration: body.duration || '1 İş Günü',
+          warranty: body.warranty || '6 Ay / 10.000 KM Garanti',
+          note: body.note || '',
+          status: 'pending',
+          createdAt: new Date().toISOString()
+        };
+
+        if (!Array.isArray(qReq.offers)) qReq.offers = [];
+        qReq.offers.push(newOffer);
+        saveDb();
+
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, offer: newOffer, quoteRequest: qReq }));
+      } catch (err) {
+        res.writeHead(500);
+        res.end(JSON.stringify({ success: false, error: err.message }));
+      }
+      return;
+    }
+
+    // ==========================================
+    // 10.E BLOG & SANAYİ REHBERLERİ
+    // ==========================================
+    if (pathname === '/api/blog' && method === 'GET') {
+      const cat = query.category;
+      let posts = db.blogPosts || [];
+      if (cat && cat !== 'all') {
+        posts = posts.filter(p => p.category === cat);
+      }
+      res.writeHead(200);
+      res.end(JSON.stringify({ success: true, posts }));
+      return;
+    }
+
+    if (pathname.startsWith('/api/blog/') && !pathname.endsWith('/like') && method === 'GET') {
+      const slug = pathname.replace('/api/blog/', '');
+      const post = (db.blogPosts || []).find(p => p.slug === slug || p.id === slug);
+      if (!post) {
+        res.writeHead(404);
+        res.end(JSON.stringify({ success: false, error: 'Yazı bulunamadı.' }));
+        return;
+      }
+      post.views = (post.views || 0) + 1;
+      saveDb();
+      res.writeHead(200);
+      res.end(JSON.stringify({ success: true, post }));
+      return;
+    }
+
+    if (pathname.startsWith('/api/blog/') && pathname.endsWith('/like') && method === 'POST') {
+      const id = pathname.replace('/api/blog/', '').replace('/like', '');
+      const post = (db.blogPosts || []).find(p => p.id === id || p.slug === id);
+      if (post) {
+        post.likes = (post.likes || 0) + 1;
+        saveDb();
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, likes: post.likes }));
+      } else {
+        res.writeHead(404);
+        res.end(JSON.stringify({ success: false, error: 'Yazı bulunamadı.' }));
+      }
       return;
     }
 

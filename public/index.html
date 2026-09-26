@@ -44,12 +44,15 @@
 
       <!-- Masaüstü Navigasyon -->
       <nav class="nav-desktop">
-        <a class="nav-link active" data-view="view-forum">Forum</a>
-        <a class="nav-link" data-view="view-brands">Markalar</a>
-        <a class="nav-link" data-view="view-directory">Usta Rehberi</a>
-        <a class="nav-link" data-view="view-obd">OBD-II Kodları</a>
-        <a class="nav-link" data-view="view-prices">Fiyatlar</a>
-        <a class="nav-link sos-link" data-view="view-sos"><span class="sos-dot"></span> Acil Yardım</a>
+        <a class="nav-link active" data-view="view-forum" onclick="App.switchView('view-forum')">Forum</a>
+        <a class="nav-link" data-view="view-parts" onclick="App.switchView('view-parts')">Parça Borsası</a>
+        <a class="nav-link" data-view="view-quotes" onclick="App.switchView('view-quotes')">Teklif Al</a>
+        <a class="nav-link" data-view="view-garage" onclick="App.switchView('view-garage')">Garajım</a>
+        <a class="nav-link" data-view="view-blog" onclick="App.switchView('view-blog')">Blog</a>
+        <a class="nav-link" data-view="view-directory" onclick="App.switchView('view-directory')">Usta Rehberi</a>
+        <a class="nav-link" data-view="view-obd" onclick="App.switchView('view-obd')">OBD-II</a>
+        <a class="nav-link" data-view="view-prices" onclick="App.switchView('view-prices')">Fiyatlar</a>
+        <a class="nav-link sos-link" data-view="view-sos" onclick="App.switchView('view-sos')"><span class="sos-dot"></span> Acil Yardım</a>
       </nav>
 
       <!-- Sağ Butonlar -->
@@ -144,8 +147,13 @@
           <span>Kısayollar</span>
         </div>
         <div class="sidebar-nav-list">
+          <a class="sidebar-nav-item" onclick="App.switchView('view-parts');">🛒 Parça Borsası</a>
+          <a class="sidebar-nav-item" onclick="App.switchView('view-quotes');">💰 Ustalardan Teklif Al</a>
+          <a class="sidebar-nav-item" onclick="App.switchView('view-garage');">🚗 Garajım & Araç Cüzdanı</a>
+          <a class="sidebar-nav-item" onclick="App.switchView('view-blog');">📰 Sanayi Blog & Rehberler</a>
           <a class="sidebar-nav-item" onclick="App.switchView('view-brands');">Marka Kulüpleri</a>
           <a class="sidebar-nav-item" onclick="App.switchView('view-directory');">Sanayi Rehberi</a>
+          <a class="sidebar-nav-item" onclick="App.switchView('view-obd');">OBD-II Kodları</a>
           <a class="sidebar-nav-item" onclick="App.switchView('view-prices');">Parça & İşçilik Fiyatları</a>
           <a class="sidebar-nav-item" onclick="App.openMobileAppModal();">Uygulamayı Telefona İndir</a>
           <a id="sidebar-admin-link" class="sidebar-nav-item" href="/admin" target="_blank" style="display:none; color:#C084FC; font-weight:600;">
@@ -387,6 +395,133 @@
 
         <!-- Feed Content Area -->
         <div id="profile-feed-content" class="profile-feed-content"></div>
+      </div>
+
+      <!-- 8. GÖRÜNÜM: Parça Borsası (Yedek Parça & Çıkma İlanları) -->
+      <div id="view-parts" class="view-section">
+        <div class="sidebar-card" style="margin-bottom:16px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+            <div>
+              <h2 style="font-size:1.3rem; font-weight:800; color:#FFF; margin-bottom:4px; display:flex; align-items:center; gap:8px;">
+                <span>🛒 Parça Borsası</span>
+                <span id="parts-count-badge" class="badge badge-primary" style="font-size:0.75rem;">0 İlan</span>
+              </h2>
+              <p style="font-size:0.84rem; color:var(--text-muted); margin:0;">
+                Orijinal çıkma parçalar, sıfır yedek parçalar ve sanayiden doğrudan ilanlar
+              </p>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="Parts.openNewPartModal()" style="font-weight:700; border-radius:20px; padding:8px 18px;">
+              + Parça İlanı Ver
+            </button>
+          </div>
+
+          <!-- Arama Çubuğu -->
+          <div style="position:relative; margin-top:14px;">
+            <input type="text" id="parts-search-input" class="form-control" placeholder="Parça adı, OEM kodu, marka veya araç modeli ara (örn: Golf 7 far, 14411-5874R)..." oninput="Parts.onSearch(this.value)">
+          </div>
+
+          <!-- Kategori Filtreleri -->
+          <div id="parts-category-filters" class="feed-filters" style="margin-top:12px; overflow-x:auto; padding-bottom:4px;">
+            <button class="filter-btn active" onclick="Parts.setCategory('all', this)">Tümü</button>
+            <button class="filter-btn" onclick="Parts.setCategory('Motor & Mekanik', this)">Motor & Mekanik</button>
+            <button class="filter-btn" onclick="Parts.setCategory('Aydınlatma', this)">Aydınlatma</button>
+            <button class="filter-btn" onclick="Parts.setCategory('Şanzıman & Aktarma', this)">Şanzıman</button>
+            <button class="filter-btn" onclick="Parts.setCategory('Kaporta & Karoser', this)">Kaporta</button>
+            <button class="filter-btn" onclick="Parts.setCategory('İç Aksam & Donanım', this)">İç Aksam</button>
+          </div>
+
+          <!-- Durum Filtreleri -->
+          <div id="parts-condition-filters" class="feed-filters" style="margin-top:8px;">
+            <button class="filter-btn active" onclick="Parts.setCondition('all', this)">Tüm Durumlar</button>
+            <button class="filter-btn" onclick="Parts.setCondition('Çıkma Orijinal', this)">Çıkma Orijinal</button>
+            <button class="filter-btn" onclick="Parts.setCondition('Sıfır Orijinal', this)">Sıfır Orijinal</button>
+            <button class="filter-btn" onclick="Parts.setCondition('Revizyonlu Orijinal', this)">Revizyonlu</button>
+          </div>
+        </div>
+
+        <!-- İlanlar Izgarası -->
+        <div id="parts-grid" class="parts-grid"></div>
+      </div>
+
+      <!-- 9. GÖRÜNÜM: Parça Detay Sayfası -->
+      <div id="view-part-detail" class="view-section">
+        <div id="part-detail-container"></div>
+      </div>
+
+      <!-- 10. GÖRÜNÜM: Dijital Araç Cüzdanı & Garaj -->
+      <div id="view-garage" class="view-section">
+        <div class="sidebar-card" style="margin-bottom:16px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+            <div>
+              <h2 style="font-size:1.3rem; font-weight:800; color:#FFF; margin-bottom:4px;">
+                🚗 Dijital Garaj & Araç Cüzdanım
+              </h2>
+              <p style="font-size:0.84rem; color:var(--text-muted); margin:0;">
+                TÜVTÜRK muayene, kasko/sigorta hatırlatıcıları, periyodik bakım geçmişi ve harcama dökümü
+              </p>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="Garage.openAddVehicleModal()" style="font-weight:700; border-radius:20px; padding:8px 18px;">
+              + Yeni Araç Ekle
+            </button>
+          </div>
+        </div>
+
+        <div id="garage-content"></div>
+      </div>
+
+      <!-- 11. GÖRÜNÜM: Ustalardan Teklif Al -->
+      <div id="view-quotes" class="view-section">
+        <div class="sidebar-card" style="margin-bottom:16px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+            <div>
+              <h2 style="font-size:1.3rem; font-weight:800; color:#FFF; margin-bottom:4px;">
+                💰 Ustalardan Fiyat Teklifi Al
+              </h2>
+              <p style="font-size:0.84rem; color:var(--text-muted); margin:0;">
+                Arızanızı veya bakım ihtiyacınızı yazın; sanayideki onaylı ustalardan işçilik + parça dahil şeffaf fiyat teklifi toplayın.
+              </p>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="Quotes.openNewRequestModal()" style="font-weight:700; border-radius:20px; padding:8px 18px;">
+              + Hemen Teklif İste
+            </button>
+          </div>
+
+          <div id="quotes-filters" class="feed-filters" style="margin-top:14px;">
+            <button class="filter-btn active" onclick="Quotes.setFilter('all', this)">Tüm Açık Talepler</button>
+            <button class="filter-btn" onclick="Quotes.setFilter('my_quotes', this)">Benim Taleplerim</button>
+          </div>
+        </div>
+
+        <div id="quotes-feed"></div>
+      </div>
+
+      <!-- 12. GÖRÜNÜM: Sanayi Blog & Rehberler -->
+      <div id="view-blog" class="view-section">
+        <div class="sidebar-card" style="margin-bottom:16px;">
+          <div>
+            <h2 style="font-size:1.3rem; font-weight:800; color:#FFF; margin-bottom:4px;">
+              📰 Sanayi Blog & Otomotiv Rehberleri
+            </h2>
+            <p style="font-size:0.84rem; color:var(--text-muted); margin:0;">
+              Usta tecrübeleri, kronik arıza teşhisleri, bakım tüyoları ve araç alım-satım kılavuzları
+            </p>
+          </div>
+
+          <div id="blog-category-filters" class="feed-filters" style="margin-top:14px; overflow-x:auto;">
+            <button class="filter-btn active" onclick="Blog.setCategory('all', this)">Tüm Yazılar</button>
+            <button class="filter-btn" onclick="Blog.setCategory('Şanzıman & Sürüş', this)">Şanzıman & Sürüş</button>
+            <button class="filter-btn" onclick="Blog.setCategory('Motor & Egzoz', this)">Motor & Egzoz</button>
+            <button class="filter-btn" onclick="Blog.setCategory('Periyodik Bakım', this)">Periyodik Bakım</button>
+            <button class="filter-btn" onclick="Blog.setCategory('Rehber & Alım-Satım', this)">Alım-Satım Rehberi</button>
+          </div>
+        </div>
+
+        <div id="blog-feed"></div>
+      </div>
+
+      <!-- 13. GÖRÜNÜM: Blog Makale Okuma Ekranı -->
+      <div id="view-blog-detail" class="view-section">
+        <div id="blog-detail-content"></div>
       </div>
 
     </section>
@@ -1644,6 +1779,369 @@
     </div>
   </div>
 
+  <!-- ======================================================= -->
+  <!-- MODAL: YENİ PARÇA İLANI VER -->
+  <!-- ======================================================= -->
+  <div id="new-part-modal" class="modal-overlay">
+    <div class="modal-card" style="max-width:540px;">
+      <div class="modal-header">
+        <h3 class="modal-title">🛒 Parça İlanı Ver</h3>
+        <button class="modal-close" onclick="closeModal('new-part-modal')">&times;</button>
+      </div>
+      <form id="new-part-form" onsubmit="Parts.submitPart(event)">
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <div>
+            <label class="form-label">İlan Başlığı *</label>
+            <input type="text" id="part-title-input" class="form-control" placeholder="Örn: Golf 7 Orijinal LED Bi-Xenon Sağ Ön Far" required>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+            <div>
+              <label class="form-label">Kategori *</label>
+              <select id="part-category-select" class="form-control">
+                <option value="Motor & Mekanik">Motor & Mekanik</option>
+                <option value="Aydınlatma">Aydınlatma</option>
+                <option value="Şanzıman & Aktarma">Şanzıman & Aktarma</option>
+                <option value="Kaporta & Karoser">Kaporta & Karoser</option>
+                <option value="İç Aksam & Donanım">İç Aksam & Donanım</option>
+                <option value="Fren & Süspansiyon">Fren & Süspansiyon</option>
+                <option value="Elektrik & Elektronik">Elektrik & Elektronik</option>
+                <option value="Jant & Lastik">Jant & Lastik</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label">Parça Durumu *</label>
+              <select id="part-condition-select" class="form-control">
+                <option value="Çıkma Orijinal">Çıkma Orijinal (Hatasız/Temiz)</option>
+                <option value="Sıfır Orijinal">Sıfır Kutusunda Orijinal</option>
+                <option value="Revizyonlu Orijinal">Revizyonlu & Garantili</option>
+                <option value="Sıfır Yan Sanayi">Sıfır Kaliteli Muadil</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+            <div>
+              <label class="form-label">Uyumlu Marka</label>
+              <input type="text" id="part-brand-input" class="form-control" placeholder="Örn: Volkswagen" required>
+            </div>
+            <div>
+              <label class="form-label">Model / Kasa Kodu</label>
+              <input type="text" id="part-model-input" class="form-control" placeholder="Örn: Golf 7 (2013-2020)">
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+            <div>
+              <label class="form-label">OEM / Parça Kodu</label>
+              <input type="text" id="part-oem-input" class="form-control" placeholder="Örn: 5G1941032">
+            </div>
+            <div>
+              <label class="form-label">Fiyat (TL) *</label>
+              <input type="number" id="part-price-input" class="form-control" placeholder="Örn: 6500" required>
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+            <div>
+              <label class="form-label">Şehir / İlçe *</label>
+              <input type="text" id="part-city-input" class="form-control" placeholder="Örn: İstanbul / Maslak" required>
+            </div>
+            <div>
+              <label class="form-label">Teslimat / Kargo</label>
+              <input type="text" id="part-shipping-input" class="form-control" placeholder="Örn: Elden Teslim / Anlaşmalı Kargo">
+            </div>
+          </div>
+
+          <div>
+            <label class="form-label">İletişim Telefonu</label>
+            <input type="tel" id="part-phone-input" class="form-control" placeholder="Örn: 0532 555 1234">
+          </div>
+
+          <div>
+            <label class="form-label">Parça Fotoğrafı</label>
+            <div style="display:flex; align-items:center; gap:10px;">
+              <input type="file" id="part-file-input" accept="image/*" class="form-control" onchange="Parts.handleImageUpload(this)" style="font-size:0.8rem;">
+            </div>
+            <img id="new-part-img-preview" src="" alt="Önizleme" style="display:none; width:100%; max-height:160px; object-fit:cover; border-radius:8px; margin-top:8px; border:1px solid rgba(255,255,255,0.1);">
+          </div>
+
+          <div>
+            <label class="form-label">Detaylı Açıklama</label>
+            <textarea id="part-desc-input" class="form-control" rows="3" placeholder="Parçanın temizliği, çalışma durumu, garanti veya montaj durumu hakkında bilgi verin..."></textarea>
+          </div>
+
+          <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:8px;">
+            <button type="button" class="btn btn-secondary" onclick="closeModal('new-part-modal')">İptal</button>
+            <button type="submit" id="btn-submit-part" class="btn btn-primary">İlanı Yayına Al</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ======================================================= -->
+  <!-- MODAL: GARAJA YENİ ARAÇ EKLE -->
+  <!-- ======================================================= -->
+  <div id="new-vehicle-modal" class="modal-overlay">
+    <div class="modal-card" style="max-width:500px;">
+      <div class="modal-header">
+        <h3 class="modal-title">🚗 Garaja Araç Ekle</h3>
+        <button class="modal-close" onclick="closeModal('new-vehicle-modal')">&times;</button>
+      </div>
+      <form id="new-vehicle-form" onsubmit="Garage.saveVehicle(event)">
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <div style="display:grid; grid-template-columns: 1.2fr 1fr; gap:10px;">
+            <div>
+              <label class="form-label">Araç Plakası *</label>
+              <input type="text" id="veh-plate-input" class="form-control" placeholder="Örn: 34 USTA 1978" required style="font-weight:700; text-transform:uppercase;">
+            </div>
+            <div>
+              <label class="form-label">Model Yılı *</label>
+              <input type="number" id="veh-year-input" class="form-control" placeholder="Örn: 2019" required>
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+            <div>
+              <label class="form-label">Marka *</label>
+              <input type="text" id="veh-brand-input" class="form-control" placeholder="Örn: Volkswagen" required>
+            </div>
+            <div>
+              <label class="form-label">Model *</label>
+              <input type="text" id="veh-model-input" class="form-control" placeholder="Örn: Passat B8" required>
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+            <div>
+              <label class="form-label">Motor & Paket</label>
+              <input type="text" id="veh-engine-input" class="form-control" placeholder="Örn: 2.0 TDI Highline">
+            </div>
+            <div>
+              <label class="form-label">Yakıt Türü</label>
+              <select id="veh-fuel-select" class="form-control">
+                <option value="Dizel">Dizel</option>
+                <option value="Benzin">Benzin</option>
+                <option value="Benzin & LPG">Benzin & LPG</option>
+                <option value="Hibrit">Hibrit</option>
+                <option value="Elektrik">Elektrik</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+            <div>
+              <label class="form-label">Güncel Kilometre (KM) *</label>
+              <input type="number" id="veh-km-input" class="form-control" placeholder="Örn: 142000" required>
+            </div>
+            <div>
+              <label class="form-label">Sonraki Yağ Bakımı (KM)</label>
+              <input type="number" id="veh-oil-input" class="form-control" placeholder="Örn: 150000">
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+            <div>
+              <label class="form-label">TÜVTÜRK Muayene Tarihi</label>
+              <input type="date" id="veh-inspection-input" class="form-control">
+            </div>
+            <div>
+              <label class="form-label">Trafik Sigortası Bitiş</label>
+              <input type="date" id="veh-insurance-input" class="form-control">
+            </div>
+          </div>
+
+          <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:8px;">
+            <button type="button" class="btn btn-secondary" onclick="closeModal('new-vehicle-modal')">İptal</button>
+            <button type="submit" id="btn-save-vehicle" class="btn btn-primary">Aracı Garaja Kaydet</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ======================================================= -->
+  <!-- MODAL: BAKIM / MASRAF KAYDI EKLE -->
+  <!-- ======================================================= -->
+  <div id="new-maintenance-modal" class="modal-overlay">
+    <div class="modal-card" style="max-width:500px;">
+      <div class="modal-header">
+        <h3 class="modal-title">📝 Bakım / Masraf Kaydı Ekle</h3>
+        <button class="modal-close" onclick="closeModal('new-maintenance-modal')">&times;</button>
+      </div>
+      <form id="new-maintenance-form" onsubmit="Garage.saveRecord(event)">
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <div>
+            <label class="form-label">Yapılan İşlem *</label>
+            <input type="text" id="rec-title-input" class="form-control" placeholder="Örn: Triger Seti & Devirdaim Pompası Değişimi" required>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+            <div>
+              <label class="form-label">İşlem Kilometresi (KM) *</label>
+              <input type="number" id="rec-km-input" class="form-control" placeholder="Örn: 140000" required>
+            </div>
+            <div>
+              <label class="form-label">Toplam Tutar (TL) *</label>
+              <input type="number" id="rec-cost-input" class="form-control" placeholder="Örn: 6500" required>
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+            <div>
+              <label class="form-label">İşlem Tarihi</label>
+              <input type="date" id="rec-date-input" class="form-control">
+            </div>
+            <div>
+              <label class="form-label">Masraf Türü</label>
+              <select id="rec-category-select" class="form-control">
+                <option value="Periyodik Bakım">Periyodik Bakım</option>
+                <option value="Ağır Bakım">Ağır Bakım</option>
+                <option value="Fren & Süspansiyon">Fren & Süspansiyon</option>
+                <option value="Şanzıman">Şanzıman</option>
+                <option value="Kaporta / Boya">Kaporta / Boya</option>
+                <option value="Lastik / Jant">Lastik / Jant</option>
+                <option value="Muayene / Sigorta">Muayene / Sigorta</option>
+                <option value="Diğer">Diğer</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="form-label">İşlemi Yapan Servis / Usta</label>
+            <input type="text" id="rec-shop-input" class="form-control" placeholder="Örn: Maslak VAG Özel Servis">
+          </div>
+
+          <div>
+            <label class="form-label">Kullanılan Parçalar & Notlar</label>
+            <textarea id="rec-notes-input" class="form-control" rows="2" placeholder="Örn: Continental triger seti ve Graf devirdaim kullanıldı, G13 antifriz konuldu..."></textarea>
+          </div>
+
+          <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:8px;">
+            <button type="button" class="btn btn-secondary" onclick="closeModal('new-maintenance-modal')">İptal</button>
+            <button type="submit" id="btn-save-record" class="btn btn-primary">Kaydı Deftere Ekle</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ======================================================= -->
+  <!-- MODAL: YENİ FİYAT TEKLİFİ İSTE -->
+  <!-- ======================================================= -->
+  <div id="new-quote-modal" class="modal-overlay">
+    <div class="modal-card" style="max-width:520px;">
+      <div class="modal-header">
+        <h3 class="modal-title">💰 Ustalardan Fiyat Teklifi İste</h3>
+        <button class="modal-close" onclick="closeModal('new-quote-modal')">&times;</button>
+      </div>
+      <form id="new-quote-form" onsubmit="Quotes.submitRequest(event)">
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <div>
+            <label class="form-label">İhtiyacınız Olan Hizmet / Arıza *</label>
+            <input type="text" id="q-service-input" class="form-control" placeholder="Örn: Baskı Balata Değişimi veya 100.000 KM Bakımı" required>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1.2fr 1fr; gap:10px;">
+            <div>
+              <label class="form-label">Araç Marka & Model *</label>
+              <input type="text" id="q-car-input" class="form-control" placeholder="Örn: 2017 Fiat Egea 1.3 Multijet" required>
+            </div>
+            <div>
+              <label class="form-label">Plaka (Opsiyonel)</label>
+              <input type="text" id="q-plate-input" class="form-control" placeholder="Örn: 34 ABC 123">
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+            <div>
+              <label class="form-label">İl *</label>
+              <input type="text" id="q-city-input" class="form-control" placeholder="Örn: İstanbul" required>
+            </div>
+            <div>
+              <label class="form-label">İlçe / Sanayi Bölgesi</label>
+              <input type="text" id="q-district-input" class="form-control" placeholder="Örn: Ümraniye Sanayi">
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+            <div>
+              <label class="form-label">Parça Tercihiniz</label>
+              <select id="q-part-pref-select" class="form-control">
+                <option value="Orijinal Parça İsterim">Orijinal Parça İsterim</option>
+                <option value="Kaliteli Muadil (OES) Yeterli">Kaliteli Muadil (OES) Yeterli</option>
+                <option value="Çıkma Orijinal Olabilir">Çıkma Orijinal Olabilir</option>
+                <option value="Parçayı Kendim Getireceğim (Sadece İşçilik)">Sadece İşçilik Teklifi İsterim</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label">Tahmini Bütçeniz</label>
+              <input type="text" id="q-budget-input" class="form-control" placeholder="Örn: 4.000 - 6.000 TL">
+            </div>
+          </div>
+
+          <div>
+            <label class="form-label">Arıza / İşlem Detayları</label>
+            <textarea id="q-desc-input" class="form-control" rows="3" placeholder="Aracınızdaki şikayeti, duyulan sesleri veya ustanın bilmesini istediğiniz detayları belirtin..."></textarea>
+          </div>
+
+          <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:8px;">
+            <button type="button" class="btn btn-secondary" onclick="closeModal('new-quote-modal')">İptal</button>
+            <button type="submit" id="btn-submit-quote-req" class="btn btn-primary">Talebi Ustalara İlet</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ======================================================= -->
+  <!-- MODAL: USTA TEKLİF VERME MODALI -->
+  <!-- ======================================================= -->
+  <div id="quote-bid-modal" class="modal-overlay">
+    <div class="modal-card" style="max-width:480px;">
+      <div class="modal-header">
+        <h3 class="modal-title">🛠️ Araç Sahibine Teklif Ver</h3>
+        <button class="modal-close" onclick="closeModal('quote-bid-modal')">&times;</button>
+      </div>
+      <form id="quote-bid-form" onsubmit="Quotes.submitBid(event)">
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+            <div>
+              <label class="form-label">İşçilik Ücreti (TL) *</label>
+              <input type="number" id="bid-labor-input" class="form-control" placeholder="Örn: 2500" required>
+            </div>
+            <div>
+              <label class="form-label">Parça Maliyeti (TL) *</label>
+              <input type="number" id="bid-part-input" class="form-control" placeholder="Örn: 4000" required>
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+            <div>
+              <label class="form-label">Teslim Süresi</label>
+              <input type="text" id="bid-duration-input" class="form-control" placeholder="Örn: Aynı Gün / 4 Saat">
+            </div>
+            <div>
+              <label class="form-label">Verilen Garanti</label>
+              <input type="text" id="bid-warranty-input" class="form-control" placeholder="Örn: 1 Yıl / 20.000 KM">
+            </div>
+          </div>
+
+          <div>
+            <label class="form-label">Müşteriye Not & Parça Markası</label>
+            <textarea id="bid-note-input" class="form-control" rows="2" placeholder="Örn: Orijinal Valeo debriyaj seti ve şanzıman yağı dahildir. Fiyata KDV ve test sürüşü dahildir..."></textarea>
+          </div>
+
+          <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:8px;">
+            <button type="button" class="btn btn-secondary" onclick="closeModal('quote-bid-modal')">İptal</button>
+            <button type="submit" id="btn-submit-bid" class="btn btn-primary">Teklifi Gönder</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- Scriptler -->
   <script src="js/data.js"></script>
   <script src="js/auth.js"></script>
@@ -1654,6 +2152,10 @@
   <script src="js/price-analysis.js"></script>
   <script src="js/sos.js"></script>
   <script src="js/obd.js"></script>
+  <script src="js/parts.js"></script>
+  <script src="js/garage.js"></script>
+  <script src="js/quotes.js"></script>
+  <script src="js/blog.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

@@ -23,6 +23,10 @@ const App = {
         if (typeof OBD !== 'undefined' && OBD.init) {
           OBD.init(this.state.obdCodes || (typeof APP_DATA !== 'undefined' ? APP_DATA.obdCodes : []));
         }
+        if (typeof Parts !== 'undefined') Parts.init(this.state.parts);
+        if (typeof Garage !== 'undefined') Garage.init(this.state.garageVehicles, this.state.maintenanceRecords);
+        if (typeof Quotes !== 'undefined') Quotes.init(this.state.quoteRequests);
+        if (typeof Blog !== 'undefined') Blog.init(this.state.blogPosts);
 
         this.setupEventListeners();
         this.renderBrandGrid();
@@ -139,6 +143,14 @@ const App = {
       Profile.render();
     } else if (viewId === 'view-obd' && typeof OBD !== 'undefined') {
       OBD.render();
+    } else if (viewId === 'view-parts' && typeof Parts !== 'undefined') {
+      Parts.render();
+    } else if (viewId === 'view-garage' && typeof Garage !== 'undefined') {
+      Garage.render();
+    } else if (viewId === 'view-quotes' && typeof Quotes !== 'undefined') {
+      Quotes.render();
+    } else if (viewId === 'view-blog' && typeof Blog !== 'undefined') {
+      Blog.render();
     }
   },
 
