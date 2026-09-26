@@ -705,6 +705,7 @@ function parseBody(req) {
 const server = http.createServer(async (req, res) => {
   const parsedUrl = url.parse(req.url, true);
   const pathname = parsedUrl.pathname;
+  const query = parsedUrl.query || {};
   const method = req.method;
 
   // Set CORS headers for local testing
