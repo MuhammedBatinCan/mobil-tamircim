@@ -2,14 +2,33 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const url = require('url');
+const zlib = require('zlib');
 
 const PORT = process.env.PORT || 3000;
 const DATA_DIR = path.join(__dirname, 'data');
 const STORE_FILE = path.join(DATA_DIR, 'store.json');
+const BACKUP_DIR = path.join(DATA_DIR, 'backups');
 
-// Ensure data directory exists
+// Ensure data and backup directories exist
 if (!fs.existsSync(DATA_DIR)) {
   fs.mkdirSync(DATA_DIR, { recursive: true });
+}
+if (!fs.existsSync(BACKUP_DIR)) {
+  fs.mkdirSync(BACKUP_DIR, { recursive: true });
+}
+
+// Otomatik Veritabanı Yedeği (Günlük Snapshot)
+if (fs.existsSync(STORE_FILE)) {
+  try {
+    const today = new Date().toISOString().slice(0, 10);
+    const backupTarget = path.join(BACKUP_DIR, `store_backup_${today}.json`);
+    if (!fs.existsSync(backupTarget)) {
+      fs.copyFileSync(STORE_FILE, backupTarget);
+      console.log(`💾 Otomatik veritabanı yedeği alındı: store_backup_${today}.json`);
+    }
+  } catch (backupErr) {
+    console.warn('Yedek alma uyarısı:', backupErr.message);
+  }
 }
 
 // Initial Mock Seed Data
@@ -644,7 +663,9 @@ const mimeTypes = {
   '.svg': 'image/svg+xml',
   '.mp3': 'audio/mpeg',
   '.wav': 'audio/wav',
-  '.ico': 'image/x-icon'
+  '.ico': 'image/x-icon',
+  '.txt': 'text/plain; charset=utf-8',
+  '.xml': 'application/xml; charset=utf-8'
 };
 
 // AI Moderation helper (Lightweight, non-intrusive, flags severe abuse to humans)
@@ -2990,7 +3011,19 @@ Kullanıcıya teknik teşhis sunarken bu araştırmadaki verilere ve 2026 fiyat 
         res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
         res.end('404 Sayfa Bulunamadı');
       } else {
-        const headers = { 'Content-Type': contentType };
+        const headers = {
+          'Content-Type': contentType,
+          'X-Content-Type-Options': 'nosniff',
+          'X-Frame-Options': 'SAMEORIGIN',
+          'Referrer-Policy': 'strict-origin-when-cross-origin'
+        };
+
+        if (ext === '.html') {
+          headers['Cache-Control'] = 'no-cache, must-revalidate';
+        } else if (['.css', '.js', '.svg', '.png', '.jpg', '.jpeg', '.webp', '.woff', '.woff2', '.ico'].includes(ext)) {
+          headers['Cache-Control'] = 'public, max-age=86400';
+        }
+
         if (pathname === '/sw.js') {
           headers['Service-Worker-Allowed'] = '/';
         } else if (pathname === '/admin/sw.js') {
@@ -3022,10 +3055,30 @@ Kullanıcıya teknik teşhis sunarken bu araştırmadaki verilere ve 2026 fiyat 
               htmlStr += injected;
             }
             responseData = Buffer.from(htmlStr, 'utf8');
-            headers['Content-Length'] = Buffer.byteLength(responseData);
           }
         }
 
+        // --- GZIP SIKIŞTIRMA (HIZLI YÜKLENME) ---
+        const acceptEncoding = req.headers['accept-encoding'] || '';
+        const isCompressible = ['.html', '.css', '.js', '.json', '.svg', '.txt', '.xml'].includes(ext);
+
+        if (isCompressible && acceptEncoding.includes('gzip')) {
+          zlib.gzip(responseData, (gzipErr, compressed) => {
+            if (!gzipErr && compressed) {
+              headers['Content-Encoding'] = 'gzip';
+              headers['Content-Length'] = compressed.length;
+              res.writeHead(200, headers);
+              res.end(compressed);
+            } else {
+              headers['Content-Length'] = Buffer.byteLength(responseData);
+              res.writeHead(200, headers);
+              res.end(responseData);
+            }
+          });
+          return;
+        }
+
+        headers['Content-Length'] = Buffer.byteLength(responseData);
         res.writeHead(200, headers);
         res.end(responseData);
       }

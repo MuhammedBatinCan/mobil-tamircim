@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  mobil-tamircim:
+    build: .
+    container_name: mobil_tamircim_app
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    volumes:
+      - ./data:/app/data
+      - ./public/uploads:/app/public/uploads

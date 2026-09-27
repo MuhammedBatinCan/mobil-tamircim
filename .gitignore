@@ -22,6 +22,7 @@ scratch/
 
 # Database backups (keep store.json, ignore automated backups)
 data/backup_store_*.json
+data/backups/
 
 # User uploads
 public/uploads/*
