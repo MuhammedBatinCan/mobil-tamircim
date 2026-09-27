@@ -235,13 +235,16 @@ const Directory = {
           </div>
 
           <!-- Doğrudan İletişim Butonları -->
-          <div class="dir-contact-footer">
-            <a href="tel:${item.phone}" class="btn btn-secondary btn-sm" style="flex:1;">
-              📞 Ara: ${item.phone}
+          <div class="dir-contact-footer" style="display:flex; gap:6px; flex-wrap:wrap;">
+            <a href="tel:${item.phone}" class="btn btn-secondary btn-sm" style="flex:1; text-align:center; justify-content:center;">
+              📞 Ara
             </a>
-            <a href="https://wa.me/${item.whatsapp}?text=${encodeURIComponent('Merhaba ' + item.ownerName + ', Mobil Tamircim üzerinden ulaşıyorum.')}" target="_blank" class="btn btn-primary btn-sm btn-whatsapp" style="flex:1;">
-              💬 WhatsApp ile Yaz
+            <a href="https://wa.me/${item.whatsapp}?text=${encodeURIComponent('Merhaba ' + item.ownerName + ', Mobil Tamircim üzerinden ulaşıyorum.')}" target="_blank" class="btn btn-primary btn-sm btn-whatsapp" style="flex:1; text-align:center; justify-content:center;">
+              💬 WhatsApp
             </a>
+            <button type="button" class="btn btn-secondary btn-sm" style="flex:1; color:#38BDF8; border-color:rgba(56,189,248,0.35); font-weight:700; text-align:center; justify-content:center;" onclick="Messages.startConversationWith('usr_mech_1', 'Merhaba ${escapeHtml(item.ownerName)}, dükkanınız ${escapeHtml(item.shopName)} hakkında bilgi almak ve randevu sormak istiyorum.', '${escapeHtml(item.shopName)}', '#view-directory')">
+              💬 Özel Mesaj
+            </button>
           </div>
 
           <!-- Usta Değerlendirme & Yorum Yap Eylemi -->

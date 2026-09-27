@@ -126,8 +126,9 @@ const Profile = {
           <button class="btn ${isFollowing ? 'btn-secondary' : 'btn-primary'} btn-sm" onclick="Profile.toggleFollow('${user.id}')" style="font-weight:600; font-size:0.84rem; padding:6px 18px; border-radius:20px;">
             ${isFollowing ? 'Takip Ediliyor' : 'Takip Et'}
           </button>
-          <button class="btn btn-secondary btn-sm" onclick="showToast('${escapeHtml(user.name)} ustaya özel mesaj özelliği yakında aktif edilecek!', 'info')" title="Mesaj Gönder" style="border-radius:20px; padding:6px 12px;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+          <button class="btn btn-secondary btn-sm profile-dm-btn" onclick="Messages.startConversationWith('${user.id}')" title="Özel Mesaj Gönder" style="border-radius:20px; padding:6px 14px; font-weight:700; color:#38BDF8; border-color:rgba(56,189,248,0.4); display:inline-flex; align-items:center; gap:6px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            <span>Mesaj Gönder</span>
           </button>
         `;
       }
@@ -226,13 +227,8 @@ const Profile = {
     // 5. Update Tab Buttons Text
     const tabThreadsBtn = document.getElementById('ptab-btn-threads');
     const tabRepliesBtn = document.getElementById('ptab-btn-replies');
-    const tabGarageBtn = document.getElementById('ptab-btn-garage');
-    const tabSolutionsBtn = document.getElementById('ptab-btn-solutions');
-    const tabBadgesBtn = document.getElementById('ptab-btn-badges');
-
     if (tabThreadsBtn) tabThreadsBtn.textContent = `Konular (${userThreads.length})`;
     if (tabRepliesBtn) tabRepliesBtn.textContent = `Yanıtlar (${userComments.length})`;
-    if (tabGarageBtn) tabGarageBtn.textContent = `Garajım`;
     if (tabSolutionsBtn) tabSolutionsBtn.textContent = `Çözümler`;
     if (tabBadgesBtn) tabBadgesBtn.textContent = `Rozetler (${(user.badges || []).length})`;
 
@@ -346,48 +342,6 @@ const Profile = {
           </div>
         </div>
       `).join('');
-
-    } else if (this.activeTab === 'garage') {
-      const carName = user.car || 'Belirtilmemiş Araç';
-      container.innerHTML = `
-        <div class="profile-garage-card">
-          <div class="garage-header">
-            <div>
-              <span class="badge" style="background:rgba(245,158,11,0.1); color:var(--accent-amber); border:1px solid rgba(245,158,11,0.25); margin-bottom:6px;">Birincil Araç</span>
-              <h3 style="font-size:1.25rem; font-weight:800; color:#FFF; margin:0;">${escapeHtml(carName)}</h3>
-            </div>
-            ${user.plate ? `<div class="garage-plate-box">${escapeHtml(user.plate)}</div>` : ''}
-          </div>
-
-          <div class="garage-specs-grid">
-            <div class="garage-spec-box">
-              <span class="spec-label">Araç Türü</span>
-              <span class="spec-val">Binek & SUV</span>
-            </div>
-            <div class="garage-spec-box">
-              <span class="spec-label">Bakım Durumu</span>
-              <span class="spec-val" style="color:#10B981;">Periyodik Bakım Güncel</span>
-            </div>
-            <div class="garage-spec-box">
-              <span class="spec-label">OBD Kaydı</span>
-              <span class="spec-val">0 Aktif Arıza</span>
-            </div>
-            <div class="garage-spec-box">
-              <span class="spec-label">Yetkili Servis / Usta</span>
-              <span class="spec-val">${user.shopName ? escapeHtml(user.shopName) : 'Mobil Tamircim Ağı'}</span>
-            </div>
-          </div>
-
-          <div style="margin-top:20px; display:flex; gap:10px; flex-wrap:wrap;">
-            <button class="btn btn-primary btn-sm" onclick="AiAssistant.toggleModal()">
-              Bu Araç İçin Arıza Sor
-            </button>
-            <button class="btn btn-secondary btn-sm" onclick="App.switchView('view-prices')">
-              Parça & İşçilik Fiyatlarına Bak
-            </button>
-          </div>
-        </div>
-      `;
 
     } else if (this.activeTab === 'solutions') {
       const solutionComments = [];

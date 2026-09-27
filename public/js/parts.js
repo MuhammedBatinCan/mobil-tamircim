@@ -79,7 +79,9 @@ const Parts = {
 
     grid.innerHTML = parts.map(part => {
       const conditionBadgeClass = part.condition === 'Sıfır Orijinal' ? 'badge-primary' : 
-                                 part.condition === 'Çıkma Orijinal' ? 'badge-cikma' : 'badge-yan-sanayi';
+                                 part.condition === 'Çıkma Orijinal' ? 'badge-cikma' : 
+                                 part.condition === 'İkinci El' ? 'badge-ikinci-el' : 
+                                 part.condition === 'Yan Sanayi' ? 'badge-yan-sanayi' : 'badge-secondary';
       
       const priceFormatted = new Intl.NumberFormat('tr-TR').format(part.price);
 
@@ -126,7 +128,9 @@ const Parts = {
     if (!container) return;
 
     const conditionBadgeClass = part.condition === 'Sıfır Orijinal' ? 'badge-primary' : 
-                               part.condition === 'Çıkma Orijinal' ? 'badge-cikma' : 'badge-yan-sanayi';
+                               part.condition === 'Çıkma Orijinal' ? 'badge-cikma' : 
+                               part.condition === 'İkinci El' ? 'badge-ikinci-el' : 
+                               part.condition === 'Yan Sanayi' ? 'badge-yan-sanayi' : 'badge-secondary';
     const priceFormatted = new Intl.NumberFormat('tr-TR').format(part.price);
     const cleanPhone = (part.sellerPhone || '').replace(/[^0-9]/g, '');
     const whatsappUrl = cleanPhone ? `https://wa.me/90${cleanPhone.replace(/^0/, '')}?text=${encodeURIComponent('Merhaba ustam, Mobil Tamircim üzerinden ' + part.title + ' ilanınız için yazıyorum.')}` : '#';
@@ -161,17 +165,18 @@ const Parts = {
               📍 <strong>Konum:</strong> ${escapeHtml(part.city || 'İstanbul')} ${part.district ? '• ' + escapeHtml(part.district) : ''}<br>
               🚚 <strong>Teslimat:</strong> ${escapeHtml(part.shipping || 'Elden Teslim / Kargo')}
             </div>
-            <div style="display:flex; gap:8px;">
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
               ${part.sellerPhone ? `
                 <a href="tel:${part.sellerPhone}" class="btn btn-secondary btn-sm" style="flex:1; text-align:center; text-decoration:none; justify-content:center;">
-                  📞 Hemen Ara
+                  📞 Ara
                 </a>
                 <a href="${whatsappUrl}" target="_blank" class="btn btn-primary btn-sm" style="flex:1.2; text-align:center; text-decoration:none; justify-content:center; background:#25D366; border-color:#25D366; color:#FFF;">
                   💬 WhatsApp
                 </a>
-              ` : `
-                <button class="btn btn-primary btn-sm" style="width:100%;" onclick="showToast('Satıcı ile profil üzerinden iletişime geçebilirsiniz.')">Satıcıya Mesaj At</button>
-              `}
+              ` : ''}
+              <button class="btn btn-secondary btn-sm" style="flex:1; text-align:center; justify-content:center; color:#38BDF8; border-color:rgba(56,189,248,0.4); font-weight:700;" onclick="Messages.startConversationWith('${part.sellerId || 'usr_mech_1'}', 'Merhaba, ${escapeHtml(part.title)} ilanınız (${priceFormatted} TL) hakkında detaylı bilgi almak istiyorum.', '${escapeHtml(part.title)}', '#view-parts')">
+                💬 Özel Mesaj
+              </button>
             </div>
           </div>
         </div>

@@ -799,7 +799,59 @@
       "coordinates": {
         "lat": 40.7381,
         "lng": 31.4287
-      }
+      },
+      "responses": [
+        {
+          "id": "resp_1790460059991",
+          "responderId": "usr_mech_1",
+          "responderName": "Ahmet Çelik Usta",
+          "responderPhone": "",
+          "responderRole": "mechanic",
+          "eta": "15-20 dakika",
+          "note": "Kayan kasa çekici ile Bolu Dağı rampasına doğru yola çıktım.",
+          "createdAt": "2026-09-26T22:00:59.991Z"
+        },
+        {
+          "id": "resp_1790460176098",
+          "responderId": "usr_mech_1",
+          "responderName": "Ahmet Çelik Usta",
+          "responderPhone": "",
+          "responderRole": "mechanic",
+          "eta": "15-20 dakika",
+          "note": "Kayan kasa çekici ile Bolu Dağı rampasına doğru yola çıktım.",
+          "createdAt": "2026-09-26T22:02:56.098Z"
+        },
+        {
+          "id": "resp_1790460729850",
+          "responderId": "usr_mech_1",
+          "responderName": "Ahmet Çelik Usta",
+          "responderPhone": "",
+          "responderRole": "mechanic",
+          "eta": "15-20 dakika",
+          "note": "Kayan kasa çekici ile Bolu Dağı rampasına doğru yola çıktım.",
+          "createdAt": "2026-09-26T22:12:09.850Z"
+        },
+        {
+          "id": "resp_1790460861454",
+          "responderId": "usr_mech_1",
+          "responderName": "Ahmet Çelik Usta",
+          "responderPhone": "",
+          "responderRole": "mechanic",
+          "eta": "15-20 dakika",
+          "note": "Kayan kasa çekici ile Bolu Dağı rampasına doğru yola çıktım.",
+          "createdAt": "2026-09-26T22:14:21.454Z"
+        },
+        {
+          "id": "resp_1790460930532",
+          "responderId": "usr_mech_1",
+          "responderName": "Ahmet Çelik Usta",
+          "responderPhone": "",
+          "responderRole": "mechanic",
+          "eta": "15-20 dakika",
+          "note": "Kayan kasa çekici ile Bolu Dağı rampasına doğru yola çıktım.",
+          "createdAt": "2026-09-26T22:15:30.532Z"
+        }
+      ]
     }
   ],
   "directory": [
@@ -1412,8 +1464,8 @@
       "readTime": "5 dk okuma",
       "author": "Ahmet Çelik Usta (Maslak VAG)",
       "authorAvatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150",
-      "views": 4821,
-      "likes": 312,
+      "views": 4826,
+      "likes": 314,
       "createdAt": "2026-09-20",
       "tags": [
         "DSG",
@@ -1422,7 +1474,85 @@
         "Şanzıman",
         "Maslak Sanayi"
       ],
-      "content": "\n<h3>Çift Kavramalı Şanzımanlar Neden Çabuk Aşınır?</h3>\n<p>Modern araçlarda kullanılan DSG (Volkswagen Grubu), EDC (Renault) ve Powershift (Ford) gibi çift kavramalı otomatik şanzımanlar, aslında elektronik olarak kontrol edilen iki adet mekanik manuel debriyaj sisteminden oluşur. Bu sistemler son derece hızlı vites geçişi ve yakıt tasarrufu sağlasa da, yanlış kullanım alışkanlıkları nedeniyle 40-50 bin kilometrede bile erken kavrama yanması ve mekatronik basınç kaybına yol açabilir.</p>\n\n<h4>1. Yoğun Dur-Kalk Trafikte Aracı Sürekli D (Drive) Modunda Tutmak</h4>\n<p>Trafik adım adım ilerlerken ayağınızı frenden hafifçe çekip aracı santim santim ilerletmek, kuru kavramanın sürekli yarım debriyaj yapmasına ve aşırı ısınmasına neden olur. Isınan balata yüzeyi camlaşır ve titreme (chatter) başlar.</p>\n<div class=\"blog-tip-box\">\n  <strong>💡 Usta Tavsiyesi:</strong> Yoğun dur-kalk trafikte aracınızı manuel moda (M1) alın veya önünüzdeki araçla 2-3 araçlık mesafe açılana kadar frende bekleyip tek hamlede ilerleyin.\n</div>\n\n<h4>2. Yokuşta Ayağı Frenden Çekip Gazla Askıda Beklemek</h4>\n<p>Geleneksel tork konvertörlü otomatik şanzımanların aksine, çift kavrama yokuşta gaza basılarak askıda tutulamaz. Bu hareket birkaç saniye içinde debriyaj balatasını 250°C üzerine çıkarır.</p>\n\n<h4>3. Araç Tam Durmadan 'D'den 'R'ye veya 'R'den 'D'ye Almak</h4>\n<p>Geri manevra yaparken araç henüz geriye doğru hafifçe akarken doğrudan D'ye takmak, senkromeçler ve vites çatalları üzerinde devasa bir tork şoku yaratır. Her zaman aracın tekerlekleri tamamen durduktan sonra vites koluna dokunun.</p>\n\n<h4>4. Park Ederken Doğrudan 'P' Konumuna Alıp El Frenini Sonra Çekmek</h4>\n<p>Aracı durdurup doğrudan P'ye almak, aracın 1.5 tonluk tüm ağırlığını şanzıman kilitleme mandalına (Parking Pawl) bindirir. Doğru sıralama: Dur -> Boşa al (N) -> El frenini sonuna kadar çek -> Ayağını frenden çekip ağırlığın frene binmesini sağla -> P konumuna al.</p>\n    "
+      "content": "\n<h3>Çift Kavramalı Şanzımanlar Neden Çabuk Aşınır?</h3>\n<p>Modern araçlarda kullanılan DSG (Volkswagen Grubu), EDC (Renault) ve Powershift (Ford) gibi çift kavramalı otomatik şanzımanlar, aslında elektronik olarak kontrol edilen iki adet mekanik manuel debriyaj sisteminden oluşur. Bu sistemler son derece hızlı vites geçişi ve yakıt tasarrufu sağlasa da, yanlış kullanım alışkanlıkları nedeniyle 40-50 bin kilometrede bile erken kavrama yanması ve mekatronik basınç kaybına yol açabilir.</p>\n\n<h4>1. Yoğun Dur-Kalk Trafikte Aracı Sürekli D (Drive) Modunda Tutmak</h4>\n<p>Trafik adım adım ilerlerken ayağınızı frenden hafifçe çekip aracı santim santim ilerletmek, kuru kavramanın sürekli yarım debriyaj yapmasına ve aşırı ısınmasına neden olur. Isınan balata yüzeyi camlaşır ve titreme (chatter) başlar.</p>\n<div class=\"blog-tip-box\">\n  <strong>💡 Usta Tavsiyesi:</strong> Yoğun dur-kalk trafikte aracınızı manuel moda (M1) alın veya önünüzdeki araçla 2-3 araçlık mesafe açılana kadar frende bekleyip tek hamlede ilerleyin.\n</div>\n\n<h4>2. Yokuşta Ayağı Frenden Çekip Gazla Askıda Beklemek</h4>\n<p>Geleneksel tork konvertörlü otomatik şanzımanların aksine, çift kavrama yokuşta gaza basılarak askıda tutulamaz. Bu hareket birkaç saniye içinde debriyaj balatasını 250°C üzerine çıkarır.</p>\n\n<h4>3. Araç Tam Durmadan 'D'den 'R'ye veya 'R'den 'D'ye Almak</h4>\n<p>Geri manevra yaparken araç henüz geriye doğru hafifçe akarken doğrudan D'ye takmak, senkromeçler ve vites çatalları üzerinde devasa bir tork şoku yaratır. Her zaman aracın tekerlekleri tamamen durduktan sonra vites koluna dokunun.</p>\n\n<h4>4. Park Ederken Doğrudan 'P' Konumuna Alıp El Frenini Sonra Çekmek</h4>\n<p>Aracı durdurup doğrudan P'ye almak, aracın 1.5 tonluk tüm ağırlığını şanzıman kilitleme mandalına (Parking Pawl) bindirir. Doğru sıralama: Dur -> Boşa al (N) -> El frenini sonuna kadar çek -> Ayağını frenden çekip ağırlığın frene binmesini sağla -> P konumuna al.</p>\n    ",
+      "comments": [
+        {
+          "id": "bcom_101",
+          "authorId": "usr_mech_2",
+          "authorName": "Salih Usta (İvedik Şanzıman)",
+          "authorUsername": "SalihUsta_Oto",
+          "authorAvatar": "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150",
+          "authorRole": "mechanic",
+          "isMechanicVerified": true,
+          "shopName": "İvedik Şanzıman Dünyası",
+          "content": "Ahmet Ustamın dediklerine harfiyen katılıyorum. Özellikle 4. madde olan Park (P) kilitleme mandalı hatası yüzünden ayda en az 3 aracın şanzımanını indirmek zorunda kalıyoruz. Önce el freni, sonra P!",
+          "createdAt": "2026-09-21T10:14:00.000Z"
+        },
+        {
+          "id": "bcom_102",
+          "authorId": "usr_user_1",
+          "authorName": "Caner Demir",
+          "authorUsername": "caner_passat",
+          "authorAvatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150",
+          "authorRole": "user",
+          "isMechanicVerified": false,
+          "shopName": "",
+          "content": "Golf 7 1.6 TDI DSG kullanıcısıyım. İstanbul trafiğinde manuel 1'e alıp ilerleme tavsiyesini uyguladığımdan beri şanzıman ısınma uyarısı hiç almadım. Harika bir rehber olmuş.",
+          "createdAt": "2026-09-22T14:30:00.000Z"
+        },
+        {
+          "id": "bcom_1790517906812_ovxm",
+          "authorId": "usr_test_1",
+          "authorName": "Test Kullanıcısı",
+          "authorUsername": "kullanici",
+          "authorAvatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100",
+          "authorRole": "user",
+          "isMechanicVerified": false,
+          "shopName": "",
+          "content": "DSG mekatronik basınç tüpü gerçekten çok kritik. Emeğinize sağlık ustam!",
+          "createdAt": "2026-09-27T14:05:06.812Z"
+        },
+        {
+          "id": "bcom_1790517998636_wd4q",
+          "authorId": "usr_test_1",
+          "authorName": "Test Kullanıcısı",
+          "authorUsername": "kullanici",
+          "authorAvatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100",
+          "authorRole": "user",
+          "isMechanicVerified": false,
+          "shopName": "",
+          "content": "DSG mekatronik basınç tüpü gerçekten çok kritik. Emeğinize sağlık ustam!",
+          "createdAt": "2026-09-27T14:06:38.636Z"
+        },
+        {
+          "id": "bcom_1790518183585_nqjy",
+          "authorId": "usr_guest",
+          "authorName": "Usta Kerem (Oto Mekatronik)",
+          "authorUsername": "kullanici",
+          "authorAvatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100",
+          "authorRole": "user",
+          "isMechanicVerified": false,
+          "shopName": "",
+          "content": "DSG kavrama değişimi öncesinde mekatronik basınç testi yaptırmanızı şiddetle tavsiye ederim. Harika rehber olmuş!",
+          "createdAt": "2026-09-27T14:09:43.585Z"
+        },
+        {
+          "id": "bcom_1790518350560_xqmy",
+          "authorId": "usr_guest",
+          "authorName": "Usta Kerem (Oto Mekatronik)",
+          "authorUsername": "kullanici",
+          "authorAvatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100",
+          "authorRole": "user",
+          "isMechanicVerified": false,
+          "shopName": "",
+          "content": "DSG kavrama değişimi öncesinde mekatronik basınç testi yaptırmanızı şiddetle tavsiye ederim. Harika rehber olmuş!",
+          "createdAt": "2026-09-27T14:12:30.560Z"
+        }
+      ],
+      "likedBy": [
+        "usr_mech_2",
+        "usr_user_1"
+      ]
     },
     {
       "id": "blog_2",
@@ -1444,7 +1574,24 @@
         "Muayene",
         "Egzoz"
       ],
-      "content": "\n<h3>DPF Neden Tıkanır ve Nasıl Kurtarılır?</h3>\n<p>Euro 5 ve Euro 6 dizel motorlu araçların egzoz hattında yer alan DPF (Dizel Partikül Filtresi), motordan çıkan kurum ve karbon parçacıklarını petek yapısında yakalayarak çevreye salınmasını engeller. Ancak şehir içi kısa mesafe kullanımlarda egzoz gazı sıcaklığı 600°C'ye ulaşamadığı için filtre kendi kendini temizleyemez (rejenerasyon yapamaz) ve tıkanır.</p>\n\n<h4>DPF İptal Edilmeli mi?</h4>\n<p>Sanayide en çok karşılaştığımız soru: <em>\"Ustam bunu kıralım, yazılımla iptal edelim mi?\"</em> Kesinlikle tavsiye etmiyoruz! DPF iptal edilen araç:</p>\n<ul>\n  <li>TÜVTÜRK muayenesinde yeni nesil egzoz emisyon cihazlarında ağır kusurla kalır.</li>\n  <li>Egzozdan rahatsız edici çiğ mazot kokusu ve siyah duman yayar.</li>\n  <li>Geri basınç düştüğü için alt devirlerde tork kaybı yaşar.</li>\n</ul>\n\n<div class=\"blog-tip-box\">\n  <strong>💡 Çözüm:</strong> İptal ettirmek yerine sanayide profesyonel DPF yıkama tezgahlarında ilaçlı temizlik yaptırın (Maliyet yaklaşık 3.000 - 4.500 TL). Filtrenin gözenekleri %95 oranında fabrika çıkış değerlerine döner.\n</div>\n    "
+      "content": "\n<h3>DPF Neden Tıkanır ve Nasıl Kurtarılır?</h3>\n<p>Euro 5 ve Euro 6 dizel motorlu araçların egzoz hattında yer alan DPF (Dizel Partikül Filtresi), motordan çıkan kurum ve karbon parçacıklarını petek yapısında yakalayarak çevreye salınmasını engeller. Ancak şehir içi kısa mesafe kullanımlarda egzoz gazı sıcaklığı 600°C'ye ulaşamadığı için filtre kendi kendini temizleyemez (rejenerasyon yapamaz) ve tıkanır.</p>\n\n<h4>DPF İptal Edilmeli mi?</h4>\n<p>Sanayide en çok karşılaştığımız soru: <em>\"Ustam bunu kıralım, yazılımla iptal edelim mi?\"</em> Kesinlikle tavsiye etmiyoruz! DPF iptal edilen araç:</p>\n<ul>\n  <li>TÜVTÜRK muayenesinde yeni nesil egzoz emisyon cihazlarında ağır kusurla kalır.</li>\n  <li>Egzozdan rahatsız edici çiğ mazot kokusu ve siyah duman yayar.</li>\n  <li>Geri basınç düştüğü için alt devirlerde tork kaybı yaşar.</li>\n</ul>\n\n<div class=\"blog-tip-box\">\n  <strong>💡 Çözüm:</strong> İptal ettirmek yerine sanayide profesyonel DPF yıkama tezgahlarında ilaçlı temizlik yaptırın (Maliyet yaklaşık 3.000 - 4.500 TL). Filtrenin gözenekleri %95 oranında fabrika çıkış değerlerine döner.\n</div>\n    ",
+      "comments": [
+        {
+          "id": "bcom_201",
+          "authorId": "usr_mech_1",
+          "authorName": "Ahmet Çelik Usta (Maslak VAG)",
+          "authorUsername": "AhmetUsta_VAG",
+          "authorAvatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150",
+          "authorRole": "mechanic",
+          "isMechanicVerified": true,
+          "shopName": "Çelik Oto VAG Özel Servis",
+          "content": "Mehmet Ustama katılıyorum, geçen hafta DPF kırdırmış bir Passat geldi, araç hem kara duman atıyordu hem de muayeneden kalmıştı. İlaçlı yıkama varken partikül iptali kesinlikle hata.",
+          "createdAt": "2026-09-23T11:20:00.000Z"
+        }
+      ],
+      "likedBy": [
+        "usr_mech_1"
+      ]
     },
     {
       "id": "blog_3",
@@ -1466,7 +1613,9 @@
         "Rektifiye",
         "Bakım"
       ],
-      "content": "\n<h3>Trigerin Önemi ve Kopma Anında Yaşananlar</h3>\n<p>Triger kayışı (veya zinciri), krank mili ile eksantrik milini birbirine bağlayarak motor subaplarının pistonlarla senkronize açılıp kapanmasını sağlar. Birçok modern motorda \"Interference\" (çakışmalı) tasarım kullanılır; yani triger koptuğu anda subaplar açık kalır ve yukarı doğru 3000 devirle gelen pistonlar subaplara hızla çarpar.</p>\n\n<h4>Triger Değişim Aralıkları:</h4>\n<ul>\n  <li><strong>Kauçuk Triger Kayışları:</strong> Ortalama 4 ila 5 yıl veya 90.000 - 120.000 km (Hangisi önce dolarsa!). Araç az kilometre yapsa bile kauçuk 5 yılda sertleşir ve çatlar.</li>\n  <li><strong>Triger Zincirleri:</strong> Genellikle 180.000 - 250.000 km. Ancak yağsızlık veya kalitesiz yağ kullanımı zincir gergisini bozarak erken uzamaya neden olur. İlk marşta metalik şıkırtı sesi veriyorsa acilen kontrol edilmelidir.</li>\n</ul>\n    "
+      "content": "\n<h3>Trigerin Önemi ve Kopma Anında Yaşananlar</h3>\n<p>Triger kayışı (veya zinciri), krank mili ile eksantrik milini birbirine bağlayarak motor subaplarının pistonlarla senkronize açılıp kapanmasını sağlar. Birçok modern motorda \"Interference\" (çakışmalı) tasarım kullanılır; yani triger koptuğu anda subaplar açık kalır ve yukarı doğru 3000 devirle gelen pistonlar subaplara hızla çarpar.</p>\n\n<h4>Triger Değişim Aralıkları:</h4>\n<ul>\n  <li><strong>Kauçuk Triger Kayışları:</strong> Ortalama 4 ila 5 yıl veya 90.000 - 120.000 km (Hangisi önce dolarsa!). Araç az kilometre yapsa bile kauçuk 5 yılda sertleşir ve çatlar.</li>\n  <li><strong>Triger Zincirleri:</strong> Genellikle 180.000 - 250.000 km. Ancak yağsızlık veya kalitesiz yağ kullanımı zincir gergisini bozarak erken uzamaya neden olur. İlk marşta metalik şıkırtı sesi veriyorsa acilen kontrol edilmelidir.</li>\n</ul>\n    ",
+      "comments": [],
+      "likedBy": []
     },
     {
       "id": "blog_4",
@@ -1492,6 +1641,23 @@
     }
   ],
   "developerReports": [
+    {
+      "id": "rep_1790459630117",
+      "category": "Hata / Bug",
+      "title": "fadfafafafdf",
+      "message": "fdafafafda",
+      "image": "",
+      "userId": "usr_1789941375341",
+      "userName": "Muhammed Batın",
+      "userUsername": "muhammedbatins",
+      "userEmail": "developer.batin@gmail.com",
+      "userRole": "mechanic",
+      "pageUrl": "http://localhost:3000/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36 Edg/154.0.0.0",
+      "screenResolution": "1528x828",
+      "status": "pending",
+      "createdAt": "2026-09-26T21:53:50.118Z"
+    },
     {
       "id": "rep_1790458825921",
       "category": "Hata / Bug",
@@ -1525,6 +1691,574 @@
       "screenResolution": "",
       "status": "pending",
       "createdAt": "2026-09-26T21:36:20.171Z"
+    }
+  ],
+  "roadsideAssistance": [
+    {
+      "id": "road_ist_1",
+      "name": "Avrasya 7/24 Oto Kurtarma & Çekici",
+      "category": "tow",
+      "categoryName": "Oto Çekici & Kurtarıcı",
+      "city": "İstanbul",
+      "district": "Maslak / Sarıyer / Beşiktaş / TEM & E-5",
+      "phone": "0532 999 11 22",
+      "whatsapp": "905329991122",
+      "rating": 4.9,
+      "reviewCount": 142,
+      "responseTime": "15-20 dk",
+      "is24Hours": true,
+      "isVerified": true,
+      "pricing": "Şehir içi taban çekici ücreti 1.200 TL",
+      "features": [
+        "Ahtapot Çekici",
+        "Kayan Kasa",
+        "Kapalı Otopark Girişli",
+        "Kaza & Arıza Nakli"
+      ],
+      "description": "İstanbul Avrupa ve Anadolu yakasında 7/24 acil oto kurtarıcı. Sıfır hasar garantili aparatlı taşıma."
+    },
+    {
+      "id": "road_ist_2",
+      "name": "Sanayi Mobil Lastikçi & Yerinde Balans",
+      "category": "tire",
+      "categoryName": "Seyyar Lastik & Yerinde Değişim",
+      "city": "İstanbul",
+      "district": "İkitelli / Bağcılar / Başakşehir / Kuzey Marmara",
+      "phone": "0533 888 22 33",
+      "whatsapp": "905338882233",
+      "rating": 4.8,
+      "reviewCount": 98,
+      "responseTime": "15-25 dk",
+      "is24Hours": true,
+      "isVerified": true,
+      "pricing": "Yerinde lastik yama & fitil 450 TL / Değişim 600 TL",
+      "features": [
+        "Mobil Hava Kompresörü",
+        "Seyyar Balans Makinesi",
+        "Sıfır & Çıkma Lastik Temini",
+        "Bijon Kırığı Çıkarma"
+      ],
+      "description": "Yolda lastiğiniz mi yarıldı veya patladı? Gezici tam donanımlı minibüsümüzle dakikalar içinde yanınızdayız."
+    },
+    {
+      "id": "road_ist_3",
+      "name": "Boğaziçi Mobil Akü & Oto Elektrik Servisi",
+      "category": "battery",
+      "categoryName": "Oto Elektrik & Akü Takviye (Booster)",
+      "city": "İstanbul",
+      "district": "Kadıköy / Ataşehir / Üsküdar / Ümraniye",
+      "phone": "0535 777 33 44",
+      "whatsapp": "905357773344",
+      "rating": 5,
+      "reviewCount": 176,
+      "responseTime": "10-20 dk",
+      "is24Hours": true,
+      "isVerified": true,
+      "pricing": "Yerinde profesyonel booster takviye 500 TL (Akü alımında montaj ücretsiz)",
+      "features": [
+        "12V & 24V Profesyonel Booster",
+        "Varta & İnci Akü Bayiliği",
+        "Şarj Dinamosu Ölçümü",
+        "Marş Motoru Kontrolü"
+      ],
+      "description": "Akü bittiğinde bekleme yapmayın. Yerinde dijital akü sağlık testi, takviye ve sıfır garantili akü montajı."
+    },
+    {
+      "id": "road_ist_4",
+      "name": "Metropol Oto Çilingir & Kilit / Anahtar",
+      "category": "locksmith",
+      "categoryName": "Oto Çilingir & Kilit / Anahtar",
+      "city": "İstanbul",
+      "district": "Şişli / Kağıthane / Beyoğlu / Fatih",
+      "phone": "0536 666 44 55",
+      "whatsapp": "905366664455",
+      "rating": 4.9,
+      "reviewCount": 84,
+      "responseTime": "20-30 dk",
+      "is24Hours": true,
+      "isVerified": true,
+      "pricing": "Hasarsız kapı açma 750 TL",
+      "features": [
+        "Hava Yastığıyla Hasarsız Açma",
+        "İmmobilizer Kodlama",
+        "Bagaj Kilidi Açma",
+        "Kayıp Anahtar Üretimi"
+      ],
+      "description": "Anahtar aracın içinde mi kaldı veya kayıp mı? Aracın kaportasına veya fitiline zarar vermeden 5 dakikada açıyoruz."
+    },
+    {
+      "id": "road_ist_5",
+      "name": "Gezici Sanayi Ustası & Hızlı Mekanik",
+      "category": "mechanic",
+      "categoryName": "Mobil Gezici Usta & Mekanik",
+      "city": "İstanbul",
+      "district": "Tüm İstanbul Çevre Yolları & Otoyollar",
+      "phone": "0537 555 88 11",
+      "whatsapp": "905375558811",
+      "rating": 4.8,
+      "reviewCount": 110,
+      "responseTime": "25-35 dk",
+      "is24Hours": true,
+      "isVerified": true,
+      "pricing": "Yerinde arıza tespit & ilk müdahale 800 TL",
+      "features": [
+        "Kopan V Kayışı Değişimi",
+        "Delik Radyatör Hortum Tamiri",
+        "Yanlış Yakıt Tahliyesi",
+        "OBD Bilgisayarlı Teşhis"
+      ],
+      "description": "Aracınız basit bir su hortumu veya kayış kopması yüzünden çekiciye binmesin; gezici ustamız yerinde müdahale eder."
+    },
+    {
+      "id": "road_ank_1",
+      "name": "Başkent 7/24 Şehir İçi & Şehirler Arası Çekici",
+      "category": "tow",
+      "categoryName": "Oto Çekici & Kurtarıcı",
+      "city": "Ankara",
+      "district": "Ostim / Şaşmaz / İvedik / Çankaya / Gölbaşı",
+      "phone": "0542 555 55 66",
+      "whatsapp": "905425555566",
+      "rating": 4.9,
+      "reviewCount": 165,
+      "responseTime": "15-20 dk",
+      "is24Hours": true,
+      "isVerified": true,
+      "pricing": "Şehir içi taban çekici ücreti 1.100 TL",
+      "features": [
+        "Kayan Kasa Çekici",
+        "Şehirler Arası Çoklu Taşıma",
+        "Vinçli Kurtarıcı",
+        "Kaskolu Taşıma"
+      ],
+      "description": "Ankara genelinde en geniş filoya sahip oto çekici ağı. 7/24 aralıksız hizmet."
+    },
+    {
+      "id": "road_ank_2",
+      "name": "Şaşmaz Mobil Lastik & Akü Takviye",
+      "category": "tire",
+      "categoryName": "Seyyar Lastik & Yerinde Değişim",
+      "city": "Ankara",
+      "district": "Etimesgut / Batıkent / Yenimahalle / Eskişehir Yolu",
+      "phone": "0543 444 66 77",
+      "whatsapp": "905434446677",
+      "rating": 4.8,
+      "reviewCount": 92,
+      "responseTime": "15-25 dk",
+      "is24Hours": true,
+      "isVerified": true,
+      "pricing": "Yerinde tamir 450 TL / Takviye 450 TL",
+      "features": [
+        "7/24 Gezici Araç",
+        "Mobil Hava & Balans",
+        "Yerinde Akü Değişimi",
+        "Bijon Anahtarı Desteği"
+      ],
+      "description": "Ankara otoban ve çevre yollarında nöbetçi lastikçi ve akü desteği."
+    },
+    {
+      "id": "road_izm_1",
+      "name": "Ege Kurtarıcı & Seyyar Lastik Servisi",
+      "category": "tow",
+      "categoryName": "Oto Çekici & Kurtarıcı",
+      "city": "İzmir",
+      "district": "Bornova / 6. Sanayi / Karşıyaka / Çeşme Otoyolu",
+      "phone": "0552 333 77 88",
+      "whatsapp": "905523337788",
+      "rating": 4.9,
+      "reviewCount": 124,
+      "responseTime": "15-25 dk",
+      "is24Hours": true,
+      "isVerified": true,
+      "pricing": "Şehir içi çekici 1.150 TL",
+      "features": [
+        "Ahtapot Çekici",
+        "Otoyol Kurtarma",
+        "Yerinde Akü & Lastik",
+        "7/24 Kesintisiz"
+      ],
+      "description": "İzmir şehir içi ve otoban hattında 7/24 güvenilir ve sigortalı oto kurtarma."
+    },
+    {
+      "id": "road_bur_1",
+      "name": "Uludağ 7/24 Oto Kurtarma & Akü Dünyası",
+      "category": "battery",
+      "categoryName": "Oto Elektrik & Akü Takviye (Booster)",
+      "city": "Bursa",
+      "district": "Nilüfer / Osmangazi / Küçük Sanayi / Mudanya Yolu",
+      "phone": "0553 222 88 99",
+      "whatsapp": "905532228899",
+      "rating": 4.8,
+      "reviewCount": 88,
+      "responseTime": "15-20 dk",
+      "is24Hours": true,
+      "isVerified": true,
+      "pricing": "Akü takviye 450 TL / Çekici 1.100 TL",
+      "features": [
+        "Akü Satış & Değişim",
+        "Booster Takviye",
+        "Oto Çekici",
+        "Dinamik Arıza Tespiti"
+      ],
+      "description": "Bursa sanayi ve çevre yollarında 7/24 akü ve çekici acil müdahale ekibi."
+    },
+    {
+      "id": "road_ant_1",
+      "name": "Akdeniz Acil Çekici & Mobil Mekanik",
+      "category": "tow",
+      "categoryName": "Oto Çekici & Kurtarıcı",
+      "city": "Antalya",
+      "district": "Muratpaşa / Kepez / Akdeniz Sanayi / Kemer & Alanya Yolu",
+      "phone": "0554 111 99 00",
+      "whatsapp": "905541119900",
+      "rating": 4.9,
+      "reviewCount": 95,
+      "responseTime": "15-25 dk",
+      "is24Hours": true,
+      "isVerified": true,
+      "pricing": "Şehir içi çekici 1.200 TL",
+      "features": [
+        "Geniş Platform Kayan Kasa",
+        "Turistik Bölge Hızlı İntikal",
+        "Mobil Mekanik Desteği",
+        "Akü Takviye"
+      ],
+      "description": "Antalya merkez ve sahil güzergahında 7/24 kesintisiz oto yardım."
+    },
+    {
+      "id": "road_koc_1",
+      "name": "Körfez 7/24 Otoyol Kurtarıcı & Seyyar Lastik",
+      "category": "tow",
+      "categoryName": "Oto Çekici & Kurtarıcı",
+      "city": "Kocaeli",
+      "district": "Gebze / İzmit / Dilovası / Kuzey Marmara & TEM Otoyolu",
+      "phone": "0537 000 12 34",
+      "whatsapp": "905370001234",
+      "rating": 5,
+      "reviewCount": 130,
+      "responseTime": "15-20 dk",
+      "is24Hours": true,
+      "isVerified": true,
+      "pricing": "Otoyol taban kurtarma 1.300 TL",
+      "features": [
+        "Ağır Ticari & Binek Çekici",
+        "Seyyar Lastik Tamiri",
+        "7/24 Otoban Nöbeti",
+        "Kaskolu Nakil"
+      ],
+      "description": "TEM ve Kuzey Marmara otoyol kavşaklarında nöbetçi hazır kurtarıcı filosu."
+    }
+  ],
+  "conversations": [
+    {
+      "id": "conv_caner_ahmet",
+      "participants": [
+        "usr_beta_1",
+        "usr_mech_1"
+      ],
+      "participantDetails": {
+        "usr_beta_1": {
+          "id": "usr_beta_1",
+          "name": "Caner Özkan",
+          "username": "CanerSurucu",
+          "role": "user",
+          "badge": "Araç Sahibi",
+          "avatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150",
+          "city": "İstanbul"
+        },
+        "usr_mech_1": {
+          "id": "usr_mech_1",
+          "name": "Ahmet Çelik Usta",
+          "username": "AhmetUsta_VAG",
+          "role": "mechanic",
+          "badge": "Doğrulanmış VAG Uzmanı",
+          "avatar": "https://images.unsplash.com/photo-1581092921461-eab62e97a780?w=150",
+          "city": "İstanbul"
+        }
+      },
+      "lastMessage": {
+        "id": "msg_1790460945786",
+        "senderId": "usr_mech_1",
+        "text": "📍 Konumumu paylaştım: Maslak Atatürk Oto Sanayi Sitesi, 2. Kısım",
+        "createdAt": "2026-09-26T22:15:45.786Z",
+        "isRead": false
+      },
+      "updatedAt": "2026-09-26T22:15:45.786Z"
+    },
+    {
+      "id": "conv_ali_kemal",
+      "participants": [
+        "usr_normal_1",
+        "usr_dealer_1"
+      ],
+      "participantDetails": {
+        "usr_normal_1": {
+          "id": "usr_normal_1",
+          "name": "Ali Emre Yıldırım",
+          "username": "AliEmre",
+          "role": "user",
+          "badge": "Araç Sahibi",
+          "avatar": "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=150",
+          "city": "Ankara"
+        },
+        "usr_dealer_1": {
+          "id": "usr_dealer_1",
+          "name": "Kemal Yıldız",
+          "username": "YildizOtomotiv",
+          "role": "dealer",
+          "badge": "Doğrulanmış Galeri / Parçacı",
+          "avatar": "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150",
+          "city": "Ankara"
+        }
+      },
+      "lastMessage": {
+        "id": "msg_6",
+        "senderId": "usr_dealer_1",
+        "text": "Tabii ki, Şaşmaz Oto Sanayi 2. Cadde'deki dükkanımıza gelip kontrol ederek teslim alabilirsiniz.",
+        "createdAt": "2026-09-26T21:05:00.000Z",
+        "isRead": false
+      },
+      "updatedAt": "2026-09-26T21:05:00.000Z"
+    }
+  ],
+  "directMessages": [
+    {
+      "id": "msg_1",
+      "conversationId": "conv_caner_ahmet",
+      "senderId": "usr_beta_1",
+      "receiverId": "usr_mech_1",
+      "text": "Ahmet Usta selamlar, 2016 Golf 7 1.6 TDI için triger seti değişim fiyatı alabilir miyim? Orijinal devirdaim dahil ne kadar tutar?",
+      "createdAt": "2026-09-26T20:00:00.000Z",
+      "isRead": true
+    },
+    {
+      "id": "msg_2",
+      "conversationId": "conv_caner_ahmet",
+      "senderId": "usr_mech_1",
+      "receiverId": "usr_beta_1",
+      "text": "Aleykümselam Caner kardeşim. Continental / INA marka orijinal triger seti ve Graf metal çarklı devirdaim pompası, kırmızı antifriz dahil toplam işçilikle birlikte 7.800 TL'ye çözeriz. Dükkan Maslak 2. Kısım'da, sabahtan bırakırsan öğleden sonra teslim ederim.",
+      "createdAt": "2026-09-26T20:08:00.000Z",
+      "isRead": true
+    },
+    {
+      "id": "msg_3",
+      "conversationId": "conv_caner_ahmet",
+      "senderId": "usr_beta_1",
+      "receiverId": "usr_mech_1",
+      "text": "Harika usta, yarın sabah saat 09:30 gibi gelebilir miyim?",
+      "createdAt": "2026-09-26T20:12:00.000Z",
+      "isRead": true
+    },
+    {
+      "id": "msg_4",
+      "conversationId": "conv_caner_ahmet",
+      "senderId": "usr_mech_1",
+      "receiverId": "usr_beta_1",
+      "text": "Tabii ki kardeşim, bekliyorum. Gelmeden önce ararsan lifte hemen alırız.",
+      "createdAt": "2026-09-26T20:15:00.000Z",
+      "isRead": true
+    },
+    {
+      "id": "msg_5",
+      "conversationId": "conv_ali_kemal",
+      "senderId": "usr_normal_1",
+      "receiverId": "usr_dealer_1",
+      "text": "Kemal Bey merhaba, Parça Borsası'ndaki Golf 7 LED Stop takımı hala duruyor mu?",
+      "createdAt": "2026-09-26T21:00:00.000Z",
+      "isRead": true
+    },
+    {
+      "id": "msg_6",
+      "conversationId": "conv_ali_kemal",
+      "senderId": "usr_dealer_1",
+      "receiverId": "usr_normal_1",
+      "text": "Tabii ki, Şaşmaz Oto Sanayi 2. Cadde'deki dükkanımıza gelip kontrol ederek teslim alabilirsiniz.",
+      "createdAt": "2026-09-26T21:05:00.000Z",
+      "isRead": false
+    },
+    {
+      "id": "msg_1790459953227",
+      "conversationId": "conv_caner_ahmet",
+      "senderId": "usr_mech_1",
+      "receiverId": "usr_beta_1",
+      "text": "Caner kardeşim parça kargosu dükkana ulaştı, yarın sabahtan bekliyorum.",
+      "image": null,
+      "location": null,
+      "isRead": true,
+      "createdAt": "2026-09-26T21:59:13.227Z"
+    },
+    {
+      "id": "msg_1790459990234",
+      "conversationId": "conv_caner_ahmet",
+      "senderId": "usr_mech_1",
+      "receiverId": "usr_beta_1",
+      "text": "Caner kardeşim parça kargosu dükkana ulaştı, yarın sabahtan bekliyorum.",
+      "image": null,
+      "location": null,
+      "isRead": true,
+      "createdAt": "2026-09-26T21:59:50.234Z"
+    },
+    {
+      "id": "msg_1790460059995",
+      "conversationId": "conv_caner_ahmet",
+      "senderId": "usr_mech_1",
+      "receiverId": "usr_beta_1",
+      "text": "Caner kardeşim parça kargosu dükkana ulaştı, yarın sabahtan bekliyorum.",
+      "image": null,
+      "location": null,
+      "isRead": true,
+      "createdAt": "2026-09-26T22:00:59.995Z"
+    },
+    {
+      "id": "msg_1790460176103",
+      "conversationId": "conv_caner_ahmet",
+      "senderId": "usr_mech_1",
+      "receiverId": "usr_beta_1",
+      "text": "Caner kardeşim parça kargosu dükkana ulaştı, yarın sabahtan bekliyorum.",
+      "image": null,
+      "location": null,
+      "isRead": true,
+      "createdAt": "2026-09-26T22:02:56.103Z"
+    },
+    {
+      "id": "msg_1790460187681",
+      "conversationId": "conv_caner_ahmet",
+      "senderId": "usr_mech_1",
+      "receiverId": "usr_beta_1",
+      "text": "💰 Merhaba ustam, bu işlem için parça ve işçilik dahil güncel son fiyatınız nedir?",
+      "image": null,
+      "location": null,
+      "isRead": true,
+      "createdAt": "2026-09-26T22:03:07.681Z"
+    },
+    {
+      "id": "msg_1790460188897",
+      "conversationId": "conv_caner_ahmet",
+      "senderId": "usr_mech_1",
+      "receiverId": "usr_beta_1",
+      "text": "📍 Konumumu paylaştım: Maslak Atatürk Oto Sanayi Sitesi, 2. Kısım",
+      "image": null,
+      "location": {
+        "lat": 41.1086,
+        "lng": 29.0152,
+        "address": "Maslak Atatürk Oto Sanayi Sitesi, 2. Kısım",
+        "url": "https://www.google.com/maps/search/?api=1&query=41.1086,29.0152"
+      },
+      "isRead": true,
+      "createdAt": "2026-09-26T22:03:08.897Z"
+    },
+    {
+      "id": "msg_1790460729854",
+      "conversationId": "conv_caner_ahmet",
+      "senderId": "usr_mech_1",
+      "receiverId": "usr_beta_1",
+      "text": "Caner kardeşim parça kargosu dükkana ulaştı, yarın sabahtan bekliyorum.",
+      "image": null,
+      "location": null,
+      "isRead": true,
+      "createdAt": "2026-09-26T22:12:09.854Z"
+    },
+    {
+      "id": "msg_1790460740964",
+      "conversationId": "conv_caner_ahmet",
+      "senderId": "usr_mech_1",
+      "receiverId": "usr_beta_1",
+      "text": "💰 Merhaba ustam, bu işlem için parça ve işçilik dahil güncel son fiyatınız nedir?",
+      "image": null,
+      "location": null,
+      "isRead": true,
+      "createdAt": "2026-09-26T22:12:20.964Z"
+    },
+    {
+      "id": "msg_1790460742178",
+      "conversationId": "conv_caner_ahmet",
+      "senderId": "usr_mech_1",
+      "receiverId": "usr_beta_1",
+      "text": "📍 Konumumu paylaştım: Maslak Atatürk Oto Sanayi Sitesi, 2. Kısım",
+      "image": null,
+      "location": {
+        "lat": 41.1086,
+        "lng": 29.0152,
+        "address": "Maslak Atatürk Oto Sanayi Sitesi, 2. Kısım",
+        "url": "https://www.google.com/maps/search/?api=1&query=41.1086,29.0152"
+      },
+      "isRead": true,
+      "createdAt": "2026-09-26T22:12:22.178Z"
+    },
+    {
+      "id": "msg_1790460861457",
+      "conversationId": "conv_caner_ahmet",
+      "senderId": "usr_mech_1",
+      "receiverId": "usr_beta_1",
+      "text": "Caner kardeşim parça kargosu dükkana ulaştı, yarın sabahtan bekliyorum.",
+      "image": null,
+      "location": null,
+      "isRead": true,
+      "createdAt": "2026-09-26T22:14:21.457Z"
+    },
+    {
+      "id": "msg_1790460875015",
+      "conversationId": "conv_caner_ahmet",
+      "senderId": "usr_mech_1",
+      "receiverId": "usr_beta_1",
+      "text": "💰 Merhaba ustam, bu işlem için parça ve işçilik dahil güncel son fiyatınız nedir?",
+      "image": null,
+      "location": null,
+      "isRead": true,
+      "createdAt": "2026-09-26T22:14:35.015Z"
+    },
+    {
+      "id": "msg_1790460876231",
+      "conversationId": "conv_caner_ahmet",
+      "senderId": "usr_mech_1",
+      "receiverId": "usr_beta_1",
+      "text": "📍 Konumumu paylaştım: Maslak Atatürk Oto Sanayi Sitesi, 2. Kısım",
+      "image": null,
+      "location": {
+        "lat": 41.1086,
+        "lng": 29.0152,
+        "address": "Maslak Atatürk Oto Sanayi Sitesi, 2. Kısım",
+        "url": "https://www.google.com/maps/search/?api=1&query=41.1086,29.0152"
+      },
+      "isRead": true,
+      "createdAt": "2026-09-26T22:14:36.231Z"
+    },
+    {
+      "id": "msg_1790460930536",
+      "conversationId": "conv_caner_ahmet",
+      "senderId": "usr_mech_1",
+      "receiverId": "usr_beta_1",
+      "text": "Caner kardeşim parça kargosu dükkana ulaştı, yarın sabahtan bekliyorum.",
+      "image": null,
+      "location": null,
+      "isRead": true,
+      "createdAt": "2026-09-26T22:15:30.536Z"
+    },
+    {
+      "id": "msg_1790460944581",
+      "conversationId": "conv_caner_ahmet",
+      "senderId": "usr_mech_1",
+      "receiverId": "usr_beta_1",
+      "text": "💰 Merhaba ustam, bu işlem için parça ve işçilik dahil güncel son fiyatınız nedir?",
+      "image": null,
+      "location": null,
+      "isRead": false,
+      "createdAt": "2026-09-26T22:15:44.581Z"
+    },
+    {
+      "id": "msg_1790460945786",
+      "conversationId": "conv_caner_ahmet",
+      "senderId": "usr_mech_1",
+      "receiverId": "usr_beta_1",
+      "text": "📍 Konumumu paylaştım: Maslak Atatürk Oto Sanayi Sitesi, 2. Kısım",
+      "image": null,
+      "location": {
+        "lat": 41.1086,
+        "lng": 29.0152,
+        "address": "Maslak Atatürk Oto Sanayi Sitesi, 2. Kısım",
+        "url": "https://www.google.com/maps/search/?api=1&query=41.1086,29.0152"
+      },
+      "isRead": false,
+      "createdAt": "2026-09-26T22:15:45.786Z"
     }
   ]
 }

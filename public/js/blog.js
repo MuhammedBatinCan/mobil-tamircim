@@ -104,16 +104,27 @@ const Blog = {
   },
 
   async openPost(slug) {
-    const post = this.posts.find(p => p.slug === slug || p.id === slug);
+    let post = this.posts.find(p => p.slug === slug || p.id === slug);
     if (!post) return;
 
     this.activePost = post;
     const container = document.getElementById('blog-detail-content');
     if (!container) return;
 
-    // Increment views via API in background
-    fetch(`/api/blog/${slug}`).catch(() => {});
-    post.views = (post.views || 0) + 1;
+    // Fetch full post details from server (for fresh views, likes, and comments)
+    try {
+      const res = await fetch(`/api/blog/${slug}`);
+      const data = await res.json();
+      if (data.success && data.post) {
+        Object.assign(post, data.post);
+        this.activePost = post;
+      }
+    } catch (e) {
+      post.views = (post.views || 0) + 1;
+    }
+
+    const currentUser = (typeof App !== 'undefined' && App.currentUser) || null;
+    const isLiked = currentUser && Array.isArray(post.likedBy) && post.likedBy.includes(currentUser.id);
 
     container.innerHTML = `
       <div class="blog-detail-nav">
@@ -137,7 +148,7 @@ const Blog = {
           </div>
 
           <div style="display:flex; align-items:center; gap:10px;">
-            <button id="blog-like-btn" class="btn btn-secondary btn-sm" onclick="Blog.likeCurrentPost('${post.id}')" style="display:flex; align-items:center; gap:6px;">
+            <button id="blog-like-btn" class="btn btn-secondary btn-sm ${isLiked ? 'liked' : ''}" onclick="Blog.likeCurrentPost('${post.id}')" style="display:flex; align-items:center; gap:6px; ${isLiked ? 'color:#EF4444; border-color:rgba(239,68,68,0.4); background:rgba(239,68,68,0.12);' : ''}">
               <span>❤️</span> <span id="blog-like-count">${post.likes || 0}</span>
             </button>
             <button class="btn btn-secondary btn-sm" onclick="navigator.clipboard.writeText(window.location.href); showToast('Bağlantı kopyalandı! 📋');" title="Paylaş">
@@ -173,22 +184,163 @@ const Blog = {
             Forumda Tartış & Konu Aç
           </button>
         </div>
+
+        <!-- ========================================== -->
+        <!-- BLOG YORUMLARI & GÖRÜŞLER BÖLÜMÜ -->
+        <!-- ========================================== -->
+        <section class="blog-comments-wrap" style="margin-top:32px; padding-top:24px; border-top:1px solid rgba(255,255,255,0.08);">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;">
+            <h3 style="font-size:1.15rem; font-weight:800; color:#FFF; margin:0; display:flex; align-items:center; gap:8px;">
+              💬 Okuyucu & Usta Yorumları
+              <span id="blog-comments-counter" class="badge badge-primary" style="font-size:0.75rem;">${(post.comments || []).length}</span>
+            </h3>
+            <span style="font-size:0.75rem; color:var(--text-muted);">Deneyimlerinizi veya sorularınızı paylaşın</span>
+          </div>
+
+          <!-- Yorum Ekleme Formu -->
+          <div class="blog-comment-form-card" style="background:rgba(15,23,42,0.6); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:16px; margin-bottom:24px;">
+            <div style="display:flex; gap:12px; align-items:flex-start;">
+              <img src="${(currentUser && currentUser.avatar) ? currentUser.avatar : 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100'}" style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid var(--accent-amber);" alt="Avatar">
+              <div style="flex:1;">
+                ${!currentUser ? `
+                  <div style="margin-bottom:8px;">
+                    <input type="text" id="blog-guest-name" class="form-control" placeholder="Adınız / Usta Unvanınız (İsteğe bağlı)" style="font-size:0.85rem; padding:8px 12px; margin-bottom:8px; background:rgba(255,255,255,0.04); border:1px solid var(--border-color); color:#FFF; border-radius:8px; width:100%;">
+                  </div>
+                ` : `
+                  <div style="font-size:0.82rem; font-weight:700; color:var(--accent-amber); margin-bottom:6px;">
+                    ${escapeHtml(currentUser.name)} ${currentUser.isMechanicVerified ? '🔧 (Onaylı Usta)' : ''}
+                  </div>
+                `}
+                <textarea id="blog-comment-input" rows="3" class="form-control" placeholder="Bu rehber hakkında düşünceleriniz, eklemek istediğiniz usta tecrübeleri veya sorularınız..." style="width:100%; font-size:0.88rem; padding:10px 12px; background:rgba(255,255,255,0.04); border:1px solid var(--border-color); color:#FFF; border-radius:8px; resize:vertical;"></textarea>
+                <div style="display:flex; justify-content:flex-end; margin-top:10px;">
+                  <button class="btn btn-primary btn-sm" onclick="Blog.submitComment('${post.id}')" style="display:inline-flex; align-items:center; gap:6px;">
+                    <span>Yorumu Yayınla</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Yorumlar Listesi -->
+          <div id="blog-comments-list" class="blog-comments-list" style="display:flex; flex-direction:column; gap:14px;">
+            ${this.renderCommentsList(post.comments || [])}
+          </div>
+        </section>
       </article>
     `;
 
     App.switchView('view-blog-detail');
   },
 
+  async submitComment(postId) {
+    const input = document.getElementById('blog-comment-input');
+    if (!input) return;
+    const content = input.value.trim();
+    if (!content) {
+      showToast('Lütfen bir yorum yazın.');
+      input.focus();
+      return;
+    }
+    const guestInput = document.getElementById('blog-guest-name');
+    const guestName = guestInput ? guestInput.value.trim() : '';
+    const currentUser = (typeof App !== 'undefined' && App.currentUser) || null;
+
+    try {
+      const res = await fetch(`/api/blog/${postId}/comment`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          content,
+          authorName: guestName,
+          user: currentUser
+        })
+      });
+      const data = await res.json();
+      if (data.success && data.comment) {
+        if (!this.activePost.comments) this.activePost.comments = [];
+        this.activePost.comments.unshift(data.comment);
+        input.value = '';
+        if (guestInput) guestInput.value = '';
+        
+        const counter = document.getElementById('blog-comments-counter');
+        if (counter) counter.textContent = this.activePost.comments.length;
+        
+        const listContainer = document.getElementById('blog-comments-list');
+        if (listContainer) {
+          listContainer.innerHTML = this.renderCommentsList(this.activePost.comments);
+        }
+        showToast('Yorumunuz başarıyla yayınlandı! 💬');
+      } else {
+        showToast(data.error || 'Yorum eklenemedi.');
+      }
+    } catch (err) {
+      console.error(err);
+      showToast('Sunucu bağlantı hatası oluştu.');
+    }
+  },
+
+  renderCommentsList(comments) {
+    if (!comments || comments.length === 0) {
+      return `
+        <div class="empty-state" style="padding:28px; text-align:center; background:rgba(255,255,255,0.02); border-radius:10px; border:1px dashed rgba(255,255,255,0.1);">
+          <div style="font-size:1.8rem; margin-bottom:6px;">✍️</div>
+          <p style="color:var(--text-muted); font-size:0.85rem; margin:0;">Henüz bu yazıya yorum yapılmamış. İlk yorumu siz yazarak tartışmayı başlatın!</p>
+        </div>
+      `;
+    }
+
+    return comments.map(c => `
+      <div class="blog-comment-item sidebar-card" style="padding:14px 16px; margin:0; background:rgba(19,25,36,0.85); border:1px solid rgba(255,255,255,0.06); border-radius:10px;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <img src="${c.authorAvatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80'}" style="width:34px; height:34px; border-radius:50%; object-fit:cover; border:1.5px solid ${c.isMechanicVerified ? 'var(--accent-amber)' : 'rgba(255,255,255,0.15)'};" alt="Avatar">
+            <div>
+              <div style="display:flex; align-items:center; gap:6px;">
+                <strong style="color:#FFF; font-size:0.85rem;">${escapeHtml(c.authorName)}</strong>
+                ${c.isMechanicVerified ? '<span class="status-pill-solved" style="font-size:0.68rem; padding:1px 6px;">🔧 Onaylı Usta</span>' : ''}
+              </div>
+              <span style="font-size:0.72rem; color:var(--text-dim);">${formatDate(c.createdAt)}</span>
+            </div>
+          </div>
+          ${c.shopName ? `<span style="font-size:0.72rem; color:var(--text-muted); background:rgba(255,255,255,0.05); padding:2px 8px; border-radius:4px;">${escapeHtml(c.shopName)}</span>` : ''}
+        </div>
+        <p style="color:#E2E8F0; font-size:0.88rem; line-height:1.5; margin:0 0 4px 44px; white-space:pre-line;">
+          ${escapeHtml(c.content)}
+        </p>
+      </div>
+    `).join('');
+  },
+
   async likeCurrentPost(postId) {
     if (!this.activePost) return;
+    const currentUser = (typeof App !== 'undefined' && App.currentUser) || null;
+    const btn = document.getElementById('blog-like-btn');
     try {
-      const res = await fetch(`/api/blog/${postId}/like`, { method: 'POST' });
+      const res = await fetch(`/api/blog/${postId}/like`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: currentUser ? currentUser.id : null })
+      });
       const data = await res.json();
       if (data.success) {
         this.activePost.likes = data.likes;
         const countEl = document.getElementById('blog-like-count');
         if (countEl) countEl.textContent = data.likes;
-        showToast('Yazıyı beğendiniz! ❤️');
+        if (btn) {
+          if (data.liked) {
+            btn.classList.add('liked');
+            btn.style.color = '#EF4444';
+            btn.style.borderColor = 'rgba(239, 68, 68, 0.4)';
+            btn.style.background = 'rgba(239, 68, 68, 0.12)';
+          } else {
+            btn.classList.remove('liked');
+            btn.style.color = '';
+            btn.style.borderColor = '';
+            btn.style.background = '';
+          }
+        }
+        showToast(data.liked ? 'Yazıyı beğendiniz! ❤️' : 'Beğeni geri alındı.');
       }
     } catch (err) {
       console.error(err);

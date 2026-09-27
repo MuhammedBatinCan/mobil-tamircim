@@ -18,15 +18,14 @@ const App = {
         Auth.init(this.state.users);
         Forum.init(this.state.threads, this.state.comments);
         Directory.init(this.state.directory);
-        PriceAnalysis.init(this.state.priceBenchmarks);
         SOS.init(this.state.sosRequests);
         if (typeof OBD !== 'undefined' && OBD.init) {
           OBD.init(this.state.obdCodes || (typeof APP_DATA !== 'undefined' ? APP_DATA.obdCodes : []));
         }
         if (typeof Parts !== 'undefined') Parts.init(this.state.parts);
-        if (typeof Garage !== 'undefined') Garage.init(this.state.garageVehicles, this.state.maintenanceRecords);
         if (typeof Quotes !== 'undefined') Quotes.init(this.state.quoteRequests);
         if (typeof Blog !== 'undefined') Blog.init(this.state.blogPosts);
+        if (typeof Messages !== 'undefined') Messages.init();
 
         this.setupEventListeners();
         this.initUsernameLiveCheck();
@@ -146,12 +145,14 @@ const App = {
       OBD.render();
     } else if (viewId === 'view-parts' && typeof Parts !== 'undefined') {
       Parts.render();
-    } else if (viewId === 'view-garage' && typeof Garage !== 'undefined') {
-      Garage.render();
     } else if (viewId === 'view-quotes' && typeof Quotes !== 'undefined') {
       Quotes.render();
     } else if (viewId === 'view-blog' && typeof Blog !== 'undefined') {
       Blog.render();
+    } else if (viewId === 'view-messages' && typeof Messages !== 'undefined') {
+      Messages.render();
+    } else if (viewId === 'view-sos' && typeof SOS !== 'undefined') {
+      SOS.render();
     }
   },
 
@@ -617,23 +618,6 @@ document.addEventListener('DOMContentLoaded', () => {
         App.toggleCustomBrand(false);
       }
       closeModal('new-thread-modal');
-    });
-  }
-
-  // Price Form
-  const priceForm = document.getElementById('new-price-form');
-  if (priceForm) {
-    priceForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const brand = document.getElementById('price-brand-input').value.trim();
-      const model = document.getElementById('price-model-input').value.trim();
-      const operation = document.getElementById('price-op-input').value.trim();
-      const partCost = document.getElementById('price-part-input').value;
-      const laborCost = document.getElementById('price-labor-input').value;
-      const city = document.getElementById('price-city-input').value.trim();
-
-      PriceAnalysis.submitNewPrice({ brand, model, operation, partCost, laborCost, city });
-      priceForm.reset();
     });
   }
 

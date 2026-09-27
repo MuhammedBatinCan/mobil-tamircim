@@ -1800,7 +1800,7 @@ const server = http.createServer(async (req, res) => {
     }
 
     if (pathname.match(/^\/api\/sos\/([a-zA-Z0-9_-]+)\/resolve$/) && method === 'POST') {
-      const sosId = pathname.split('/')[2];
+      const sosId = pathname.split('/')[3];
       const item = (db.sosRequests || []).find(s => s.id === sosId);
       if (item) {
         item.status = 'resolved';
@@ -1811,6 +1811,38 @@ const server = http.createServer(async (req, res) => {
       } else {
         res.writeHead(404);
         res.end(JSON.stringify({ success: false, error: 'SOS kaydı bulunamadı' }));
+      }
+      return;
+    }
+
+    if (pathname.match(/^\/api\/sos\/([a-zA-Z0-9_-]+)\/respond$/) && method === 'POST') {
+      try {
+        const sosId = pathname.split('/')[3];
+        const body = await parseBody(req);
+        const item = (db.sosRequests || []).find(s => s.id === sosId);
+        if (item) {
+          if (!Array.isArray(item.responses)) item.responses = [];
+          const responseItem = {
+            id: 'resp_' + Date.now(),
+            responderId: body.responderId || 'usr_mech_1',
+            responderName: body.responderName || 'Usta / Çekici',
+            responderPhone: body.responderPhone || '',
+            responderRole: body.responderRole || 'mechanic',
+            eta: body.eta || '15-20 dakika',
+            note: (body.note || '').trim(),
+            createdAt: new Date().toISOString()
+          };
+          item.responses.push(responseItem);
+          saveDb();
+          res.writeHead(200);
+          res.end(JSON.stringify({ success: true, response: responseItem, item }));
+        } else {
+          res.writeHead(404);
+          res.end(JSON.stringify({ success: false, error: 'SOS kaydı bulunamadı' }));
+        }
+      } catch (err) {
+        res.writeHead(500);
+        res.end(JSON.stringify({ success: false, error: err.message }));
       }
       return;
     }
@@ -2238,7 +2270,7 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
-    if (pathname.startsWith('/api/blog/') && !pathname.endsWith('/like') && method === 'GET') {
+    if (pathname.startsWith('/api/blog/') && !pathname.endsWith('/like') && !pathname.endsWith('/comment') && method === 'GET') {
       const slug = pathname.replace('/api/blog/', '');
       const post = (db.blogPosts || []).find(p => p.slug === slug || p.id === slug);
       if (!post) {
@@ -2247,6 +2279,8 @@ const server = http.createServer(async (req, res) => {
         return;
       }
       post.views = (post.views || 0) + 1;
+      if (!Array.isArray(post.comments)) post.comments = [];
+      if (!Array.isArray(post.likedBy)) post.likedBy = [];
       saveDb();
       res.writeHead(200);
       res.end(JSON.stringify({ success: true, post }));
@@ -2257,13 +2291,72 @@ const server = http.createServer(async (req, res) => {
       const id = pathname.replace('/api/blog/', '').replace('/like', '');
       const post = (db.blogPosts || []).find(p => p.id === id || p.slug === id);
       if (post) {
-        post.likes = (post.likes || 0) + 1;
+        let body = {};
+        try { body = await parseBody(req); } catch(e) {}
+        if (!Array.isArray(post.likedBy)) post.likedBy = [];
+        const userId = body.userId || (body.user ? body.user.id : null);
+        let liked = true;
+        if (userId) {
+          const idx = post.likedBy.indexOf(userId);
+          if (idx > -1) {
+            post.likedBy.splice(idx, 1);
+            post.likes = Math.max(0, (post.likes || 1) - 1);
+            liked = false;
+          } else {
+            post.likedBy.push(userId);
+            post.likes = (post.likes || 0) + 1;
+            liked = true;
+          }
+        } else {
+          post.likes = (post.likes || 0) + 1;
+        }
         saveDb();
         res.writeHead(200);
-        res.end(JSON.stringify({ success: true, likes: post.likes }));
+        res.end(JSON.stringify({ success: true, likes: post.likes, liked, likedBy: post.likedBy }));
       } else {
         res.writeHead(404);
         res.end(JSON.stringify({ success: false, error: 'Yazı bulunamadı.' }));
+      }
+      return;
+    }
+
+    if (pathname.startsWith('/api/blog/') && pathname.endsWith('/comment') && method === 'POST') {
+      const id = pathname.replace('/api/blog/', '').replace('/comment', '');
+      const post = (db.blogPosts || []).find(p => p.id === id || p.slug === id);
+      if (!post) {
+        res.writeHead(404);
+        res.end(JSON.stringify({ success: false, error: 'Yazı bulunamadı.' }));
+        return;
+      }
+      try {
+        const body = await parseBody(req);
+        const commentContent = (body.content || '').trim();
+        if (!commentContent) {
+          res.writeHead(400);
+          res.end(JSON.stringify({ success: false, error: 'Yorum içeriği boş olamaz.' }));
+          return;
+        }
+        if (!Array.isArray(post.comments)) post.comments = [];
+        const user = body.user || {};
+        const newComment = {
+          id: 'bcom_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+          authorId: user.id || 'usr_guest',
+          authorName: user.name || body.authorName || 'Mobil Tamircim Kullanıcısı',
+          authorUsername: user.username || 'kullanici',
+          authorAvatar: user.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100',
+          authorRole: user.role || 'user',
+          isMechanicVerified: !!user.isMechanicVerified,
+          shopName: user.shopName || '',
+          content: commentContent,
+          createdAt: new Date().toISOString()
+        };
+        post.comments.push(newComment);
+        saveDb();
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, comment: newComment, commentsCount: post.comments.length }));
+      } catch (err) {
+        res.writeHead(500);
+        res.end(JSON.stringify({ success: false, error: 'Yorum kaydedilirken bir hata oluştu.' }));
       }
       return;
     }
@@ -2341,7 +2434,315 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
-    // 11. AI Usta: Intelligent Automotive Diagnostics Chat (Claude + Gemini + Local Engine)
+    // ==========================================
+    // 10.G ACİL YOL YARDIM & 7/24 NÖBETÇİ ÇEKİCİ / SEYYAR USTA MERKEZİ (SOS HUB)
+    // ==========================================
+    if (pathname === '/api/emergency/services' && method === 'GET') {
+      if (!Array.isArray(db.roadsideAssistance)) db.roadsideAssistance = [];
+      const cityFilter = (query.city || '').trim().toLowerCase();
+      const catFilter = (query.category || '').trim().toLowerCase();
+
+      let list = [...db.roadsideAssistance];
+      if (cityFilter && cityFilter !== 'all' && cityFilter !== 'tümü') {
+        list = list.filter(item => (item.city || '').toLowerCase() === cityFilter);
+      }
+      if (catFilter && catFilter !== 'all' && catFilter !== 'tümü') {
+        list = list.filter(item => (item.category || '').toLowerCase() === catFilter);
+      }
+      res.writeHead(200);
+      res.end(JSON.stringify({ success: true, count: list.length, services: list }));
+      return;
+    }
+
+    if (pathname === '/api/emergency/cities' && method === 'GET') {
+      if (!Array.isArray(db.roadsideAssistance)) db.roadsideAssistance = [];
+      const cities = Array.from(new Set(db.roadsideAssistance.map(s => s.city).filter(Boolean)));
+      res.writeHead(200);
+      res.end(JSON.stringify({ success: true, cities }));
+      return;
+    }
+
+    // ==========================================
+    // 10.H ANLIK ÖZEL MESAJLAŞMA (DIRECT MESSAGING / DM / WHATSAPP MODELİ)
+    // ==========================================
+    if (pathname === '/api/messages/conversations' && method === 'GET') {
+      const userId = (query.userId || '').trim();
+      if (!userId) {
+        res.writeHead(400);
+        res.end(JSON.stringify({ success: false, error: 'userId zorunludur.' }));
+        return;
+      }
+      if (!Array.isArray(db.conversations)) db.conversations = [];
+      if (!Array.isArray(db.directMessages)) db.directMessages = [];
+
+      // Find user conversations
+      const userConvs = db.conversations.filter(c => Array.isArray(c.participants) && c.participants.includes(userId));
+
+      const enriched = userConvs.map(conv => {
+        const otherUserId = conv.participants.find(p => p !== userId) || userId;
+        const otherUser = (conv.participantDetails && conv.participantDetails[otherUserId]) || 
+                          (db.users || []).find(u => u.id === otherUserId) || {
+                            id: otherUserId,
+                            name: 'Kullanıcı',
+                            username: 'kullanici',
+                            avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150',
+                            role: 'user'
+                          };
+
+        const unreadCount = db.directMessages.filter(m => m.conversationId === conv.id && m.receiverId === userId && !m.isRead).length;
+
+        let lastMsg = conv.lastMessage;
+        const convMsgs = db.directMessages.filter(m => m.conversationId === conv.id);
+        if (convMsgs.length > 0) {
+          const sorted = convMsgs.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+          lastMsg = sorted[0];
+        }
+
+        return {
+          ...conv,
+          otherUser,
+          unreadCount,
+          lastMessage: lastMsg
+        };
+      }).sort((a, b) => new Date(b.updatedAt || 0) - new Date(a.updatedAt || 0));
+
+      res.writeHead(200);
+      res.end(JSON.stringify({ success: true, count: enriched.length, conversations: enriched }));
+      return;
+    }
+
+    if (pathname === '/api/messages/thread' && method === 'GET') {
+      const convId = (query.conversationId || '').trim();
+      const userId = (query.userId || '').trim();
+      if (!convId) {
+        res.writeHead(400);
+        res.end(JSON.stringify({ success: false, error: 'conversationId zorunludur.' }));
+        return;
+      }
+      if (!Array.isArray(db.conversations)) db.conversations = [];
+      if (!Array.isArray(db.directMessages)) db.directMessages = [];
+
+      const conv = db.conversations.find(c => c.id === convId);
+      if (!conv) {
+        res.writeHead(404);
+        res.end(JSON.stringify({ success: false, error: 'Sohbet bulunamadı.' }));
+        return;
+      }
+
+      // Mark unread messages sent to userId as read
+      let updated = false;
+      db.directMessages.forEach(m => {
+        if (m.conversationId === convId && m.receiverId === userId && !m.isRead) {
+          m.isRead = true;
+          updated = true;
+        }
+      });
+      if (updated) saveDb();
+
+      const messages = db.directMessages
+        .filter(m => m.conversationId === convId)
+        .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+
+      const otherUserId = conv.participants.find(p => p !== userId) || userId;
+      const otherUser = (conv.participantDetails && conv.participantDetails[otherUserId]) || 
+                        (db.users || []).find(u => u.id === otherUserId) || {
+                          id: otherUserId,
+                          name: 'Kullanıcı',
+                          username: 'kullanici',
+                          avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150',
+                          role: 'user'
+                        };
+
+      res.writeHead(200);
+      res.end(JSON.stringify({ success: true, conversation: conv, otherUser, messages }));
+      return;
+    }
+
+    if (pathname === '/api/messages/send' && method === 'POST') {
+      try {
+        const body = await parseBody(req);
+        const { conversationId, senderId, receiverId, text, image, location } = body;
+
+        if (!conversationId || !senderId || !receiverId) {
+          res.writeHead(400);
+          res.end(JSON.stringify({ success: false, error: 'conversationId, senderId ve receiverId zorunludur.' }));
+          return;
+        }
+
+        if (!text && !image && !location) {
+          res.writeHead(400);
+          res.end(JSON.stringify({ success: false, error: 'Mesaj içeriği, görsel veya konum belirtilmelidir.' }));
+          return;
+        }
+
+        let imageUrl = null;
+        if (image && image.startsWith('data:image/')) {
+          const uploadsDir = path.join(__dirname, 'public', 'uploads');
+          if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
+          const matches = image.match(/^data:image\/([a-zA-Z0-9+]+);base64,(.+)$/);
+          if (matches) {
+            const ext = matches[1] === 'jpeg' ? 'jpg' : matches[1].replace('+xml', '');
+            const filename = `msg_${Date.now()}.${ext}`;
+            fs.writeFileSync(path.join(uploadsDir, filename), Buffer.from(matches[2], 'base64'));
+            imageUrl = `/uploads/${filename}`;
+          }
+        } else if (image) {
+          imageUrl = image;
+        }
+
+        const newMsg = {
+          id: 'msg_' + Date.now(),
+          conversationId,
+          senderId,
+          receiverId,
+          text: (text || '').trim(),
+          image: imageUrl,
+          location: location || null,
+          isRead: false,
+          createdAt: new Date().toISOString()
+        };
+
+        if (!Array.isArray(db.directMessages)) db.directMessages = [];
+        db.directMessages.push(newMsg);
+
+        if (!Array.isArray(db.conversations)) db.conversations = [];
+        let conv = db.conversations.find(c => c.id === conversationId);
+        if (conv) {
+          conv.lastMessage = {
+            id: newMsg.id,
+            senderId: newMsg.senderId,
+            text: newMsg.text || (newMsg.image ? '📷 Fotoğraf' : '📍 Konum'),
+            createdAt: newMsg.createdAt,
+            isRead: false
+          };
+          conv.updatedAt = newMsg.createdAt;
+        }
+
+        saveDb();
+        res.writeHead(201);
+        res.end(JSON.stringify({ success: true, message: newMsg, conversation: conv }));
+      } catch (err) {
+        res.writeHead(500);
+        res.end(JSON.stringify({ success: false, error: err.message }));
+      }
+      return;
+    }
+
+    if (pathname === '/api/messages/start' && method === 'POST') {
+      try {
+        const body = await parseBody(req);
+        const { senderId, targetUserId, initialMessage, contextTitle, contextUrl } = body;
+
+        if (!senderId || !targetUserId) {
+          res.writeHead(400);
+          res.end(JSON.stringify({ success: false, error: 'senderId ve targetUserId zorunludur.' }));
+          return;
+        }
+
+        if (senderId === targetUserId) {
+          res.writeHead(400);
+          res.end(JSON.stringify({ success: false, error: 'Kendinize mesaj gönderemezsiniz.' }));
+          return;
+        }
+
+        if (!Array.isArray(db.conversations)) db.conversations = [];
+        if (!Array.isArray(db.directMessages)) db.directMessages = [];
+
+        // Check if conversation already exists between both users
+        let conv = db.conversations.find(c => 
+          Array.isArray(c.participants) && 
+          c.participants.includes(senderId) && 
+          c.participants.includes(targetUserId)
+        );
+
+        const senderUser = (db.users || []).find(u => u.id === senderId) || { id: senderId, name: 'Sürücü', role: 'user' };
+        const targetUser = (db.users || []).find(u => u.id === targetUserId) || { id: targetUserId, name: 'Kullanıcı', role: 'user' };
+
+        const now = new Date().toISOString();
+
+        if (!conv) {
+          conv = {
+            id: 'conv_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6),
+            participants: [senderId, targetUserId],
+            participantDetails: {
+              [senderId]: {
+                id: senderUser.id,
+                name: senderUser.name,
+                username: senderUser.username,
+                role: senderUser.role,
+                badge: senderUser.role === 'mechanic' ? 'Doğrulanmış Usta' : (senderUser.role === 'dealer' ? 'Doğrulanmış Galeri' : 'Araç Sahibi'),
+                avatar: senderUser.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150',
+                city: senderUser.city || 'İstanbul'
+              },
+              [targetUserId]: {
+                id: targetUser.id,
+                name: targetUser.name,
+                username: targetUser.username,
+                role: targetUser.role,
+                badge: targetUser.role === 'mechanic' ? 'Doğrulanmış Usta' : (targetUser.role === 'dealer' ? 'Doğrulanmış Galeri' : 'Araç Sahibi'),
+                avatar: targetUser.avatar || 'https://images.unsplash.com/photo-1581092921461-eab62e97a780?w=150',
+                city: targetUser.city || 'İstanbul'
+              }
+            },
+            context: contextTitle ? { title: contextTitle, url: contextUrl || '' } : null,
+            lastMessage: null,
+            updatedAt: now
+          };
+          db.conversations.unshift(conv);
+        }
+
+        if (contextTitle && !conv.context) {
+          conv.context = { title: contextTitle, url: contextUrl || '' };
+        }
+
+        if (initialMessage && initialMessage.trim()) {
+          const newMsg = {
+            id: 'msg_' + Date.now(),
+            conversationId: conv.id,
+            senderId,
+            receiverId: targetUserId,
+            text: initialMessage.trim(),
+            image: null,
+            location: null,
+            isRead: false,
+            createdAt: now
+          };
+          db.directMessages.push(newMsg);
+          conv.lastMessage = {
+            id: newMsg.id,
+            senderId: newMsg.senderId,
+            text: newMsg.text,
+            createdAt: newMsg.createdAt,
+            isRead: false
+          };
+          conv.updatedAt = now;
+        }
+
+        saveDb();
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, conversationId: conv.id, conversation: conv }));
+      } catch (err) {
+        res.writeHead(500);
+        res.end(JSON.stringify({ success: false, error: err.message }));
+      }
+      return;
+    }
+
+    if (pathname === '/api/messages/unread-total' && method === 'GET') {
+      const userId = (query.userId || '').trim();
+      if (!userId) {
+        res.writeHead(400);
+        res.end(JSON.stringify({ success: false, error: 'userId zorunludur.' }));
+        return;
+      }
+      if (!Array.isArray(db.directMessages)) db.directMessages = [];
+      const unreadTotal = db.directMessages.filter(m => m.receiverId === userId && !m.isRead).length;
+      res.writeHead(200);
+      res.end(JSON.stringify({ success: true, unreadTotal }));
+      return;
+    }
+
+    // 11. AI Usta: Intelligent Automotive Diagnostics Chat with Deep Research Engine
     if (pathname === '/api/ai/chat' && method === 'POST') {
       try {
         const body = await parseBody(req);
@@ -2361,9 +2762,21 @@ const server = http.createServer(async (req, res) => {
           return;
         }
 
-        const systemInstruction = 'Sen "Mobil Tamircim AI Usta"sın. Türkiye oto sanayi ortamını, usta jargonunu, tüm motor tiplerini (TDI, dCi, TSI, EcoBoost, Multijet vb.), OBD-II arıza kodlarını (P, C, B, U, DF), parça fiyatlarını ve 2026 güncel sanayi işçilik maliyetlerini en ince ayrıntısına kadar bilen bilge bir sanayi ustası ve otomotiv mühendisisin. Samimi ("kardeşim", "ustam" vb.), güven verici ve net cevaplar ver. Yanıtlarında mutlaka: 1) Olası Sebepler, 2) Aciliyet Durumu, 3) Tahmini Parça & İşçilik Maliyeti (TL) ve 4) Usta Tavsiyesini madde madde belirt.';
+        // 1. Canlı Platform Veritabanı Taraması (Deep Research RAG)
+        const researchTrace = researchVehicleIssue(userPrompt, db);
 
-        // 1. Anthropic Claude Entegrasyonu
+        const ragContextText = `
+[PLATFORM CANLI ARAŞTIRMA VERİLERİ]:
+- Eşleşen OBD-II Kodları: ${JSON.stringify(researchTrace.matchedObd)}
+- Forum Çözülen Vakalar: ${JSON.stringify(researchTrace.matchedThreads)}
+- 2026 Sanayi Fiyat Referansları: ${JSON.stringify(researchTrace.matchedPrices)}
+- Mevcut Yedek Parçalar: ${JSON.stringify(researchTrace.matchedParts)}
+- Onaylı Ustalar: ${JSON.stringify(researchTrace.matchedMechanics)}
+Kullanıcıya teknik teşhis sunarken bu araştırmadaki verilere ve 2026 fiyat referanslarına mutlaka atıfta bulun.`;
+
+        const systemInstruction = 'Sen "Mobil Tamircim AI Usta"sın. Türkiye oto sanayi ortamını, usta jargonunu, tüm motor tiplerini (TDI, dCi, TSI, EcoBoost, Multijet vb.), OBD-II arıza kodlarını (P, C, B, U, DF), parça fiyatlarını ve 2026 güncel sanayi işçilik maliyetlerini en ince ayrıntısına kadar bilen bilge bir sanayi ustası ve otomotiv mühendisisin. Samimi ("kardeşim", "ustam" vb.), güven verici ve net cevaplar ver. Yanıtlarında mutlaka: 1) Olası Sebepler, 2) Aciliyet Durumu, 3) Tahmini Parça & İşçilik Maliyeti (TL) ve 4) Usta Tavsiyesini madde madde belirt.' + ragContextText;
+
+        // 2. Anthropic Claude Entegrasyonu
         if (provider === 'claude') {
           if (claudeApiKey) {
             try {
@@ -2391,6 +2804,7 @@ const server = http.createServer(async (req, res) => {
                 res.end(JSON.stringify({
                   success: true,
                   reply: replyText,
+                  researchTrace,
                   source: 'claude',
                   model: claudeData.model || claudeModel
                 }));
@@ -2398,11 +2812,12 @@ const server = http.createServer(async (req, res) => {
               } else {
                 console.error('Claude API yanıt hatası:', claudeData);
                 const errMsg = claudeData.error ? claudeData.error.message : 'Claude API çağrısı başarısız oldu.';
-                const localFallback = generateLocalAiDiagnosis(userPrompt);
+                const localFallback = generateLocalAiDiagnosis(userPrompt, db, researchTrace);
                 res.writeHead(200);
                 res.end(JSON.stringify({
                   success: true,
                   reply: `${localFallback}\n\n*(⚠️ Not: Anthropic Claude API hatası (${errMsg}) nedeniyle Mobil Tamircim Yerel Motoru ile yanıtlandı.)*`,
+                  researchTrace,
                   source: 'local_engine',
                   warning: errMsg
                 }));
@@ -2410,29 +2825,30 @@ const server = http.createServer(async (req, res) => {
               }
             } catch (claudeErr) {
               console.error('Claude API bağlantı hatası:', claudeErr.message);
-              const localFallback = generateLocalAiDiagnosis(userPrompt);
+              const localFallback = generateLocalAiDiagnosis(userPrompt, db, researchTrace);
               res.writeHead(200);
               res.end(JSON.stringify({
                 success: true,
                 reply: `${localFallback}\n\n*(⚠️ Not: Claude sunucusuna ulaşılamadığı için yerel motor devreye girdi.)*`,
+                researchTrace,
                 source: 'local_engine'
               }));
               return;
             }
           } else {
-            // Claude seçili ama API key girilmemiş
-            const localFallback = generateLocalAiDiagnosis(userPrompt);
+            const localFallback = generateLocalAiDiagnosis(userPrompt, db, researchTrace);
             res.writeHead(200);
             res.end(JSON.stringify({
               success: true,
               reply: `${localFallback}\n\n*(ℹ️ Anthropic Claude API anahtarı girilmediği için yerel motor yanıtladı. Üstteki ⚙️ AI Motoru & API butonundan Claude anahtarınızı ekleyebilirsiniz.)*`,
+              researchTrace,
               source: 'local_engine'
             }));
             return;
           }
         }
 
-        // 2. Google Gemini API Bağlantısı
+        // 3. Google Gemini API Bağlantısı
         if (provider === 'gemini') {
           if (geminiApiKey) {
             try {
@@ -2454,15 +2870,21 @@ const server = http.createServer(async (req, res) => {
               if (gData.candidates && gData.candidates[0] && gData.candidates[0].content) {
                 const replyText = gData.candidates[0].content.parts.map(p => p.text).join('\n');
                 res.writeHead(200);
-                res.end(JSON.stringify({ success: true, reply: replyText, source: 'gemini' }));
+                res.end(JSON.stringify({
+                  success: true,
+                  reply: replyText,
+                  researchTrace,
+                  source: 'gemini'
+                }));
                 return;
               } else {
                 console.error('Gemini API yanıt hatası:', gData);
-                const localFallback = generateLocalAiDiagnosis(userPrompt);
+                const localFallback = generateLocalAiDiagnosis(userPrompt, db, researchTrace);
                 res.writeHead(200);
                 res.end(JSON.stringify({
                   success: true,
                   reply: `${localFallback}\n\n*(⚠️ Not: Gemini API hatası nedeniyle yerel motor devreye girdi.)*`,
+                  researchTrace,
                   source: 'local_engine'
                 }));
                 return;
@@ -2471,21 +2893,27 @@ const server = http.createServer(async (req, res) => {
               console.error('Gemini API hatası, yerel motora geçiliyor:', geminiErr.message);
             }
           } else {
-            const localFallback = generateLocalAiDiagnosis(userPrompt);
+            const localFallback = generateLocalAiDiagnosis(userPrompt, db, researchTrace);
             res.writeHead(200);
             res.end(JSON.stringify({
               success: true,
               reply: `${localFallback}\n\n*(ℹ️ Google Gemini API anahtarı girilmediği için yerel motor yanıtladı. ⚙️ AI Motoru & API butonundan Gemini anahtarınızı ekleyebilirsiniz.)*`,
+              researchTrace,
               source: 'local_engine'
             }));
             return;
           }
         }
 
-        // 3. Gelişmiş Yerel Otomotiv Teşhis & Bilgi Motoru (Varsayılan)
-        const localReply = generateLocalAiDiagnosis(userPrompt);
+        // 4. Gelişmiş Derin Araştırmacı Yerel Teşhis Motoru (Varsayılan)
+        const localReply = generateLocalAiDiagnosis(userPrompt, db, researchTrace);
         res.writeHead(200);
-        res.end(JSON.stringify({ success: true, reply: localReply, source: 'local_engine' }));
+        res.end(JSON.stringify({
+          success: true,
+          reply: localReply,
+          researchTrace,
+          source: 'local_engine'
+        }));
       } catch (err) {
         res.writeHead(500);
         res.end(JSON.stringify({ success: false, error: err.message }));
@@ -3128,10 +3556,222 @@ function generateAdminAiDeveloperReply(prompt, db) {
 }
 
 // ==========================================================
-// MOBİL TAMİRCİM YEREL YAPAY ZEKA ARIZA & TEŞHİS MOTORU
+// MOBİL TAMİRCİM DERİN ARAŞTIRMA & TEŞHİS MOTORU (DEEP RESEARCH RAG)
 // ==========================================================
-function generateLocalAiDiagnosis(prompt) {
+function researchVehicleIssue(prompt, db) {
+  const p = (prompt || '').toLowerCase();
+  const queryTokens = p.replace(/[^\w\sğüşıöçĞÜŞİÖÇ]/gi, ' ').split(/\s+/).filter(t => t.length > 2);
+
+  // 1. OBD-II Kütüphanesi Taraması
+  const matchedObd = [];
+  const dtcMatch = prompt.match(/\b([PBCU]\d{4}|DF\d{3,4}|\d{5})\b/gi);
+  if (dtcMatch) {
+    dtcMatch.forEach(c => {
+      const codeUpper = c.toUpperCase();
+      const found = (db.obdCodes || []).find(o => o.code && o.code.toUpperCase() === codeUpper);
+      if (found && !matchedObd.some(m => m.code === found.code)) {
+        matchedObd.push({
+          code: found.code,
+          title: found.title || found.name || 'OBD-II Arıza Kodu',
+          desc: found.desc || found.description || '',
+          category: found.category || 'Motor & Güç Aktarma',
+          urgency: found.urgency || 'Yüksek',
+          cost: found.cost || '1.500 - 4.500 TL'
+        });
+      } else if (!found && !matchedObd.some(m => m.code === codeUpper)) {
+        let title = 'OBD-II Arıza Teşhis Kodu';
+        let desc = 'Sistem tolerans dışı sinyal veya mekanik direnç tespit etti.';
+        let urgency = 'Yüksek';
+        let cost = '1.500 - 5.000 TL';
+        let category = 'Motor & Güç Aktarma';
+
+        if (codeUpper === 'P0299') {
+          title = 'Turboşarj Düşük Basınç / Underboost';
+          desc = 'İntercooler hortum kaçağı, N75 selonoid arızası veya wastegate klape boşluğu.';
+          cost = '1.500 - 8.000 TL';
+        } else if (codeUpper === 'P0300' || codeUpper.startsWith('P030')) {
+          title = 'Ateşleme Kaçırma / Misfire';
+          desc = 'Ateşleme bobini izolasyon kaçağı, aşınmış buji veya enjektör arızası.';
+          cost = '1.200 - 4.500 TL';
+        } else if (codeUpper === 'P0087') {
+          title = 'Yakıt Dağıtım Yolu / Rail Basıncı Düşük';
+          desc = 'Tıkalı mazot filtresi, yüksek basınç pompası veya enjektör geri kaçırma.';
+          cost = '2.500 - 9.000 TL';
+        } else if (codeUpper === 'P0420' || codeUpper === 'P0430') {
+          title = 'Katalitik Konvertör Verim Eşiği Altında';
+          desc = 'Tıkanmış/erimiş katalizör peteği veya arızalı oksijen (lambda) sensörü.';
+          cost = '2.000 - 6.500 TL';
+        } else if (codeUpper.startsWith('P07') || codeUpper.startsWith('P08')) {
+          title = 'Otomatik Şanzıman / Mekatronik Basınç Kaybı';
+          desc = 'Mekatronik gövde tüp gevşemesi, kavrama aşınması veya selenoid arızası.';
+          cost = '4.000 - 28.000 TL';
+        } else if (codeUpper.startsWith('P24') || codeUpper.startsWith('P20')) {
+          title = 'Dizel Partikül Filtresi (DPF) Kurum Doluluğu';
+          desc = 'Şehir içi kullanım tıkanıklığı veya diferansiyel basınç sensörü arızası.';
+          cost = '2.500 - 6.500 TL';
+        }
+
+        matchedObd.push({
+          code: codeUpper,
+          title,
+          desc,
+          category,
+          urgency,
+          cost
+        });
+      }
+    });
+  }
+  if (matchedObd.length === 0 && Array.isArray(db.obdCodes)) {
+    db.obdCodes.forEach(o => {
+      if ((o.code && p.includes(o.code.toLowerCase())) || (o.title && p.includes(o.title.toLowerCase()))) {
+        if (!matchedObd.some(m => m.code === o.code)) {
+          matchedObd.push({
+            code: o.code,
+            title: o.title || 'OBD-II Arıza Kodu',
+            desc: o.desc || '',
+            category: o.category || 'Motor & Güç Aktarma',
+            urgency: o.urgency || 'Yüksek',
+            cost: o.cost || '1.500 - 4.500 TL'
+          });
+        }
+      }
+    });
+  }
+
+  // 2. Forum Konuları & Çözülen Vakalar Taraması
+  const matchedThreads = [];
+  (db.threads || []).forEach(t => {
+    let score = 0;
+    const titleLower = (t.title || '').toLowerCase();
+    const contentLower = (t.content || '').toLowerCase();
+    const brandLower = (t.brand || '').toLowerCase();
+
+    queryTokens.forEach(token => {
+      if (titleLower.includes(token)) score += 4;
+      if (contentLower.includes(token)) score += 1;
+      if (brandLower && brandLower.includes(token)) score += 2;
+    });
+
+    if (t.isSolved) score += 3;
+    const hasSolutionComment = Array.isArray(t.comments) && t.comments.some(c => c.isSolution);
+    if (hasSolutionComment) score += 4;
+
+    if (score >= 3) {
+      matchedThreads.push({
+        id: t.id,
+        title: t.title,
+        brand: t.brand,
+        model: t.model,
+        isSolved: !!t.isSolved,
+        hasSolutionComment,
+        commentsCount: (t.comments || []).length,
+        score
+      });
+    }
+  });
+  matchedThreads.sort((a, b) => b.score - a.score);
+  const topThreads = matchedThreads.slice(0, 3);
+
+  // 3. 2026 Piyasa & İşçilik Fiyatları Taraması
+  const matchedPrices = [];
+  (db.priceBenchmarks || []).forEach(b => {
+    const opLower = (b.operation || '').toLowerCase();
+    const brandLower = (b.brand || '').toLowerCase();
+    let matches = false;
+    if (p.includes(opLower) || opLower.split(' ').some(w => w.length > 3 && p.includes(w))) {
+      matches = true;
+    }
+    if (!matches && queryTokens.some(tok => tok.length > 3 && (opLower.includes(tok) || brandLower.includes(tok)))) {
+      matches = true;
+    }
+    if (matches) {
+      matchedPrices.push({
+        operation: b.operation,
+        brand: b.brand,
+        partCost: b.partCost,
+        laborCost: b.laborCost,
+        avgTotal: b.avgTotal
+      });
+    }
+  });
+  const topPrices = matchedPrices.slice(0, 3);
+
+  // 4. Parça Pazarı İlanları Taraması
+  const matchedParts = [];
+  (db.parts || []).forEach(part => {
+    const partNameLower = (part.name || '').toLowerCase();
+    const partCatLower = (part.category || '').toLowerCase();
+    if (p.includes(partNameLower) || queryTokens.some(tok => tok.length > 3 && (partNameLower.includes(tok) || partCatLower.includes(tok)))) {
+      matchedParts.push({
+        id: part.id,
+        name: part.name,
+        brand: part.brand,
+        price: part.price,
+        condition: part.condition
+      });
+    }
+  });
+  const topParts = matchedParts.slice(0, 3);
+
+  // 5. Onaylı Uzman Usta Taraması
+  const matchedMechanics = [];
+  (db.users || []).filter(u => u.isMechanicVerified).forEach(m => {
+    const bioLower = (m.bio || '').toLowerCase();
+    const shopLower = (m.shopName || '').toLowerCase();
+    if (queryTokens.some(tok => tok.length > 3 && (bioLower.includes(tok) || shopLower.includes(tok)))) {
+      matchedMechanics.push({
+        id: m.id,
+        name: m.name,
+        shopName: m.shopName,
+        city: m.city,
+        sanayiSite: m.sanayiSite
+      });
+    }
+  });
+  const topMechanics = matchedMechanics.slice(0, 2);
+
+  // 4 Aşamalı Canlı Araştırma İzi
+  const stages = [
+    {
+      id: 1,
+      title: 'Semptom & Mekanik Ayrıştırması',
+      detail: `"${queryTokens.slice(0, 3).join(', ')}" semptomları analiz edildi.`,
+      status: 'done'
+    },
+    {
+      id: 2,
+      title: 'OBD-II & Forum Arşiv Taraması',
+      detail: `${matchedObd.length} OBD kodu ve ${topThreads.length} doğrulanmış çözümlü forum vakası tarandı.`,
+      status: 'done'
+    },
+    {
+      id: 3,
+      title: '2026 Sanayi Fiyat & Parça Borsası',
+      detail: `${topPrices.length > 0 ? topPrices[0].operation + ' için 2026 piyasa maliyetleri' : 'Güncel sanayi parça/işçilik referansları'} analiz edildi.`,
+      status: 'done'
+    },
+    {
+      id: 4,
+      title: 'Onaylı Usta Çözüm Reçetesi',
+      detail: 'Mühendislik ve sanayi ustası tecrübesiyle sentezlenmiş teknik teşhis raporu derlendi.',
+      status: 'done'
+    }
+  ];
+
+  return {
+    stages,
+    matchedObd,
+    matchedThreads: topThreads,
+    matchedPrices: topPrices,
+    matchedParts: topParts,
+    matchedMechanics: topMechanics
+  };
+}
+
+function generateLocalAiDiagnosis(prompt, db, researchTrace) {
   const p = prompt.toLowerCase();
+  let baseReply = '';
 
   // 1. OBD Kod Taraması (P, C, B, U, DF veya VCDS kodları)
   const dtcMatch = prompt.match(/\b([PBCU]\d{4}|DF\d{3,4}|\d{5})\b/i);
@@ -3139,7 +3779,7 @@ function generateLocalAiDiagnosis(prompt) {
     const code = dtcMatch[1].toUpperCase();
 
     if (code === 'P0300' || code === 'P0301' || code === 'P0302' || code === 'P0303' || code === 'P0304') {
-      return `🔧 **Mobil Tamircim AI Usta Teşhisi: ${code} (Ateşleme Kaçırma / Misfire)**
+      baseReply = `🔧 **Mobil Tamircim AI Usta Teşhisi: ${code} (Ateşleme Kaçırma / Misfire)**
 • 🔍 **Muhtemel Nedenler:**
   1. İlgili silindirin ateşleme bobininde iç izolasyon sızıntısı (%55 ihtimal).
   2. Buji tırnak aralığının açılması, kurum bağlaması veya çatlaması (%30 ihtimal).
@@ -3147,10 +3787,8 @@ function generateLocalAiDiagnosis(prompt) {
 • 🚨 **Aciliyet Derecesi:** ⚠️ **YÜKSEK.** Çiğ yakıt egzoza gittiğinde katalizörü eritir; en kısa sürede baktırın.
 • 💰 **Tahmini Masraf:** Buji Takımı (800 - 1.600 TL) + Bobin (1.200 - 2.800 TL) + Usta İşçiliği (500 - 900 TL).
 • 🛠️ **Usta Tavsiyesi:** Önce bujileri sökün. Arıza devam ederse şüpheli bobini başka silindire takıp arıza kodunun o silindire kayıp kaymadığını test edin.`;
-    }
-
-    if (code === 'P0299') {
-      return `🔧 **Mobil Tamircim AI Usta Teşhisi: P0299 (Turboşarj Düşük Basınç / Underboost)**
+    } else if (code === 'P0299') {
+      baseReply = `🔧 **Mobil Tamircim AI Usta Teşhisi: P0299 (Turboşarj Düşük Basınç / Underboost)**
 • 🔍 **Muhtemel Nedenler:**
   1. İntercooler hortumunda yırtık, kelepçe gevşemesi veya çatlak (%40 ihtimal).
   2. N75 turbo basınç kontrol elektrovalfi veya vakum hortumu kaçırma (%30 ihtimal).
@@ -3159,10 +3797,8 @@ function generateLocalAiDiagnosis(prompt) {
 • 🚨 **Aciliyet Derecesi:** 🟡 **ORTA.** Araç koruma moduna (limp mode) geçip çekişten düşebilir.
 • 💰 **Tahmini Masraf:** Vakum/Hortum Onarımı (500 - 1.200 TL), N75 Valfi (1.500 - 3.200 TL), Turbo Revizyonu (10.000 - 18.000 TL).
 • 🛠️ **Usta Tavsiyesi:** Gaz verilirken motor bölümünden ıslık veya hava üfleme sesi geliyorsa intercooler hortumlarını duman testiyle kontrol ettirin.`;
-    }
-
-    if (code === 'P0420' || code === 'P0430') {
-      return `🔧 **Mobil Tamircim AI Usta Teşhisi: ${code} (Katalitik Konvertör Verim Eşiği Altında)**
+    } else if (code === 'P0420' || code === 'P0430') {
+      baseReply = `🔧 **Mobil Tamircim AI Usta Teşhisi: ${code} (Katalitik Konvertör Verim Eşiği Altında)**
 • 🔍 **Muhtemel Nedenler:**
   1. Katalizör iç seramik peteklerinin tıkanması veya kimyasal ömrünü tamamlaması.
   2. Katalizör sonrası 2. Oksijen (Lambda) sensörü yanıltıcı okuması.
@@ -3170,10 +3806,8 @@ function generateLocalAiDiagnosis(prompt) {
 • 🚨 **Aciliyet Derecesi:** 🟢 **DÜŞÜK-ORTA.** Araç çalışmaya devam eder ancak emisyon muayenesinden geçemez ve yakıt tüketimi artabilir.
 • 💰 **Tahmini Masraf:** O2 Sensörü (1.800 - 3.500 TL), Katalizör İlaçlı Temizlik (2.500 - 4.500 TL), Sıfır/Euro 5-6 Katalizör (12.000 - 25.000 TL).
 • 🛠️ **Usta Tavsiyesi:** Katalizörü hemen söktürüp iptal ettirmeyin; önce arka oksijen sensörünün canlı voltaj dalgalanmasını cihazdan okutun.`;
-    }
-
-    if (code === 'P0087') {
-      return `🔧 **Mobil Tamircim AI Usta Teşhisi: P0087 (Yakıt Dağıtım Yolu / Rail Basıncı Düşük)**
+    } else if (code === 'P0087') {
+      baseReply = `🔧 **Mobil Tamircim AI Usta Teşhisi: P0087 (Yakıt Dağıtım Yolu / Rail Basıncı Düşük)**
 • 🔍 **Muhtemel Nedenler:**
   1. Mazot / yakıt filtresinin aşırı tıkanması (%35 ihtimal).
   2. Yüksek basınç pompası (CP4 vb.) iç aşınması veya basınç regülatör arızası (%35 ihtimal).
@@ -3182,10 +3816,8 @@ function generateLocalAiDiagnosis(prompt) {
 • 🚨 **Aciliyet Derecesi:** 🚨 **KRİTİK.** Araç ani gaza basıldığında veya rampada stop edebilir.
 • 💰 **Tahmini Masraf:** Yakıt Filtresi (600 - 1.200 TL), Enjektör Revizyonu (1.500 - 3.000 TL/adet), Pompa Revizyonu (8.000 - 16.000 TL).
 • 🛠️ **Usta Tavsiyesi:** Mazot filtresini söküp içinden talaş (metal çapağı) çıkıp çıkmadığına baktırın. Çapak varsa pompayı hemen revizyona gönderin.`;
-    }
-
-    if (code === 'P2452' || code === 'P2463' || code === 'P2002') {
-      return `🔧 **Mobil Tamircim AI Usta Teşhisi: ${code} (Dizel Partikül Filtresi / DPF Kurum Doluluğu)**
+    } else if (code === 'P2452' || code === 'P2463' || code === 'P2002') {
+      baseReply = `🔧 **Mobil Tamircim AI Usta Teşhisi: ${code} (Dizel Partikül Filtresi / DPF Kurum Doluluğu)**
 • 🔍 **Muhtemel Nedenler:**
   1. Şehir içi kısa mesafe kullanımından dolayı DPF rejenerasyonunun tamamlanamaması.
   2. DPF diferansiyel basınç sensörü hortumlarının erimesi veya sensör bozulması.
@@ -3193,10 +3825,8 @@ function generateLocalAiDiagnosis(prompt) {
 • 🚨 **Aciliyet Derecesi:** ⚠️ **YÜKSEK.** DPF tamamen dolarsa turbo egzoz geri basıncından patlayabilir.
 • 💰 **Tahmini Masraf:** Cihazla Zorunlu Rejenerasyon (800 - 1.500 TL), İlaçlı Makinede DPF Yıkama (3.500 - 6.500 TL), Diferansiyel Sensör (1.800 - 3.200 TL).
 • 🛠️ **Usta Tavsiyesi:** Aracı çevre yoluna çıkarıp 3. veya 4. viteste 2.500 - 3.000 devir bandında sabit 25 dakika sürün. Lamba sönmezse sanayide basınç sensörünü kontrol ettirin.`;
-    }
-
-    if (code === 'P0700' || code === 'P0730' || code === 'P0841') {
-      return `🔧 **Mobil Tamircim AI Usta Teşhisi: ${code} (Otomatik Şanzıman / Mekatronik Arızası)**
+    } else if (code === 'P0700' || code === 'P0730' || code === 'P0841') {
+      baseReply = `🔧 **Mobil Tamircim AI Usta Teşhisi: ${code} (Otomatik Şanzıman / Mekatronik Arızası)**
 • 🔍 **Muhtemel Nedenler:**
   1. Mekatronik gövde yağ basınç tüpü gevşemesi / çatlaması (Örn: DSG DQ200).
   2. Vites geçiş selonoid valflerinde tıkanma veya kavrama balatası aşınması.
@@ -3204,25 +3834,24 @@ function generateLocalAiDiagnosis(prompt) {
 • 🚨 **Aciliyet Derecesi:** ⚠️ **YÜKSEK.** Vites geçişlerinde vuruntu, boşa düşme veya geri vitese geçmeme yapabilir.
 • 💰 **Tahmini Masraf:** Güçlendirilmiş Basınç Tüpü Tamiri (4.000 - 8.000 TL), Mekatronik Kart Revizyonu (10.000 - 18.000 TL), Kavrama Değişimi (18.000 - 32.000 TL).
 • 🛠️ **Usta Tavsiyesi:** Şanzımanı hemen indirtmeyin; önce cihaza bağlatıp kavrama tolerans mm değerlerini ve mekatronik hidrolik bar basıncını okutun.`;
-    }
+    } else {
+      let systemType = 'Motor & Güç Aktarma (Powertrain)';
+      if (code.startsWith('C')) systemType = 'Şasi, Fren & ABS/ESP Sistemi';
+      else if (code.startsWith('B')) systemType = 'Gövde, Airbag & Merkezi Kilit Modülü';
+      else if (code.startsWith('U')) systemType = 'Ağ & CAN-Bus İletişim Hattı';
+      else if (code.startsWith('DF')) systemType = 'Renault / Dacia Clip Özel Arıza Kodu';
 
-    // Generic DTC code response
-    let systemType = 'Motor & Güç Aktarma (Powertrain)';
-    if (code.startsWith('C')) systemType = 'Şasi, Fren & ABS/ESP Sistemi';
-    else if (code.startsWith('B')) systemType = 'Gövde, Airbag & Merkezi Kilit Modülü';
-    else if (code.startsWith('U')) systemType = 'Ağ & CAN-Bus İletişim Hattı';
-    else if (code.startsWith('DF')) systemType = 'Renault / Dacia Clip Özel Arıza Kodu';
-
-    return `🔧 **Mobil Tamircim AI Usta Teşhisi: ${code} (${systemType})**
+      baseReply = `🔧 **Mobil Tamircim AI Usta Teşhisi: ${code} (${systemType})**
 • 🔍 **Muhtemel Neden:** Araç beyni bu hatta tolerans dışı bir voltaj sinyali, haberleşme kesintisi veya mekanik direnç tespit etti.
 • 🚨 **Aciliyet:** Arıza lambanız yanıp sönüyorsa sürüşü durdurun; sabit yanıyorsa en yakın servise gidin.
 • 💰 **Tahmini Maliyet:** İlgili soket/sensör veya modül işlemine göre **1.500 - 5.000 TL** civarındadır.
 • 🛠️ **Usta Tavsiyesi:** Forumumuzda bu kodla konu açarak aracınızın marka ve modelini belirtin; tecrübeli ustalarımız birebir tecrübelerini aktarsın.`;
+    }
   }
 
   // 2. Ses Şikayetleri
-  if (p.includes('şıkırtı') || p.includes('şakırtı') || (p.includes('enjektör') && p.includes('ses'))) {
-    return `🔧 **Mobil Tamircim AI Usta Teşhisi: Rölantide Şıkırtı / Enjektör Sesi**
+  if (!baseReply && (p.includes('şıkırtı') || p.includes('şakırtı') || (p.includes('enjektör') && p.includes('ses')))) {
+    baseReply = `🔧 **Mobil Tamircim AI Usta Teşhisi: Rölantide Şıkırtı / Enjektör Sesi**
 • 🔍 **Muhtemel Nedenler:**
   1. Dizel piezo veya selenoid enjektör bobini tırnak boşluğu (%50 ihtimal).
   2. Hidrolik sübap iticilerinin (fincanlar) yağsız kalması veya aşınması (%30 ihtimal).
@@ -3232,8 +3861,8 @@ function generateLocalAiDiagnosis(prompt) {
 • 🛠️ **Usta Tavsiyesi:** Sesli arıza modülümüzden motor sesini kaydedip foruma yükleyin, ustalarımız hemen dinlesin!`;
   }
 
-  if (p.includes('ıslık') || (p.includes('turbo') && (p.includes('ötüyor') || p.includes('ses')))) {
-    return `🔧 **Mobil Tamircim AI Usta Teşhisi: Gaza Basınca Islık / Rüzgar Sesi**
+  if (!baseReply && (p.includes('ıslık') || (p.includes('turbo') && (p.includes('ötüyor') || p.includes('ses'))))) {
+    baseReply = `🔧 **Mobil Tamircim AI Usta Teşhisi: Gaza Basınca Islık / Rüzgar Sesi**
 • 🔍 **Muhtemel Nedenler:**
   1. Turbo intercooler basınç hortumunda delik veya kelepçe gevşemesi.
   2. Turbo emme pervanesi kanatçıklarının aşınması (ambulans sireni gibi ses).
@@ -3244,8 +3873,8 @@ function generateLocalAiDiagnosis(prompt) {
   }
 
   // 3. Duman & Hararet Şikayetleri
-  if (p.includes('beyaz duman') || (p.includes('hararet') && p.includes('su eksilt'))) {
-    return `🔧 **Mobil Tamircim AI Usta Teşhisi: Beyaz Duman & Su Eksiltme**
+  if (!baseReply && (p.includes('beyaz duman') || (p.includes('hararet') && p.includes('su eksilt')))) {
+    baseReply = `🔧 **Mobil Tamircim AI Usta Teşhisi: Beyaz Duman & Su Eksiltme**
 • 🔍 **Muhtemel Nedenler:**
   1. Silindir kapak contasının yanması (Soğutma sıvısı doğrudan yanma odasına çekiliyor).
   2. EGR soğutucu eşanjörünün içten delinmesi (Dizel araçlarda çok yaygındır).
@@ -3255,8 +3884,8 @@ function generateLocalAiDiagnosis(prompt) {
 • 🛠️ **Usta Tavsiyesi:** Genleşme kabını açıp gaza basıldığında suda hava kabarcığı veya yağ kalıntısı olup olmadığına bakın.`;
   }
 
-  if (p.includes('siyah duman')) {
-    return `🔧 **Mobil Tamircim AI Usta Teşhisi: Gaza Basınca Siyah Duman Atma**
+  if (!baseReply && p.includes('siyah duman')) {
+    baseReply = `🔧 **Mobil Tamircim AI Usta Teşhisi: Gaza Basınca Siyah Duman Atma**
 • 🔍 **Muhtemel Nedenler:**
   1. Hava / yakıt karışımının aşırı zengin olması (Yetersiz hava, aşırı yakıt).
   2. Turbo hava hortumunda yırtık veya MAF hava akış metre kirliliği.
@@ -3266,8 +3895,8 @@ function generateLocalAiDiagnosis(prompt) {
 • 🛠️ **Usta Tavsiyesi:** Önce hava filtresini ve turbo borularını kontrol edin, ardından enjektör geri dönüş testi yaptırın.`;
   }
 
-  if (p.includes('mavi duman') || p.includes('yağ yak')) {
-    return `🔧 **Mobil Tamircim AI Usta Teşhisi: Mavi Duman & Motor Yağ Eksiltmesi**
+  if (!baseReply && (p.includes('mavi duman') || p.includes('yağ yak'))) {
+    baseReply = `🔧 **Mobil Tamircim AI Usta Teşhisi: Mavi Duman & Motor Yağ Eksiltmesi**
 • 🔍 **Muhtemel Nedenler:**
   1. Subap gaydları ve subap lastiklerinin sertleşip aşınması (Sabah ilk çalıştırmada mavi duman).
   2. Piston segmanlarının aşınması veya yapışması (Sürekli mavi duman ve karter havalandırmadan üfleme).
@@ -3278,8 +3907,8 @@ function generateLocalAiDiagnosis(prompt) {
   }
 
   // 4. Şanzıman & Vuruntu
-  if (p.includes('dsg') || p.includes('edc') || p.includes('vuruntu') || p.includes('vites geçmi')) {
-    return `🔧 **Mobil Tamircim AI Usta Teşhisi: Otomatik Şanzıman Vuruntusu & Titreme**
+  if (!baseReply && (p.includes('dsg') || p.includes('edc') || p.includes('vuruntu') || p.includes('vites geçmi'))) {
+    baseReply = `🔧 **Mobil Tamircim AI Usta Teşhisi: Otomatik Şanzıman Vuruntusu & Titreme**
 • 🔍 **Muhtemel Nedenler:**
   1. Kuru çift kavrama (DSG DQ200 / EDC DC4) balata kalınlığının limit altına düşmesi.
   2. Kavrama çatalı adaptasyon kaybı.
@@ -3290,8 +3919,8 @@ function generateLocalAiDiagnosis(prompt) {
   }
 
   // 5. Triger & Bakım Fiyatları
-  if (p.includes('triger') || p.includes('kayış') || p.includes('zincir')) {
-    return `🔧 **Mobil Tamircim AI Usta: Triger Seti & Devirdaim Değişim Analizi**
+  if (!baseReply && (p.includes('triger') || p.includes('kayış') || p.includes('zincir'))) {
+    baseReply = `🔧 **Mobil Tamircim AI Usta: Triger Seti & Devirdaim Değişim Analizi**
 • ⏱️ **Değişim Zamanı:** Kayışlı motorlarda 4-5 yıl veya 80.000 - 100.000 km; zincirli motorlarda şıkırtı sesi gelince (genellikle 180.000 - 220.000 km).
 • 💰 **2026 Güncel Piyasa Masrafı:**
   - Orijinal / OEM Triger Seti + Devirdaim Pompası: **3.500 - 6.500 TL**
@@ -3302,8 +3931,8 @@ function generateLocalAiDiagnosis(prompt) {
   }
 
   // 6. Hararet & Soğutma
-  if (p.includes('hararet') || p.includes('termostat') || p.includes('su kaynat')) {
-    return `🔧 **Mobil Tamircim AI Usta Teşhisi: Motor Harareti & Su Kaynatma**
+  if (!baseReply && (p.includes('hararet') || p.includes('termostat') || p.includes('su kaynat'))) {
+    baseReply = `🔧 **Mobil Tamircim AI Usta Teşhisi: Motor Harareti & Su Kaynatma**
 • 🔍 **Muhtemel Nedenler:**
   1. Termostatın kapalı takılı kalması (Radyatöre sıcak su gitmez).
   2. Devirdaim (su pompası) plastik çarkının sıyırması.
@@ -3313,8 +3942,8 @@ function generateLocalAiDiagnosis(prompt) {
   }
 
   // 7. Marş Basmama / Çalışmama / Akü
-  if (p.includes('çalışmıyor') || p.includes('marş basmıyor') || p.includes('marş almıyor') || p.includes('akü') || p.includes('tık tık') || p.includes('marş')) {
-    return `🔧 **Mobil Tamircim AI Usta Teşhisi: Marş Basmama & Motorun Çalışmaması**
+  if (!baseReply && (p.includes('çalışmıyor') || p.includes('marş basmıyor') || p.includes('marş almıyor') || p.includes('akü') || p.includes('tık tık') || p.includes('marş'))) {
+    baseReply = `🔧 **Mobil Tamircim AI Usta Teşhisi: Marş Basmama & Motorun Çalışmaması**
 • 🔍 **Muhtemel Nedenler:**
   1. Akü voltajının 11.8V altına düşmesi veya kutup başı gevşemesi / sülfatlaşması (%60 ihtimal).
   2. Marş motoru otomatiği (kömürler bitmiş veya selenoid arızası) - kontağı çevirince sadece "tık" sesi gelir (%25 ihtimal).
@@ -3325,8 +3954,8 @@ function generateLocalAiDiagnosis(prompt) {
   }
 
   // 8. Fren, Balata & Disk Sorunları
-  if (p.includes('fren') || p.includes('balata') || p.includes('disk') || p.includes('ötme') || p.includes('ötüyor') || p.includes('fren pedalı')) {
-    return `🔧 **Mobil Tamircim AI Usta Teşhisi: Fren Sistemi & Balata Sesi**
+  if (!baseReply && (p.includes('fren') || p.includes('balata') || p.includes('disk') || p.includes('ötme') || p.includes('ötüyor') || p.includes('fren pedalı'))) {
+    baseReply = `🔧 **Mobil Tamircim AI Usta Teşhisi: Fren Sistemi & Balata Sesi**
 • 🔍 **Muhtemel Nedenler:**
   1. Ön/arka fren balatalarının aşınması ve emniyet sacının diske sürtmesi (Cıyaklama/ötme sesi).
   2. Fren disklerinde fatura oluşması veya dalgalanma (Frene basınca direksiyonda titreme).
@@ -3337,8 +3966,8 @@ function generateLocalAiDiagnosis(prompt) {
   }
 
   // 9. Titreme / Rot-Balans / Direksiyon Sallanması
-  if (p.includes('titreme') || p.includes('sallanma') || p.includes('rot') || p.includes('balans') || p.includes('direksiyon titriyor')) {
-    return `🔧 **Mobil Tamircim AI Usta Teşhisi: Yüksek Hızda veya Rölantide Titreme**
+  if (!baseReply && (p.includes('titreme') || p.includes('sallanma') || p.includes('rot') || p.includes('balans') || p.includes('direksiyon titriyor'))) {
+    baseReply = `🔧 **Mobil Tamircim AI Usta Teşhisi: Yüksek Hızda veya Rölantide Titreme**
 • 🔍 **Muhtemel Nedenler:**
   1. **90-120 km/s arası titreme:** Ön tekerlek jant balans kurşununun düşmesi veya lastik taban teli kırılması.
   2. **Gaza basınca titreme:** Sağ/sol iç aks lalesi veya aks kafası boşluğu.
@@ -3349,8 +3978,8 @@ function generateLocalAiDiagnosis(prompt) {
   }
 
   // 10. Alt Takım, Lokurtu & Çukur Sesi
-  if (p.includes('lokurtu') || p.includes('alt takım') || p.includes('amortisör') || p.includes('çukur') || p.includes('tıkırtı') || p.includes('z rot')) {
-    return `🔧 **Mobil Tamircim AI Usta Teşhisi: Kasisten Geçerken Lokurtu / Ön Takım Sesi**
+  if (!baseReply && (p.includes('lokurtu') || p.includes('alt takım') || p.includes('amortisör') || p.includes('çukur') || p.includes('tıkırtı') || p.includes('z rot'))) {
+    baseReply = `🔧 **Mobil Tamircim AI Usta Teşhisi: Kasisten Geçerken Lokurtu / Ön Takım Sesi**
 • 🔍 **Muhtemel Nedenler:**
   1. Z-Rot (viraj demir askı rotu) mafsal boşluğu (%60 en yaygın ihtimal).
   2. Viraj demir orta lastiklerinin sertleşmesi veya yırtılması.
@@ -3361,15 +3990,38 @@ function generateLocalAiDiagnosis(prompt) {
 • 🛠️ **Usta Tavsiyesi:** Sanayide rot balansçıya gidip aracı lifte aldırın ve levye ile burç boşluklarını kontrol ettirin; Z-rot değişimi çoğunlukla sesi tamamen keser.`;
   }
 
-  // 11. Genel Akıllı Sanayi Danışmanı Yanıtı
-  return `🔧 **Mobil Tamircim AI Usta Değerlendirmesi:**
-Selamlar kardeşim! Belirttiğin **"${escapeHtml(prompt)}"** konusuyla ilgili teşhisim:
-• 🔍 **İlk Değerlendirme:** Bu durum mekanik aşınma, sensör okuma hatası veya periyodik bakım eksikliğinden kaynaklanabilir.
-• 🛠️ **Önerilen Adımlar:** 
-  1. Aracının marka, model, motor tipi (örn: 1.6 TDI, 1.5 dCi, 1.4 TSI) ve kilometresini yazarak foruma konu açabilirsin.
-  2. Varsa gösterge panelindeki arıza lambasının rengini veya gelen sesin videosunu paylaşırsan sanayideki onaylı ustalarımız nokta atışı teşhis koyacaktır.
-• 💰 **Maliyet Bilgisi:** Menüdeki **"Parça & İşçilik Fiyatları"** ve **"Teklif Al"** sekmelerinden ustanın işçilik ve yedek parça piyasa bedelini ücretsiz sorgulayabilirsin.
-• 📍 Yakınındaki güvenilir esnaflar için **"Sanayi & Usta Rehberi"** bölümünü inceleyebilirsin.`;
+  // 11. Genel Akıllı Sanayi Danışmanı Yanıtı (Fallback)
+  if (!baseReply) {
+    baseReply = `🔧 **Mobil Tamircim AI Usta Teşhis Raporu:**
+Selamlar kardeşim! Belirttiğin **"${escapeHtml(prompt)}"** konusu platform arşivimizdeki çözülen vakalar ve sanayi veritabanı taranarak incelendi:
+• 🔍 **Mekanik İnceleme:** Bu durum sensör tolerans kaybı, elektriksel soket korozyonu veya mekanik aşınma kaynaklı olabilir.
+• 🚨 **Aciliyet Durumu:** 🟡 **ORTA.** Arıza lamba yakıyorsa veya motordan anormal ses geliyorsa zorlamadan sanayi servisine başvurun.
+• 🛠️ **Usta Tavsiyesi:** Aracının marka, model ve motor tipini belirterek foruma konu açabilir veya doğrudan ustalardan fiyat teklifi isteyebilirsin.`;
+  }
+
+  // RAG / Araştırma Verilerini Yanıta Entegre Et
+  if (researchTrace) {
+    if (researchTrace.matchedPrices && researchTrace.matchedPrices.length > 0) {
+      const pr = researchTrace.matchedPrices[0];
+      baseReply += `\n\n📊 **2026 Sanayi Piyasası Referans Fiyatı (${escapeHtml(pr.operation || pr.brand || '')}):**\n` +
+        `• Ortalama Parça: **${new Intl.NumberFormat('tr-TR').format(pr.partCost)} TL**\n` +
+        `• Usta İşçilik: **${new Intl.NumberFormat('tr-TR').format(pr.laborCost)} TL**\n` +
+        `• Ortalama Toplam Masraf: **~${new Intl.NumberFormat('tr-TR').format(pr.avgTotal)} TL**`;
+    }
+
+    if (researchTrace.matchedThreads && researchTrace.matchedThreads.length > 0) {
+      baseReply += `\n\n💡 **Forumdaki Çözülmüş Benzer Vakalar:**\n` +
+        researchTrace.matchedThreads.map(t => `• *${escapeHtml(t.title)}* (${t.isSolved ? '✓ Çözüldü' : `${t.commentsCount} Yanıt`})`).join('\n');
+    }
+
+    if (researchTrace.matchedMechanics && researchTrace.matchedMechanics.length > 0) {
+      const mech = researchTrace.matchedMechanics[0];
+      baseReply += `\n\n👨‍🔧 **Önerilen Doğrulanmış Usta:**\n` +
+        `• **${escapeHtml(mech.name)}** (${escapeHtml(mech.shopName || 'Özel Servis')}, ${escapeHtml(mech.city || '')})`;
+    }
+  }
+
+  return baseReply;
 }
 
 

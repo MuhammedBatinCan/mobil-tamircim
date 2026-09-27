@@ -118,9 +118,14 @@ const Quotes = {
                         ⏱️ Süre: <strong>${escapeHtml(off.duration)}</strong> • 🛡️ Garanti: <strong>${escapeHtml(off.warranty)}</strong>
                         ${off.note ? `<div style="margin-top:4px; color:var(--text-secondary);">"${escapeHtml(off.note)}"</div>` : ''}
                       </div>
-                      <button class="btn btn-primary btn-sm" style="width:100%; font-size:0.75rem; padding:4px;" onclick="showToast('Ustayla iletişime geçildi! Telefon ile aranıyor...')">
-                        Ustayı Ara & Randevu Al
-                      </button>
+                      <div style="display:flex; gap:6px;">
+                        <button class="btn btn-secondary btn-sm" style="flex:1; font-size:0.75rem; padding:6px; color:#38BDF8; border-color:rgba(56,189,248,0.4); font-weight:700;" onclick="Messages.startConversationWith('${off.mechanicId || 'usr_mech_1'}', 'Merhaba ${escapeHtml(off.mechanicName)}, ${escapeHtml(req.car)} aracıma verdiğiniz ${totalFormatted} TL tutarındaki tamir teklifiniz için yazıyorum.', 'Teklif: ${escapeHtml(req.car)} (${totalFormatted} TL)', '#view-quotes')">
+                          💬 Ustayla Yazış
+                        </button>
+                        <button class="btn btn-primary btn-sm" style="flex:1; font-size:0.75rem; padding:6px; background:var(--accent-amber); color:#000; border:none; font-weight:700;" onclick="showToast('${escapeHtml(off.mechanicName)} aranıyor...')">
+                          📞 Ara & Randevu Al
+                        </button>
+                      </div>
                     </div>
                   `;
                 }).join('')}
