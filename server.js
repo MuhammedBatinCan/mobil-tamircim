@@ -2934,6 +2934,13 @@ Kullanıcıya teknik teşhis sunarken bu araştırmadaki verilere ve 2026 fiyat 
     return;
   }
 
+  // Redirect /app or /m to /app/
+  if (pathname === '/app' || pathname === '/m' || pathname === '/mobile') {
+    res.writeHead(302, { 'Location': '/app/' });
+    res.end();
+    return;
+  }
+
   // --- STATIC FILE SERVING ---
   let filePath = '';
   if (pathname.startsWith('/admin')) {
@@ -2943,6 +2950,17 @@ Kullanıcıya teknik teşhis sunarken bu araştırmadaki verilere ve 2026 fiyat 
     } else {
       filePath = path.join(__dirname, 'admin', adminRel);
     }
+  } else if (pathname.startsWith('/app') || pathname.startsWith('/mobile')) {
+    const appRel = pathname.replace(/^\/(app|mobile)\/?/, '');
+    if (!appRel || appRel === '') {
+      filePath = path.join(__dirname, 'mobile', 'index.html');
+    } else {
+      filePath = path.join(__dirname, 'mobile', appRel);
+    }
+  } else if (pathname.startsWith('/uploads/')) {
+    // Shared uploads across web and mobile
+    const uploadRel = pathname.replace(/^\/uploads\/?/, '');
+    filePath = path.join(__dirname, 'public', 'uploads', uploadRel);
   } else if (pathname.startsWith('/css/admin') || pathname.startsWith('/js/admin')) {
     // Safety fallback for admin assets
     filePath = path.join(__dirname, 'admin', pathname.replace(/^\//, ''));
@@ -2957,6 +2975,8 @@ Kullanıcıya teknik teşhis sunarken bu araştırmadaki verilere ve 2026 fiyat 
       // Fallback
       if (pathname.startsWith('/admin')) {
         filePath = path.join(__dirname, 'admin', 'index.html');
+      } else if (pathname.startsWith('/app') || pathname.startsWith('/mobile')) {
+        filePath = path.join(__dirname, 'mobile', 'index.html');
       } else {
         filePath = path.join(__dirname, 'public', 'index.html');
       }
@@ -2975,6 +2995,8 @@ Kullanıcıya teknik teşhis sunarken bu araştırmadaki verilere ve 2026 fiyat 
           headers['Service-Worker-Allowed'] = '/';
         } else if (pathname === '/admin/sw.js') {
           headers['Service-Worker-Allowed'] = '/admin/';
+        } else if (pathname === '/app/sw.js' || pathname === '/mobile/sw.js') {
+          headers['Service-Worker-Allowed'] = '/app/';
         }
 
         // --- ANTIGRAVITY LIVE HOT-PATCH INJECTION ---
@@ -4028,9 +4050,10 @@ Selamlar kardeşim! Belirttiğin **"${escapeHtml(prompt)}"** konusu platform ar�
 server.listen(PORT, '0.0.0.0', () => {
   console.log(`====================================================`);
   console.log(`🚗 MOBİL TAMİRCİM SUNUCUSU BAŞLATILDI`);
-  console.log(`🌐 Masaüstü Ana Uygulama:    http://localhost:${PORT}`);
-  console.log(`🛡️ Masaüstü Admin Paneli:    http://localhost:${PORT}/admin`);
-  console.log(`📱 Telefon Mobil Bağlantısı: http://192.168.1.5:${PORT}`);
-  console.log(`📱 Telefon Admin Mobil:      http://192.168.1.5:${PORT}/admin`);
+  console.log(`💻 Web Sitesi (Masaüstü):     http://localhost:${PORT}`);
+  console.log(`📱 Mobil Uygulama:            http://localhost:${PORT}/app`);
+  console.log(`🛡️ Yönetici (Admin) Paneli:   http://localhost:${PORT}/admin`);
+  console.log(`📶 Yerel Ağ (Telefon Web):    http://192.168.1.5:${PORT}`);
+  console.log(`📶 Yerel Ağ (Telefon Mobil):  http://192.168.1.5:${PORT}/app`);
   console.log(`====================================================`);
 });

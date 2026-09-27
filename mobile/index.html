@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Mobil Tamircim - Yeni Nesil Otomotiv & Sanayi Platformu</title>
+  <title>Mobil Tamircim - Mobil Uygulama</title>
   
   <!-- Mobil Uygulama (PWA) Meta Etiketleri -->
   <meta name="theme-color" content="#F59E0B">
@@ -11,7 +11,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Mobil Tamircim">
   <meta name="application-name" content="Mobil Tamircim">
-  <link rel="manifest" href="/manifest.json">
+  <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="/icons/icon.svg">
   
   <!-- Google AdSense Entegrasyonu -->
@@ -25,191 +25,78 @@
   <!-- Toast Bildirim Konteyneri -->
   <div id="toast-container" class="toast-container"></div>
 
-  <!-- Üst Menü (Header) -->
-  <header class="header">
+  <!-- Üst Menü (Mobil App Bar) -->
+  <header class="header mobile-header">
     <div class="container header-inner">
       <!-- Logo -->
-      <a href="#" class="brand-logo" onclick="App.switchView('view-forum'); return false;" title="Mobil Tamircim Ana Sayfa">
+      <a href="#" class="brand-logo" onclick="App.switchView('view-forum'); return false;" title="Mobil Tamircim">
         <div class="brand-icon-wrap">
           <img src="/icons/emblem.svg" class="brand-emblem-img" alt="Mobil Tamircim Amblem" />
         </div>
         <div class="brand-text">
           <div class="brand-text-main">MOBİL <span>TAMİRCİM</span></div>
-          <div class="brand-text-sub">SANAYİ &amp; OTO PLATFORMU</div>
         </div>
       </a>
 
-      <!-- Canlı Arama Çubuğu (Search Bar) -->
-      <div class="header-search-wrap">
-        <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
-        <input type="text" id="header-search-input" class="header-search-input" placeholder="Arıza, parça, marka veya konu ara..." oninput="Forum.onSearch(this.value)">
-      </div>
-
-      <!-- Masaüstü Navigasyon -->
-      <!-- Masaüstü Navigasyon -->
-      <nav class="nav-desktop">
-        <a class="nav-link active" data-view="view-forum" onclick="App.switchView('view-forum')">Forum</a>
-        <a class="nav-link" data-view="view-parts" onclick="App.switchView('view-parts')">Parça Borsası</a>
-        <a class="nav-link" data-view="view-quotes" onclick="App.switchView('view-quotes')">Teklif Al</a>
-        <a class="nav-link" data-view="view-messages" onclick="App.switchView('view-messages')">
-          Mesajlar <span id="nav-unread-badge" class="badge-unread-count" style="display:none;">0</span>
-        </a>
-        <a class="nav-link" data-view="view-blog" onclick="App.switchView('view-blog')">Blog</a>
-        <a class="nav-link" data-view="view-directory" onclick="App.switchView('view-directory')">Usta Rehberi</a>
-        <a class="nav-link" data-view="view-obd" onclick="App.switchView('view-obd')">OBD-II</a>
-        <a class="nav-link sos-link" data-view="view-sos" onclick="App.switchView('view-sos')"><span class="sos-dot"></span> Acil Yardım</a>
-      </nav>
-
-      <!-- Sağ Butonlar -->
+      <!-- Sağ Aksiyon İkonları -->
       <div class="header-actions">
-        <!-- Doğrudan Mesajlar İkon Butonu -->
-        <button class="btn btn-secondary btn-sm header-dm-btn" onclick="App.switchView('view-messages')" title="Mesajlarım" style="position:relative; display:inline-flex; align-items:center; gap:6px; padding:6px 12px; font-weight:700;">
-          <span>💬</span>
-          <span class="header-dm-text" style="font-size:0.75rem;">Mesajlar</span>
+        <!-- Canlı Arama Butonu -->
+        <button class="mobile-search-btn btn btn-secondary btn-icon" onclick="App.toggleMobileSearch()" title="Arama Yap">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+        </button>
+
+        <!-- Mesajlar Butonu -->
+        <button class="btn btn-secondary btn-sm header-dm-btn" onclick="App.switchView('view-messages')" title="Mesajlarım" style="position:relative; display:inline-flex; align-items:center; justify-content:center; width:34px; height:34px; padding:0;">
+          <span style="font-size:1.05rem;">💬</span>
           <span id="header-unread-msg-badge" class="badge-unread-count" style="display:none;">0</span>
         </button>
 
-        <!-- Mobil Uygulamaya Geçiş Butonu -->
-        <a href="/app/" target="_blank" class="btn btn-secondary btn-sm header-app-link-btn" title="Mobil Uygulamayı Aç" style="display:inline-flex; align-items:center; gap:6px; border:1px solid rgba(245,158,11,0.4); color:#F59E0B; font-weight:700; padding:6px 12px; text-decoration:none;">
-          <span>📲</span>
-          <span>Mobil Uygulama</span>
-        </a>
-
-        <button class="btn btn-primary btn-sm header-new-thread-btn" onclick="openModal('new-thread-modal')">
-          + Konu Aç
-        </button>
-
-        <!-- Aktif Kullanıcı Profil Menüsü -->
-        <div class="user-switch-wrap" onclick="openModal('user-switcher-modal')" title="Kullanıcı / Profil Değiştir">
-          <img id="header-avatar" class="user-avatar-mini" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150" alt="Avatar">
-          <span id="header-user-name" class="user-name-mini">Ahmet Usta</span>
+        <!-- Aktif Kullanıcı Profil Avatarı -->
+        <div class="user-switch-wrap" onclick="App.openUserProfile()" title="Profilim" style="width:34px; height:34px; padding:2px; border-radius:50%; justify-content:center; cursor:pointer;">
+          <img id="header-avatar" class="user-avatar-mini" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150" alt="Avatar" style="width:28px; height:28px;">
         </div>
+
+        <!-- Mobil Menü Çekmecesi Butonu -->
+        <button class="mobile-menu-btn" onclick="App.toggleMobileDrawer()" title="Menüyü Aç" aria-label="Menü">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
       </div>
     </div>
   </header>
 
-  <!-- Mobil Cihaz Algılama & Mobil Uygulamaya Yönlendirme Şeridi -->
-  <div id="mobile-switch-banner" class="mobile-install-banner" style="display:none;">
+  <!-- Mobil Açılır Arama Çubuğu -->
+  <div id="mobile-search-bar" class="mobile-search-bar" style="display:none;">
+    <div class="mobile-search-inner">
+      <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+      <input type="text" id="mobile-search-input" class="mobile-search-input" placeholder="Arıza, parça, marka veya konu ara..." oninput="Forum.onSearch(this.value)">
+      <button class="mobile-search-close-btn" onclick="App.toggleMobileSearch()">✕</button>
+    </div>
+  </div>
+
+  <!-- Mobil Cihaz Yükleme Bildirim Şeridi (Sadece Mobilde Görünür) -->
+  <div id="mobile-install-banner" class="mobile-install-banner" style="display:none;">
     <div style="display:flex; align-items:center; gap:10px;">
       <img src="/icons/icon.svg" style="width:34px; height:34px; border-radius:8px;" alt="Logo">
       <div>
-        <strong style="font-size:0.82rem; color:#FFF; display:block;">Mobil Tamircim Uygulaması Mevcut!</strong>
-        <span style="font-size:0.72rem; color:var(--text-secondary);">Mobil cihazınız için özel tasarlanmış hızlı uygulamayı açın</span>
+        <strong style="font-size:0.82rem; color:#FFF; display:block;">Mobil Tamircim Uygulaması</strong>
+        <span style="font-size:0.7rem; color:var(--text-secondary);">Tam ekran deneyim için telefonuna yükle</span>
       </div>
     </div>
-    <div style="display:flex; gap:6px; align-items:center;">
-      <a href="/app/" class="btn btn-primary btn-sm" style="font-size:0.75rem; padding:5px 12px; font-weight:700; text-decoration:none;">Uygulamayı Aç</a>
-      <button class="btn btn-secondary btn-sm" onclick="document.getElementById('mobile-switch-banner').style.display='none'; sessionStorage.setItem('dismiss_mobile_switch_banner', '1');" style="font-size:0.75rem; padding:5px 8px;">✕</button>
+    <div style="display:flex; gap:6px;">
+      <button class="btn btn-primary btn-sm" onclick="App.triggerPwaInstall()" style="font-size:0.75rem; padding:4px 12px; font-weight:700;">Yükle</button>
+      <button class="btn btn-secondary btn-sm" onclick="App.dismissInstallBanner()" style="font-size:0.75rem; padding:4px 8px;">✕</button>
     </div>
   </div>
-  </div>
 
-  <!-- Ana Sayfa Düzeni (Layout Grid) -->
+  <!-- Mobil Ana Akış (Layout Grid) -->
   <main class="container layout-grid">
     
-    <!-- SOL SÜTUN: Forum Kategorileri & Profil -->
-    <aside class="sidebar-left">
-      <!-- Kullanıcı Mini Profil Kartı -->
-      <div class="sidebar-card profile-box">
-        <div style="display:flex; align-items:center; gap:10px; width:100%; text-align:left; cursor:pointer;" onclick="App.openUserProfile()" title="Twitter Tarzı Profilimi Aç">
-          <img id="sidebar-avatar" class="profile-avatar-large" src="" alt="Profil">
-          <div style="min-width:0; flex:1;">
-            <h3 id="sidebar-name" style="font-size:0.92rem; font-weight:700; color:#FFF; margin:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Ahmet Çelik Usta</h3>
-            <span id="sidebar-username" style="font-size:0.74rem; color:var(--text-dim); display:block;">@AhmetUsta_VAG</span>
-            <span id="sidebar-car" style="font-size:0.74rem; color:var(--text-muted); display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">2019 VW Passat 2.0 TDI</span>
-          </div>
-        </div>
-        
-        <div style="display:flex; gap:6px; width:100%; margin-top:10px;">
-          <button class="btn btn-primary btn-sm" style="flex:1; font-size:0.75rem;" onclick="App.openUserProfile()">
-            Profilim
-          </button>
-          <button class="btn btn-secondary btn-sm" style="padding:0 8px; font-size:0.75rem;" onclick="openModal('user-switcher-modal')" title="Hesap Değiştir">
-            Değiştir
-          </button>
-          <button class="btn btn-secondary btn-sm" style="padding:0 8px; font-size:0.75rem;" onclick="Auth.logout()" title="Oturumu Kapat">
-            Çıkış
-          </button>
-        </div>
-      </div>
-
-      <!-- Forum Bölümleri -->
-      <div class="sidebar-card">
-        <div class="sidebar-title">
-          <span>Forum Bölümleri</span>
-        </div>
-        <div class="sidebar-nav-list">
-          <a class="sidebar-nav-item active" onclick="Forum.setFilter('all'); App.switchView('view-forum');">
-            <span>Tüm Tartışmalar</span>
-          </a>
-          <a class="sidebar-nav-item" onclick="Forum.setCategory('ariza-teshis'); App.switchView('view-forum');">
-            <span>Arıza & Teşhis</span>
-          </a>
-          <a class="sidebar-nav-item" onclick="Forum.setCategory('genel'); App.switchView('view-forum');">
-            <span>Motor & Mekanik</span>
-          </a>
-          <a class="sidebar-nav-item" onclick="Forum.setCategory('yedek-parca'); App.switchView('view-forum');">
-            <span>Yedek Parça & Danışma</span>
-          </a>
-          <a class="sidebar-nav-item" onclick="Forum.setFilter('mechanics_only'); App.switchView('view-forum');">
-            <span>Sadece Usta Cevapları</span>
-          </a>
-          <a class="sidebar-nav-item" onclick="Forum.setFilter('solved'); App.switchView('view-forum');">
-            <span>Çözülen Arızalar</span>
-          </a>
-        </div>
-      </div>
-
-      <!-- Kısayollar -->
-      <div class="sidebar-card">
-        <div class="sidebar-title">
-          <span>Kısayollar</span>
-        </div>
-        <div class="sidebar-nav-list">
-          <a class="sidebar-nav-item" onclick="App.switchView('view-messages');" style="color:#38BDF8; font-weight:700;">
-            <div style="display:flex; align-items:center; justify-content:space-between; width:100%;">
-              <span>💬 Özel Mesajlarım</span>
-              <span class="badge" style="background:rgba(56,189,248,0.15); color:#38BDF8; font-size:0.68rem;">Canlı</span>
-            </div>
-          </a>
-          <a class="sidebar-nav-item" onclick="App.switchView('view-sos');" style="color:#EF4444; font-weight:700;">
-            <div style="display:flex; align-items:center; justify-content:space-between; width:100%;">
-              <span>🚨 Acil Yol Yardım (SOS)</span>
-              <span class="badge" style="background:rgba(239,68,68,0.2); color:#FCA5A5; font-size:0.68rem;">7/24</span>
-            </div>
-          </a>
-          <a class="sidebar-nav-item" onclick="App.switchView('view-parts');">🛒 Parça Borsası</a>
-          <a class="sidebar-nav-item" onclick="App.switchView('view-quotes');">💰 Ustalardan Teklif Al</a>
-          <a class="sidebar-nav-item" onclick="App.switchView('view-blog');">📰 Sanayi Blog & Rehberler</a>
-          <a class="sidebar-nav-item" onclick="App.switchView('view-brands');">Marka Kulüpleri</a>
-          <a class="sidebar-nav-item" onclick="App.switchView('view-directory');">Sanayi Rehberi</a>
-          <a class="sidebar-nav-item" onclick="App.switchView('view-obd');">OBD-II Kodları</a>
-          <a class="sidebar-nav-item" href="/app/" target="_blank" style="color:var(--accent-amber); font-weight:700; background:rgba(245,158,11,0.08); border-radius:var(--radius-sm); margin:3px 0;">
-            <div style="display:flex; align-items:center; justify-content:space-between; width:100%;">
-              <span>📲 Mobil Uygulama</span>
-              <span class="badge" style="background:var(--accent-amber); color:#000; font-size:0.65rem; font-weight:800;">AÇ</span>
-            </div>
-          </a>
-          <a class="sidebar-nav-item" onclick="App.openMobileAppModal();">Uygulamayı Telefona İndir</a>
-          <a class="sidebar-nav-item" onclick="App.openReportDeveloperModal();" style="color:var(--accent-orange); font-weight:700;">
-            <div style="display:flex; align-items:center; gap:6px;">
-              <span>🛠️</span>
-              <span>Yazılımcıya Bildir</span>
-            </div>
-          </a>
-          <a id="sidebar-admin-link" class="sidebar-nav-item" href="/admin" target="_blank" style="display:none; color:#C084FC; font-weight:600;">
-            <div style="display:flex; align-items:center; gap:6px;">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-              <span>Yönetici Paneli</span>
-            </div>
-            <span class="badge" style="background:rgba(168,85,247,0.18); color:#C084FC; border:1px solid rgba(168,85,247,0.3); font-size:0.65rem; padding:1px 5px;">Yetkili</span>
-          </a>
-        </div>
-      </div>
-    </aside>
-
     <!-- ORTA SÜTUN: Ana Akış ve Sekmeler -->
-    <section class="main-feed">
+    <section class="main-feed" style="width:100%;">
       
       <!-- 1. GÖRÜNÜM: Ana Forum Akışı -->
       <div id="view-forum" class="view-section active">
@@ -1636,7 +1523,37 @@
     </div>
   </div>
 
-
+  <!-- MOBİL TAMİRCİM ALT MENÜ (NATIVE APP FEEL) -->
+  <nav class="mobile-bottom-nav">
+    <button class="mobile-nav-btn active" id="mnav-forum" onclick="App.mobileNavigate('view-forum', this)">
+      <span class="mnav-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+      </span>
+      <span class="mnav-label">Akış</span>
+    </button>
+    <button class="mobile-nav-btn" id="mnav-parts" onclick="App.mobileNavigate('view-parts', this)">
+      <span class="mnav-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
+      </span>
+      <span class="mnav-label">Parça</span>
+    </button>
+    <button class="mobile-nav-btn special" onclick="openModal('new-thread-modal')">
+      <div class="mnav-plus-circle">+</div>
+      <span class="mnav-label">Konu Aç</span>
+    </button>
+    <button class="mobile-nav-btn" id="mnav-ai" onclick="AiAssistant.toggleModal()">
+      <span class="mnav-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+      </span>
+      <span class="mnav-label">Danışman</span>
+    </button>
+    <button class="mobile-nav-btn" id="mnav-profile" onclick="App.openUserProfile()">
+      <span class="mnav-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+      </span>
+      <span class="mnav-label">Profilim</span>
+    </button>
+  </nav>
 
   <!-- TELEFONA YÜKLE & QR KOD MODALI (SİMETRİK & TAŞMASIZ) -->
   <div id="mobile-app-modal" class="modal-overlay">
@@ -2191,7 +2108,93 @@
     </div>
   </div>
 
+  <!-- MOBİL YAN MENÜ ÇEKMECESİ (SLIDE-IN DRAWER) -->
+  <div id="mobile-drawer-overlay" class="mobile-drawer-overlay" onclick="App.closeMobileDrawer()"></div>
+  <aside id="mobile-drawer" class="mobile-drawer">
+    <div class="drawer-header">
+      <div class="drawer-user-info" onclick="App.closeMobileDrawer(); App.openUserProfile();" title="Profilimi Aç">
+        <img id="drawer-avatar" class="drawer-avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150" alt="Profil">
+        <div class="drawer-user-details">
+          <strong id="drawer-user-name" class="drawer-user-name">Ahmet Usta</strong>
+          <span id="drawer-user-handle" class="drawer-user-handle">@AhmetUsta_VAG</span>
+        </div>
+      </div>
+      <button class="drawer-close-btn" onclick="App.closeMobileDrawer()" aria-label="Kapat">&times;</button>
+    </div>
 
+    <div class="drawer-body">
+      <!-- Kullanıcı Hızlı Aksiyonları -->
+      <div class="drawer-user-actions">
+        <button class="btn btn-primary btn-sm" onclick="App.closeMobileDrawer(); App.openUserProfile();">Profilim</button>
+        <button class="btn btn-secondary btn-sm" onclick="App.closeMobileDrawer(); openModal('user-switcher-modal');">Değiştir</button>
+        <button class="btn btn-secondary btn-sm" onclick="App.closeMobileDrawer(); Auth.logout();">Çıkış</button>
+      </div>
+
+      <!-- Ana Gezinme Linkleri -->
+      <div class="drawer-section-title">MODÜLLER & SAYFALAR</div>
+      <nav class="drawer-nav">
+        <a class="drawer-nav-item active" onclick="App.closeMobileDrawer(); App.switchView('view-forum');">
+          <span class="drawer-icon">💬</span>
+          <span>Forum & Tartışmalar</span>
+        </a>
+        <a class="drawer-nav-item" onclick="App.closeMobileDrawer(); App.switchView('view-parts');">
+          <span class="drawer-icon">🛒</span>
+          <span>Parça Borsası</span>
+          <span class="drawer-badge badge-amber">Pazar</span>
+        </a>
+        <a class="drawer-nav-item" onclick="App.closeMobileDrawer(); App.switchView('view-quotes');">
+          <span class="drawer-icon">💰</span>
+          <span>Ustalardan Teklif Al</span>
+          <span class="drawer-badge badge-green">Fiyat İste</span>
+        </a>
+        <a class="drawer-nav-item" onclick="App.closeMobileDrawer(); App.switchView('view-messages');">
+          <span class="drawer-icon">✉️</span>
+          <span>Özel Mesajlarım</span>
+          <span id="drawer-unread-badge" class="badge-unread-count" style="display:none;">0</span>
+        </a>
+        <a class="drawer-nav-item" onclick="App.closeMobileDrawer(); App.switchView('view-blog');">
+          <span class="drawer-icon">📰</span>
+          <span>Sanayi Blog & Rehberler</span>
+        </a>
+        <a class="drawer-nav-item drawer-nav-sos" onclick="App.closeMobileDrawer(); App.switchView('view-sos');">
+          <span class="drawer-icon">🚨</span>
+          <span style="color:#F87171; font-weight:700;">Acil Yol Yardım (SOS)</span>
+          <span class="drawer-badge badge-red">7/24</span>
+        </a>
+        <a class="drawer-nav-item" onclick="App.closeMobileDrawer(); App.switchView('view-directory');">
+          <span class="drawer-icon">🏢</span>
+          <span>Sanayi Rehberi</span>
+        </a>
+        <a class="drawer-nav-item" onclick="App.closeMobileDrawer(); App.switchView('view-obd');">
+          <span class="drawer-icon">⚡</span>
+          <span>OBD-II Arıza Kodları</span>
+        </a>
+        <a class="drawer-nav-item" onclick="App.closeMobileDrawer(); App.switchView('view-brands');">
+          <span class="drawer-icon">🏎️</span>
+          <span>Marka Kulüpleri</span>
+        </a>
+      </nav>
+
+      <div class="drawer-section-title">DESTEK & SİSTEM</div>
+      <nav class="drawer-nav">
+        <a class="drawer-nav-item" onclick="App.closeMobileDrawer(); App.openReportDeveloperModal();" style="color:#F59E0B;">
+          <span class="drawer-icon">🛠️</span>
+          <span>Yazılımcıya Bildir</span>
+        </a>
+        <a class="drawer-nav-item" onclick="App.closeMobileDrawer(); App.openMobileAppModal();">
+          <span class="drawer-icon">📲</span>
+          <span>Uygulama Bilgisi</span>
+        </a>
+        <a class="drawer-nav-item" href="/" target="_self" style="border-top: 1px solid rgba(255,255,255,0.08); margin-top: 6px; padding-top: 10px; color: #38BDF8;">
+          <span class="drawer-icon">💻</span>
+          <div style="display:flex; flex-direction:column;">
+            <span style="font-weight:700;">Masaüstü Web Sitesi</span>
+            <span style="font-size:0.72rem; color:var(--text-dim);">Tarayıcı sürümüne geçiş yap</span>
+          </div>
+        </a>
+      </nav>
+    </div>
+  </aside>
 
   <!-- Scriptler -->
   <script src="js/data.js"></script>

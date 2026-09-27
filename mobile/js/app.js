@@ -42,19 +42,13 @@ const App = {
     // 1. Service Worker Kaydı
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-          .then(reg => console.log('✓ Mobil Tamircim Service Worker kayıtlı:', reg.scope))
+        navigator.serviceWorker.register('/app/sw.js', { scope: '/app/' })
+          .then(reg => console.log('✓ Mobil Tamircim Mobil App Service Worker kayıtlı:', reg.scope))
           .catch(err => console.log('Service worker kaydı:', err));
       });
     }
 
-    // 2. Mobil Cihaz Algılama & Mobil Uygulama Şeridi
-    if (window.innerWidth <= 768 && !sessionStorage.getItem('dismiss_mobile_switch_banner')) {
-      const switchBanner = document.getElementById('mobile-switch-banner');
-      if (switchBanner) switchBanner.style.display = 'flex';
-    }
-
-    // 3. Yerel PWA Kurulum Tetikleyicisi
+    // 2. Yerel PWA Kurulum Tetikleyicisi
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       this.deferredPrompt = e;
@@ -177,6 +171,7 @@ const App = {
     document.querySelectorAll('.mobile-nav-btn').forEach(b => {
       const id = b.id;
       if (id === 'mnav-forum' && viewId === 'view-forum') b.classList.add('active');
+      else if (id === 'mnav-parts' && viewId === 'view-parts') b.classList.add('active');
       else if (id === 'mnav-profile' && viewId === 'view-profile') b.classList.add('active');
       else if (id !== 'mnav-ai') b.classList.remove('active');
     });
