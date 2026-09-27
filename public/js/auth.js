@@ -424,6 +424,14 @@ const Auth = {
     if (sbUsername) sbUsername.textContent = '@' + u.username;
     if (sbPlate) sbPlate.innerHTML = this.renderPlate(u.plate);
     if (sbCar) sbCar.textContent = u.car || 'Araç tanımlanmadı';
+
+    // Mobile drawer profile
+    const drAvatar = document.getElementById('drawer-avatar');
+    const drName = document.getElementById('drawer-user-name');
+    const drHandle = document.getElementById('drawer-user-handle');
+    if (drAvatar) drAvatar.src = u.avatar;
+    if (drName) drName.textContent = u.name;
+    if (drHandle) drHandle.textContent = '@' + u.username;
     if (sbBadges) {
       let bHtml = this.renderBadges(u.badges, u.level);
       if (u.isEmailVerified === false) {

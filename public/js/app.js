@@ -109,7 +109,45 @@ const App = {
     if (btn) btn.classList.add('active');
   },
 
+  toggleMobileDrawer() {
+    const drawer = document.getElementById('mobile-drawer');
+    const overlay = document.getElementById('mobile-drawer-overlay');
+    if (!drawer) return;
+    const isActive = drawer.classList.contains('active');
+    if (isActive) {
+      this.closeMobileDrawer();
+    } else {
+      drawer.classList.add('active');
+      if (overlay) overlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+  },
+
+  closeMobileDrawer() {
+    const drawer = document.getElementById('mobile-drawer');
+    const overlay = document.getElementById('mobile-drawer-overlay');
+    if (drawer) drawer.classList.remove('active');
+    if (overlay) overlay.classList.remove('active');
+    document.body.style.overflow = '';
+  },
+
+  toggleMobileSearch() {
+    const bar = document.getElementById('mobile-search-bar');
+    if (!bar) return;
+    if (bar.style.display === 'none' || !bar.style.display) {
+      bar.style.display = 'block';
+      const input = document.getElementById('mobile-search-input');
+      if (input) {
+        input.value = document.getElementById('header-search-input')?.value || '';
+        setTimeout(() => input.focus(), 80);
+      }
+    } else {
+      bar.style.display = 'none';
+    }
+  },
+
   switchView(viewId) {
+    this.closeMobileDrawer();
     this.currentView = viewId;
     document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
     
@@ -119,9 +157,10 @@ const App = {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // Update active nav links
-    document.querySelectorAll('.nav-link, .mobile-nav-item').forEach(link => {
-      if (link.getAttribute('data-view') === viewId) {
+    // Update active nav links & drawer links
+    document.querySelectorAll('.nav-link, .mobile-nav-item, .drawer-nav-item').forEach(link => {
+      const onclickAttr = link.getAttribute('onclick') || '';
+      if (link.getAttribute('data-view') === viewId || onclickAttr.includes(`switchView('${viewId}')`)) {
         link.classList.add('active');
       } else {
         link.classList.remove('active');

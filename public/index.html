@@ -62,14 +62,19 @@
 
       <!-- Sağ Butonlar -->
       <div class="header-actions">
+        <!-- Mobil Arama İkon Butonu -->
+        <button class="mobile-search-btn btn btn-secondary btn-icon" onclick="App.toggleMobileSearch()" title="Arama Yap">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+        </button>
+
         <!-- Doğrudan Mesajlar İkon Butonu -->
         <button class="btn btn-secondary btn-sm header-dm-btn" onclick="App.switchView('view-messages')" title="Mesajlarım" style="position:relative; display:inline-flex; align-items:center; gap:6px; padding:6px 12px; font-weight:700;">
           <span>💬</span>
-          <span style="font-size:0.75rem;">Mesajlar</span>
+          <span class="header-dm-text" style="font-size:0.75rem;">Mesajlar</span>
           <span id="header-unread-msg-badge" class="badge-unread-count" style="display:none;">0</span>
         </button>
 
-        <button class="btn btn-primary btn-sm" onclick="openModal('new-thread-modal')">
+        <button class="btn btn-primary btn-sm header-new-thread-btn" onclick="openModal('new-thread-modal')">
           + Konu Aç
         </button>
 
@@ -78,9 +83,27 @@
           <img id="header-avatar" class="user-avatar-mini" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150" alt="Avatar">
           <span id="header-user-name" class="user-name-mini">Ahmet Usta</span>
         </div>
+
+        <!-- Mobil Menü Hamburger Butonu -->
+        <button class="mobile-menu-btn" onclick="App.toggleMobileDrawer()" title="Menüyü Aç" aria-label="Menü">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
       </div>
     </div>
   </header>
+
+  <!-- Mobil Açılır Arama Çubuğu -->
+  <div id="mobile-search-bar" class="mobile-search-bar" style="display:none;">
+    <div class="mobile-search-inner">
+      <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+      <input type="text" id="mobile-search-input" class="mobile-search-input" placeholder="Arıza, parça, marka veya konu ara..." oninput="Forum.onSearch(this.value)">
+      <button class="mobile-search-close-btn" onclick="App.toggleMobileSearch()">✕</button>
+    </div>
+  </div>
 
   <!-- Mobil Cihaz Yükleme Bildirim Şeridi (Sadece Mobilde Görünür) -->
   <div id="mobile-install-banner" class="mobile-install-banner" style="display:none;">
@@ -1406,13 +1429,13 @@
       <!-- Giriş Alanı -->
       <div style="padding-top:12px; display:flex; flex-direction:column; gap:8px; border-top:1px solid var(--border-color); margin-top:8px;">
         <div style="display:flex; gap:8px;">
-          <input id="ai-chat-input" class="form-control" type="text" placeholder="Aracınızdaki arızayı, sesi, OBD kodunu veya merak ettiğiniz işlemi yazın..." onkeydown="if(event.key==='Enter') AiAssistant.sendFromInput()">
+          <input id="ai-chat-input" class="form-control" type="text" placeholder="Arıza, ses veya OBD kodunu yazın..." onkeydown="if(event.key==='Enter') AiAssistant.sendFromInput()">
           <button class="btn btn-primary" onclick="AiAssistant.sendFromInput()" style="white-space:nowrap; padding:0 20px; font-weight:700;">
             Gönder
           </button>
         </div>
-        <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.75rem; color:var(--text-muted);">
-          <span>Örnek: <em>"2019 Passat P0299 arızası verdi çekiş düştü masrafı nedir?"</em></span>
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:4px; font-size:0.75rem; color:var(--text-muted);">
+          <span>Örnek: <em>"Passat P0299 arızası masrafı nedir?"</em></span>
           <span id="ai-source-badge" style="color:#10B981; font-weight:700;">● Akıllı Teşhis Aktif</span>
         </div>
       </div>
@@ -2207,6 +2230,87 @@
       </form>
     </div>
   </div>
+
+  <!-- MOBİL YAN MENÜ ÇEKMECESİ (SLIDE-IN DRAWER) -->
+  <div id="mobile-drawer-overlay" class="mobile-drawer-overlay" onclick="App.closeMobileDrawer()"></div>
+  <aside id="mobile-drawer" class="mobile-drawer">
+    <div class="drawer-header">
+      <div class="drawer-user-info" onclick="App.closeMobileDrawer(); App.openUserProfile();" title="Profilimi Aç">
+        <img id="drawer-avatar" class="drawer-avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150" alt="Profil">
+        <div class="drawer-user-details">
+          <strong id="drawer-user-name" class="drawer-user-name">Ahmet Usta</strong>
+          <span id="drawer-user-handle" class="drawer-user-handle">@AhmetUsta_VAG</span>
+        </div>
+      </div>
+      <button class="drawer-close-btn" onclick="App.closeMobileDrawer()" aria-label="Kapat">&times;</button>
+    </div>
+
+    <div class="drawer-body">
+      <!-- Kullanıcı Hızlı Aksiyonları -->
+      <div class="drawer-user-actions">
+        <button class="btn btn-primary btn-sm" onclick="App.closeMobileDrawer(); App.openUserProfile();">Profilim</button>
+        <button class="btn btn-secondary btn-sm" onclick="App.closeMobileDrawer(); openModal('user-switcher-modal');">Değiştir</button>
+        <button class="btn btn-secondary btn-sm" onclick="App.closeMobileDrawer(); Auth.logout();">Çıkış</button>
+      </div>
+
+      <!-- Ana Gezinme Linkleri -->
+      <div class="drawer-section-title">MODÜLLER & SAYFALAR</div>
+      <nav class="drawer-nav">
+        <a class="drawer-nav-item active" onclick="App.closeMobileDrawer(); App.switchView('view-forum');">
+          <span class="drawer-icon">💬</span>
+          <span>Forum & Tartışmalar</span>
+        </a>
+        <a class="drawer-nav-item" onclick="App.closeMobileDrawer(); App.switchView('view-parts');">
+          <span class="drawer-icon">🛒</span>
+          <span>Parça Borsası</span>
+          <span class="drawer-badge badge-amber">Pazar</span>
+        </a>
+        <a class="drawer-nav-item" onclick="App.closeMobileDrawer(); App.switchView('view-quotes');">
+          <span class="drawer-icon">💰</span>
+          <span>Ustalardan Teklif Al</span>
+          <span class="drawer-badge badge-green">Fiyat İste</span>
+        </a>
+        <a class="drawer-nav-item" onclick="App.closeMobileDrawer(); App.switchView('view-messages');">
+          <span class="drawer-icon">✉️</span>
+          <span>Özel Mesajlarım</span>
+          <span id="drawer-unread-badge" class="badge-unread-count" style="display:none;">0</span>
+        </a>
+        <a class="drawer-nav-item" onclick="App.closeMobileDrawer(); App.switchView('view-blog');">
+          <span class="drawer-icon">📰</span>
+          <span>Sanayi Blog & Rehberler</span>
+        </a>
+        <a class="drawer-nav-item drawer-nav-sos" onclick="App.closeMobileDrawer(); App.switchView('view-sos');">
+          <span class="drawer-icon">🚨</span>
+          <span style="color:#F87171; font-weight:700;">Acil Yol Yardım (SOS)</span>
+          <span class="drawer-badge badge-red">7/24</span>
+        </a>
+        <a class="drawer-nav-item" onclick="App.closeMobileDrawer(); App.switchView('view-directory');">
+          <span class="drawer-icon">🏢</span>
+          <span>Sanayi Rehberi</span>
+        </a>
+        <a class="drawer-nav-item" onclick="App.closeMobileDrawer(); App.switchView('view-obd');">
+          <span class="drawer-icon">⚡</span>
+          <span>OBD-II Arıza Kodları</span>
+        </a>
+        <a class="drawer-nav-item" onclick="App.closeMobileDrawer(); App.switchView('view-brands');">
+          <span class="drawer-icon">🏎️</span>
+          <span>Marka Kulüpleri</span>
+        </a>
+      </nav>
+
+      <div class="drawer-section-title">DESTEK & SİSTEM</div>
+      <nav class="drawer-nav">
+        <a class="drawer-nav-item" onclick="App.closeMobileDrawer(); App.openReportDeveloperModal();" style="color:#F59E0B;">
+          <span class="drawer-icon">🛠️</span>
+          <span>Yazılımcıya Bildir</span>
+        </a>
+        <a class="drawer-nav-item" onclick="App.closeMobileDrawer(); App.openMobileAppModal();">
+          <span class="drawer-icon">📲</span>
+          <span>Uygulamayı İndir (PWA)</span>
+        </a>
+      </nav>
+    </div>
+  </aside>
 
   <!-- Scriptler -->
   <script src="js/data.js"></script>
