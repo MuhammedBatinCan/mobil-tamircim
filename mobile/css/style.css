@@ -116,6 +116,9 @@ body {
   position: sticky;
   top: 0;
   z-index: 50;
+  height: 58px;
+  max-height: 58px;
+  overflow: visible;
   background-color: rgba(11, 15, 23, 0.94);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -1707,15 +1710,14 @@ select option {
    MOBİL ALT MENÜ (DOCK)
    ========================================================== */
 .mobile-install-banner {
+  display: none;
   background: #131924;
   border-bottom: 1px solid var(--border-color);
   padding: 8px 14px;
-  display: flex;
   justify-content: space-between;
   align-items: center;
-  position: sticky;
-  top: 58px;
-  z-index: 45;
+  position: relative;
+  z-index: 40;
 }
 
 /* ==========================================================
@@ -1870,7 +1872,7 @@ select option {
 
   /* Mobil Açılır Arama Çubuğu */
   .mobile-search-bar {
-    display: block;
+    display: none;
     background: var(--bg-card);
     border-bottom: 1px solid var(--border-color);
     padding: 8px 12px;

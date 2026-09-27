@@ -1,5 +1,5 @@
 // MOBİL TAMİRCİM - PWA SERVICE WORKER (SW.JS - MOBİL UYGULAMA)
-const CACHE_NAME = 'mobil-tamircim-mobile-v1';
+const CACHE_NAME = 'mobil-tamircim-mobile-v2';
 const STATIC_ASSETS = [
   '/app/',
   '/app/index.html',
