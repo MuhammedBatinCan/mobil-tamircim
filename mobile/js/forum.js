@@ -716,7 +716,7 @@ const Forum = {
       return;
     }
 
-    const soundPath = (audioUrl && audioUrl.endsWith('.wav')) ? audioUrl : '/audio/engine_sound.wav';
+    const soundPath = (audioUrl && (audioUrl.startsWith('data:audio') || audioUrl.startsWith('blob:') || audioUrl.startsWith('/') || audioUrl.startsWith('http'))) ? audioUrl : '/audio/engine_sound.wav';
 
     // Reset previous instance
     if (this.currentAudio) {

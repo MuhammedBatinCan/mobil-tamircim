@@ -1043,7 +1043,17 @@ App.toggleAudioRecording = async function() {
 
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       App.audioChunks = [];
-      App.mediaRecorder = new MediaRecorder(stream);
+
+      let mimeType = 'audio/webm';
+      if (typeof MediaRecorder.isTypeSupported === 'function') {
+        if (MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) mimeType = 'audio/webm;codecs=opus';
+        else if (MediaRecorder.isTypeSupported('audio/mp4')) mimeType = 'audio/mp4';
+        else if (MediaRecorder.isTypeSupported('audio/aac')) mimeType = 'audio/aac';
+        else if (MediaRecorder.isTypeSupported('audio/ogg')) mimeType = 'audio/ogg';
+      }
+
+      App.recordedMimeType = mimeType;
+      App.mediaRecorder = new MediaRecorder(stream, mimeType ? { mimeType } : undefined);
 
       App.mediaRecorder.ondataavailable = (e) => {
         if (e.data && e.data.size > 0) {
@@ -1052,16 +1062,17 @@ App.toggleAudioRecording = async function() {
       };
 
       App.mediaRecorder.onstop = () => {
-        const audioBlob = new Blob(App.audioChunks, { type: 'audio/webm' });
+        const audioBlob = new Blob(App.audioChunks, { type: App.recordedMimeType || 'audio/webm' });
         const reader = new FileReader();
         reader.onloadend = () => {
           const base64data = reader.result;
-          App.setAudioAttachment(base64data, 'Mikrofon Kaydı (WebM)');
+          App.setAudioAttachment(base64data, 'Mikrofon Kaydı');
         };
         reader.readAsDataURL(audioBlob);
 
-        // Stream parçalarını kapat
-        stream.getTracks().forEach(track => track.stop());
+        stream.getTracks().forEach(track => {
+          try { track.stop(); } catch(e){}
+        });
       };
 
       App.mediaRecorder.start();
