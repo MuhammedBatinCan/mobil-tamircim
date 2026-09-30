@@ -861,10 +861,10 @@ async function sendDeveloperReportEmail({ report, developerEmail }) {
   }
 
   // 3. Gerçek SMTP sunucusu yapılandırılmışsa doğrudan ilet (TLS / Net)
-  const smtpHost = process.env.SMTP_HOST || (db.settings && db.settings.smtp && db.settings.smtp.host);
+  const smtpHost = process.env.SMTP_HOST || (db.settings && db.settings.smtp && db.settings.smtp.host) || 'smtp.gmail.com';
   const smtpPort = Number(process.env.SMTP_PORT || (db.settings && db.settings.smtp && db.settings.smtp.port) || 465);
-  const smtpUser = process.env.SMTP_USER || (db.settings && db.settings.smtp && db.settings.smtp.user);
-  let smtpPass = process.env.SMTP_PASS || (db.settings && db.settings.smtp && db.settings.smtp.pass);
+  const smtpUser = process.env.SMTP_USER || (db.settings && db.settings.smtp && db.settings.smtp.user) || 'developer.batin@gmail.com';
+  let smtpPass = process.env.SMTP_PASS || (db.settings && db.settings.smtp && db.settings.smtp.pass) || 'ozdcfksayywigivg';
   if (smtpPass) smtpPass = smtpPass.replace(/\s+/g, '');
 
   if (smtpHost && smtpUser && smtpPass) {
