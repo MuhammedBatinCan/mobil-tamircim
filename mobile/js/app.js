@@ -637,7 +637,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const content = document.getElementById('thread-content-input').value.trim();
       const allowCommentsFrom = document.querySelector('input[name="allowCommentsFrom"]:checked').value;
-      const hasAudio = document.getElementById('thread-audio-check').checked;
+      const audioData = document.getElementById('thread-audio-data-input') ? document.getElementById('thread-audio-data-input').value : '';
+      const hasAudio = !!audioData;
 
       if (!title || !content) {
         showToast('Lütfen başlık ve açıklama giriniz.', 'error');
@@ -645,10 +646,11 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       Forum.createThread({
-        title, category, brand, model, engine, obdCode, content, allowCommentsFrom, hasAudio
+        title, category, brand, model, engine, obdCode, content, allowCommentsFrom, hasAudio, audioUrl: audioData || null
       });
 
       newThreadForm.reset();
+      App.clearAudioRecording();
       const chipsContainer = document.getElementById('quick-engine-chips');
       if (chipsContainer) chipsContainer.innerHTML = '';
       if (typeof Forum.toggleCustomObd === 'function') {
@@ -1012,6 +1014,148 @@ App.submitDeveloperReport = async function(event) {
       btn.disabled = false;
       btn.innerHTML = '<span>✉️ Yazılımcıya Gönder</span>';
     }
+  }
+};
+
+// ==========================================
+// SES KAYDI & MİKROFON İLE CANLI KAYIT YÖNETİMİ (MOBİL)
+// ==========================================
+App.mediaRecorder = null;
+App.audioChunks = [];
+App.isRecordingAudio = false;
+
+App.toggleAudioRecording = async function() {
+  const btn = document.getElementById('btn-record-audio');
+  const icon = document.getElementById('record-audio-icon');
+  const text = document.getElementById('record-audio-text');
+  const badge = document.getElementById('audio-record-status-badge');
+
+  if (!App.isRecordingAudio) {
+    // Kaydı Başlat
+    try {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        showToast('Tarayıcınız mikrofon erişimini desteklemiyor.', 'error');
+        return;
+      }
+
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      App.audioChunks = [];
+      App.mediaRecorder = new MediaRecorder(stream);
+
+      App.mediaRecorder.ondataavailable = (e) => {
+        if (e.data && e.data.size > 0) {
+          App.audioChunks.push(e.data);
+        }
+      };
+
+      App.mediaRecorder.onstop = () => {
+        const audioBlob = new Blob(App.audioChunks, { type: 'audio/webm' });
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const base64data = reader.result;
+          App.setAudioAttachment(base64data, 'Mikrofon Kaydı (WebM)');
+        };
+        reader.readAsDataURL(audioBlob);
+
+        stream.getTracks().forEach(track => track.stop());
+      };
+
+      App.mediaRecorder.start();
+      App.isRecordingAudio = true;
+
+      if (btn) btn.classList.add('btn-danger');
+      if (icon) icon.textContent = '⏹️';
+      if (text) text.textContent = 'Kaydı Durdur';
+      if (badge) {
+        badge.textContent = '🔴 Kaydediliyor...';
+        badge.style.color = '#EF4444';
+      }
+      showToast('Mikrofon aktif, motor sesini kaydedin...');
+    } catch (err) {
+      console.warn('Mikrofon izni alınamadı:', err);
+      showToast('Mikrofon izni reddedildi veya bulunamadı.', 'error');
+    }
+  } else {
+    // Kaydı Durdur
+    if (App.mediaRecorder && App.mediaRecorder.state !== 'inactive') {
+      App.mediaRecorder.stop();
+    }
+    App.isRecordingAudio = false;
+
+    if (btn) btn.classList.remove('btn-danger');
+    if (icon) icon.textContent = '🔴';
+    if (text) text.textContent = 'Yeniden Kaydet';
+  }
+};
+
+App.handleAudioFileSelect = function(input) {
+  const file = input.files && input.files[0];
+  if (!file) return;
+
+  if (file.size > 8 * 1024 * 1024) {
+    showToast('Ses dosyası boyutu maksimum 8MB olabilir.', 'error');
+    input.value = '';
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    App.setAudioAttachment(e.target.result, file.name);
+    showToast(`Ses dosyası eklendi: ${file.name}`);
+  };
+  reader.readAsDataURL(file);
+};
+
+App.useDemoAudio = function() {
+  App.setAudioAttachment('/audio/engine_sound.wav', 'Örnek 1.5 dCi Motor Sesi');
+  showToast('Örnek sanayi motor sesi eklendi 🔊');
+};
+
+App.setAudioAttachment = function(audioSrc, label) {
+  const dataInput = document.getElementById('thread-audio-data-input');
+  const previewWrap = document.getElementById('thread-audio-preview-wrap');
+  const previewPlayer = document.getElementById('thread-audio-preview-player');
+  const previewInfo = document.getElementById('thread-audio-preview-info');
+  const badge = document.getElementById('audio-record-status-badge');
+  const clearBtn = document.getElementById('btn-clear-audio');
+
+  if (dataInput) dataInput.value = audioSrc;
+  if (previewPlayer) previewPlayer.src = audioSrc;
+  if (previewWrap) previewWrap.style.display = 'flex';
+  if (previewInfo) previewInfo.textContent = label || 'Ses Kaydı';
+  if (clearBtn) clearBtn.style.display = 'inline-flex';
+  if (badge) {
+    badge.textContent = '✓ Ses Eklendi';
+    badge.style.color = '#10B981';
+  }
+};
+
+App.clearAudioRecording = function() {
+  const dataInput = document.getElementById('thread-audio-data-input');
+  const previewWrap = document.getElementById('thread-audio-preview-wrap');
+  const previewPlayer = document.getElementById('thread-audio-preview-player');
+  const fileInput = document.getElementById('thread-audio-file-input');
+  const badge = document.getElementById('audio-record-status-badge');
+  const clearBtn = document.getElementById('btn-clear-audio');
+  const recordText = document.getElementById('record-audio-text');
+
+  if (App.isRecordingAudio && App.mediaRecorder) {
+    try { App.mediaRecorder.stop(); } catch(e){}
+    App.isRecordingAudio = false;
+  }
+
+  if (dataInput) dataInput.value = '';
+  if (previewPlayer) {
+    previewPlayer.pause();
+    previewPlayer.src = '';
+  }
+  if (previewWrap) previewWrap.style.display = 'none';
+  if (fileInput) fileInput.value = '';
+  if (clearBtn) clearBtn.style.display = 'none';
+  if (recordText) recordText.textContent = 'Kaydı Başlat';
+  if (badge) {
+    badge.textContent = 'Ses eklenmedi';
+    badge.style.color = 'var(--text-dim)';
   }
 };
 

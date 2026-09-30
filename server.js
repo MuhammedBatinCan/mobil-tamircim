@@ -4257,13 +4257,27 @@ Selamlar kardeşim! Belirttiğin **"${escapeHtml(prompt)}"** konusu platform ar�
 }
 
 
+function getLocalIp() {
+  const os = require('os');
+  const interfaces = os.networkInterfaces();
+  for (const name of Object.keys(interfaces)) {
+    for (const iface of interfaces[name]) {
+      if (iface.family === 'IPv4' && !iface.internal) {
+        if (iface.address.startsWith('192.168.1.')) return iface.address;
+      }
+    }
+  }
+  return 'localhost';
+}
+
 server.listen(PORT, '0.0.0.0', () => {
+  const currentIp = getLocalIp();
   console.log(`====================================================`);
   console.log(`🚗 MOBİL TAMİRCİM SUNUCUSU BAŞLATILDI`);
   console.log(`💻 Web Sitesi (Masaüstü):     http://localhost:${PORT}`);
   console.log(`📱 Mobil Uygulama:            http://localhost:${PORT}/app`);
   console.log(`🛡️ Yönetici (Admin) Paneli:   http://localhost:${PORT}/admin`);
-  console.log(`📶 Yerel Ağ (Telefon Web):    http://192.168.1.5:${PORT}`);
-  console.log(`📶 Yerel Ağ (Telefon Mobil):  http://192.168.1.5:${PORT}/app`);
+  console.log(`📶 Yerel Ağ (Telefon Web):    http://${currentIp}:${PORT}`);
+  console.log(`📶 Yerel Ağ (Telefon Mobil):  http://${currentIp}:${PORT}/app`);
   console.log(`====================================================`);
 });

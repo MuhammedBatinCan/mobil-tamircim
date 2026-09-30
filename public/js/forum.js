@@ -675,7 +675,7 @@ const Forum = {
           obdCode: formData.obdCode,
           allowCommentsFrom: formData.allowCommentsFrom,
           content: formData.content,
-          audioUrl: formData.hasAudio ? '/audio/engine_sound.wav' : null,
+          audioUrl: formData.audioUrl || (formData.hasAudio ? '/audio/engine_sound.wav' : null),
           authorId: user.id,
           authorUsername: user.name,
           authorPlate: user.plate,
