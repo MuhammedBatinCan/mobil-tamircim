@@ -9,6 +9,32 @@ const DATA_DIR = path.join(__dirname, 'data');
 const STORE_FILE = path.join(DATA_DIR, 'store.json');
 const BACKUP_DIR = path.join(DATA_DIR, 'backups');
 
+// Otomatik .env dosyasını oku (Harici dotenv paketi gerektirmez)
+const ENV_FILE = path.join(__dirname, '.env');
+if (fs.existsSync(ENV_FILE)) {
+  try {
+    const envLines = fs.readFileSync(ENV_FILE, 'utf8').split('\n');
+    for (const line of envLines) {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith('#')) continue;
+      const eqIdx = trimmed.indexOf('=');
+      if (eqIdx !== -1) {
+        const key = trimmed.slice(0, eqIdx).trim();
+        let val = trimmed.slice(eqIdx + 1).trim();
+        if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+          val = val.slice(1, -1);
+        }
+        if (!process.env[key]) {
+          process.env[key] = val;
+        }
+      }
+    }
+    console.log('🔑 [.env] Ortam değişkenleri başarıyla yüklendi.');
+  } catch (err) {
+    console.warn('.env okunamadı:', err.message);
+  }
+}
+
 // Ensure data and backup directories exist
 if (!fs.existsSync(DATA_DIR)) {
   fs.mkdirSync(DATA_DIR, { recursive: true });
@@ -838,7 +864,8 @@ async function sendDeveloperReportEmail({ report, developerEmail }) {
   const smtpHost = process.env.SMTP_HOST || (db.settings && db.settings.smtp && db.settings.smtp.host);
   const smtpPort = Number(process.env.SMTP_PORT || (db.settings && db.settings.smtp && db.settings.smtp.port) || 465);
   const smtpUser = process.env.SMTP_USER || (db.settings && db.settings.smtp && db.settings.smtp.user);
-  const smtpPass = process.env.SMTP_PASS || (db.settings && db.settings.smtp && db.settings.smtp.pass);
+  let smtpPass = process.env.SMTP_PASS || (db.settings && db.settings.smtp && db.settings.smtp.pass);
+  if (smtpPass) smtpPass = smtpPass.replace(/\s+/g, '');
 
   if (smtpHost && smtpUser && smtpPass) {
     try {
