@@ -1642,6 +1642,23 @@
   ],
   "developerReports": [
     {
+      "id": "rep_1790792209923",
+      "category": "Hata / Bug",
+      "title": "sdsafafasdfasdfadfadf",
+      "message": "fasfasdfadsfadsfadsa",
+      "image": "",
+      "userId": "usr_1789941375341",
+      "userName": "Muhammed Batın",
+      "userUsername": "muhammedbatins",
+      "userEmail": "developer.batin@gmail.com",
+      "userRole": "mechanic",
+      "pageUrl": "http://localhost:3000/",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36 Edg/154.0.0.0",
+      "screenResolution": "1536x960",
+      "status": "pending",
+      "createdAt": "2026-09-30T18:16:49.923Z"
+    },
+    {
       "id": "rep_1790533875405",
       "category": "Hata / Bug",
       "title": "dgjpızdgjhıdaglısda",
@@ -2277,5 +2294,8 @@
       "isRead": false,
       "createdAt": "2026-09-26T22:15:45.786Z"
     }
-  ]
+  ],
+  "settings": {
+    "developerEmail": "developer.batin@gmail.com"
+  }
 }

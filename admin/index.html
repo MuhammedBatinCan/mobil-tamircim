@@ -130,6 +130,10 @@
         <span class="tab-icon">🚨</span> <span>SOS Radar</span>
         <span id="top-badge-sos" class="admin-tab-counter" style="display:none;">0</span>
       </button>
+      <button type="button" class="admin-top-tab" data-tab="tab-reports" onclick="AdminApp.switchTab('tab-reports')">
+        <span class="tab-icon">📬</span> <span>Gelen Bildirimler</span>
+        <span id="top-badge-reports" class="admin-tab-counter" style="display:none;">0</span>
+      </button>
       <button type="button" class="admin-top-tab special-ai-tab" data-tab="tab-ai-dev" onclick="AdminApp.switchTab('tab-ai-dev')">
         <span class="tab-icon ai-spark-icon">⚡</span>
         <span style="font-weight:800; color:#38BDF8;">AI Geliştirici (Antigravity)</span>
@@ -255,6 +259,22 @@
           </button>
         </form>
       </div>
+    </section>
+
+    <!-- 6. SEKME: GELEN GELİŞTİRİCİ / HATA BİLDİRİMLERİ (MAIL KUTUSU) -->
+    <section id="tab-reports" class="admin-view">
+      <div class="section-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+        <div>
+          <h2 class="section-title">📬 Yazılımcıya Gelen Hata & Öneri Bildirimleri</h2>
+          <p style="font-size:0.8rem; color:var(--text-secondary); margin:4px 0 0 0;">
+            Kullanıcıların site üzerinden doğrudan ilettiği bildirimler ve sistem e-posta arşivi.
+          </p>
+        </div>
+        <div style="font-size:0.8rem; color:#38BDF8; background:rgba(56,189,248,0.1); border:1px solid rgba(56,189,248,0.3); padding:6px 12px; border-radius:8px;">
+          Hedef E-Posta: <strong>developer.batin@gmail.com</strong>
+        </div>
+      </div>
+      <div id="reports-container" style="margin-top:16px;"></div>
     </section>
 
   </main>

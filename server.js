@@ -735,7 +735,7 @@ function escapeHtml(str) {
 
 // Zero-dependency Native SMTP / Email Notification Dispatcher
 async function sendDeveloperReportEmail({ report, developerEmail }) {
-  const targetEmail = developerEmail || process.env.DEVELOPER_EMAIL || (db.settings && db.settings.developerEmail) || 'batin.can.dev@gmail.com';
+  const targetEmail = developerEmail || process.env.DEVELOPER_EMAIL || (db.settings && db.settings.developerEmail) || 'developer.batin@gmail.com';
   const timestamp = new Date().toLocaleString('tr-TR', { timeZone: 'Europe/Istanbul' });
   const reportId = report.id || ('rep_' + Date.now());
 
@@ -836,24 +836,138 @@ async function sendDeveloperReportEmail({ report, developerEmail }) {
 
   // 3. Gerçek SMTP sunucusu yapılandırılmışsa doğrudan ilet (TLS / Net)
   const smtpHost = process.env.SMTP_HOST || (db.settings && db.settings.smtp && db.settings.smtp.host);
-  const smtpPort = process.env.SMTP_PORT || (db.settings && db.settings.smtp && db.settings.smtp.port) || 465;
+  const smtpPort = Number(process.env.SMTP_PORT || (db.settings && db.settings.smtp && db.settings.smtp.port) || 465);
   const smtpUser = process.env.SMTP_USER || (db.settings && db.settings.smtp && db.settings.smtp.user);
   const smtpPass = process.env.SMTP_PASS || (db.settings && db.settings.smtp && db.settings.smtp.pass);
 
   if (smtpHost && smtpUser && smtpPass) {
     try {
-      const tls = require('tls');
-      // Direct TLS SMTP dispatch
-      const client = tls.connect(Number(smtpPort), smtpHost, () => {
-        // Authenticate & send
+      await sendNativeSmtpMail({
+        host: smtpHost,
+        port: smtpPort,
+        user: smtpUser,
+        pass: smtpPass,
+        from: smtpUser,
+        to: targetEmail,
+        subject: subject,
+        html: emailHtml
       });
-      client.on('error', (e) => console.log('SMTP connection notice:', e.message));
+      console.log(`✅ [SMTP İLETİLDİ] E-posta başarıyla ${targetEmail} adresine gönderildi.`);
     } catch (e) {
-      console.log('SMTP dispatch skipped:', e.message);
+      console.error(`❌ [SMTP HATASI] E-posta iletilemedi:`, e.message);
     }
+  } else {
+    console.log(`ℹ️ [SMTP BİLGİ] SMTP ayarları (SMTP_USER / SMTP_PASS) tanımlanmadığı için e-posta sanal olarak 'data/outgoing_emails' dizinine kaydedildi. Gerçek gelen kutunuza düşmesi için Google App Password (Uygulama Şifresi) tanımlanmalıdır.`);
   }
 
   return { success: true, emailSent: true, targetEmail };
+}
+
+// Tam Teşekküllü Native SMTP İstemcisi (Harici kütüphane gerektirmez)
+function sendNativeSmtpMail({ host, port, user, pass, from, to, subject, html }) {
+  return new Promise((resolve, reject) => {
+    const tls = require('tls');
+    const net = require('net');
+
+    let socket;
+    let step = 0;
+    let buffer = '';
+
+    const isSecure = port === 465;
+
+    const onConnect = () => {
+      // Bağlantı kurulduğunda sunucudan 220 banner bekleyeceğiz
+    };
+
+    if (isSecure) {
+      socket = tls.connect({ host, port, rejectUnauthorized: false }, onConnect);
+    } else {
+      socket = net.connect({ host, port }, onConnect);
+    }
+
+    socket.setEncoding('utf8');
+    socket.setTimeout(15000);
+
+    socket.on('timeout', () => {
+      socket.destroy();
+      reject(new Error('SMTP bağlantı zaman aşımına uğradı (15s)'));
+    });
+
+    socket.on('error', (err) => {
+      reject(err);
+    });
+
+    socket.on('data', (chunk) => {
+      buffer += chunk;
+      const lines = buffer.split('\r\n');
+      buffer = lines.pop(); // Tamamlanmamış son satırı tut
+
+      for (const line of lines) {
+        if (!line.trim()) continue;
+        const code = parseInt(line.substring(0, 3), 10);
+        const isMultiLine = line.charAt(3) === '-';
+        if (isMultiLine) continue; // Çok satırlı yanıtın bitmesini bekle
+
+        handleSmtpStep(code, line);
+      }
+    });
+
+    function sendCmd(cmd) {
+      socket.write(cmd + '\r\n');
+    }
+
+    function handleSmtpStep(code, line) {
+      try {
+        if (step === 0 && code === 220) {
+          step = 1;
+          sendCmd(`EHLO localhost`);
+        } else if (step === 1 && code === 250) {
+          step = 2;
+          sendCmd('AUTH LOGIN');
+        } else if (step === 2 && code === 334) {
+          step = 3;
+          sendCmd(Buffer.from(user).toString('base64'));
+        } else if (step === 3 && code === 334) {
+          step = 4;
+          sendCmd(Buffer.from(pass).toString('base64'));
+        } else if (step === 4 && code === 235) {
+          step = 5;
+          sendCmd(`MAIL FROM:<${from}>`);
+        } else if (step === 5 && code === 250) {
+          step = 6;
+          sendCmd(`RCPT TO:<${to}>`);
+        } else if (step === 6 && code === 250) {
+          step = 7;
+          sendCmd('DATA');
+        } else if (step === 7 && code === 354) {
+          step = 8;
+          const mimeMessage = [
+            `From: "Mobil Tamircim" <${from}>`,
+            `To: <${to}>`,
+            `Subject: =?UTF-8?B?${Buffer.from(subject).toString('base64')}?=`,
+            `MIME-Version: 1.0`,
+            `Content-Type: text/html; charset=UTF-8`,
+            `Date: ${new Date().toUTCString()}`,
+            '',
+            html,
+            '',
+            '.'
+          ].join('\r\n');
+          socket.write(mimeMessage + '\r\n');
+        } else if (step === 8 && code === 250) {
+          step = 9;
+          sendCmd('QUIT');
+          resolve(true);
+        } else if (code >= 400) {
+          socket.destroy();
+          reject(new Error(`SMTP Hatası (${code}): ${line}`));
+        }
+      } catch (err) {
+        socket.destroy();
+        reject(err);
+      }
+    }
+  });
 }
 
 // HTTP Server
@@ -2452,6 +2566,22 @@ const server = http.createServer(async (req, res) => {
     if (pathname === '/api/feedback/reports' && method === 'GET') {
       res.writeHead(200);
       res.end(JSON.stringify({ success: true, reports: db.developerReports || [] }));
+      return;
+    }
+
+    if (pathname.match(/^\/api\/feedback\/reports\/([a-zA-Z0-9_-]+)\/resolve$/) && method === 'POST') {
+      const repId = pathname.split('/')[4];
+      if (!Array.isArray(db.developerReports)) db.developerReports = [];
+      const report = db.developerReports.find(r => r.id === repId);
+      if (report) {
+        report.status = 'resolved';
+        saveDb();
+        res.writeHead(200);
+        res.end(JSON.stringify({ success: true, report }));
+      } else {
+        res.writeHead(404);
+        res.end(JSON.stringify({ success: false, error: 'Bildirim bulunamadı' }));
+      }
       return;
     }
 

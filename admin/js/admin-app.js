@@ -19,6 +19,7 @@ const AdminApp = {
     this.renderVerifications();
     this.renderModeration();
     this.renderSos();
+    this.renderReports();
     this.updateBadgeCounts();
     this.initAiDeveloper();
   },
@@ -246,6 +247,7 @@ const AdminApp = {
     const pendingVerifs = (this.state.verifications || []).filter(v => v.status === 'pending').length;
     const pendingMods = (this.state.moderationQueue || []).filter(m => m.status === 'pending').length;
     const activeSos = (this.state.sosRequests || []).filter(s => s.status === 'active').length;
+    const pendingReports = (this.state.developerReports || []).filter(r => r.status === 'pending').length;
 
     // Mobil rozetler
     const vBadge = document.getElementById('badge-verifs-count');
@@ -269,6 +271,7 @@ const AdminApp = {
     const topV = document.getElementById('top-badge-verifs');
     const topM = document.getElementById('top-badge-mod');
     const topS = document.getElementById('top-badge-sos');
+    const topR = document.getElementById('top-badge-reports');
 
     if (topV) {
       topV.textContent = pendingVerifs;
@@ -281,6 +284,10 @@ const AdminApp = {
     if (topS) {
       topS.textContent = activeSos;
       topS.style.display = activeSos > 0 ? 'inline-block' : 'none';
+    }
+    if (topR) {
+      topR.textContent = pendingReports;
+      topR.style.display = pendingReports > 0 ? 'inline-block' : 'none';
     }
   },
 
@@ -568,6 +575,90 @@ const AdminApp = {
       this.updateBadgeCounts();
     } catch (err) {
       alert('Hata oluştu');
+    }
+  },
+
+  // 6. GELEN GELİŞTİRİCİ BİLDİRİMLERİ (MAIL KUTUSU)
+  renderReports() {
+    const container = document.getElementById('reports-container');
+    if (!container) return;
+
+    const reports = this.state.developerReports || [];
+    if (reports.length === 0) {
+      container.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">📬</div>
+          <p>Henüz iletilen bir geliştirici hata veya öneri bildirimi bulunmuyor.</p>
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = reports.map(r => {
+      const isPending = r.status === 'pending';
+      const catClass = r.category === 'Hata / Bug' ? 'badge-bug' : (r.category === 'Yeni Özellik' ? 'badge-feature' : 'badge-ui');
+
+      return `
+        <div class="admin-card" style="margin-bottom:14px; border-left:4px solid ${isPending ? '#F59E0B' : '#10B981'}; background:var(--admin-card-bg); padding:16px; border-radius:8px;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px; margin-bottom:10px;">
+            <div>
+              <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+                <span class="badge ${catClass}" style="padding:2px 8px; font-size:0.72rem;">${escapeHtml(r.category || 'Bildirim')}</span>
+                <span style="font-size:0.75rem; color:var(--text-muted);">${formatDate(r.createdAt)}</span>
+                <span style="font-size:0.7rem; color:${isPending ? '#F59E0B' : '#10B981'}; font-weight:700;">
+                  ${isPending ? '⏳ İncelenmeyi Bekliyor' : '✓ İncelendi / Çözüldü'}
+                </span>
+              </div>
+              <h3 style="font-size:1.05rem; font-weight:800; color:#FFF; margin:0 0 4px 0;">
+                ${escapeHtml(r.title)}
+              </h3>
+            </div>
+            <div>
+              ${isPending ? `
+                <button class="admin-btn admin-btn-success" onclick="AdminApp.resolveReport('${r.id}')" style="font-size:0.75rem; padding:6px 12px;">
+                  ✓ Çözüldü Olarak İşaretle
+                </button>
+              ` : `
+                <span style="font-size:0.75rem; color:#10B981; font-weight:700;">✓ Tamamlandı</span>
+              `}
+            </div>
+          </div>
+
+          <div style="background:var(--admin-input); padding:12px; border-radius:6px; font-size:0.88rem; color:#F1F5F9; line-height:1.5; margin-bottom:12px; white-space:pre-wrap;">
+            ${escapeHtml(r.message)}
+          </div>
+
+          ${r.image ? `
+            <div style="margin-bottom:12px;">
+              <span style="font-size:0.72rem; color:var(--text-muted); display:block; margin-bottom:4px;">Eklenen Ekran Görüntüsü:</span>
+              <img src="${r.image}" style="max-width:100%; max-height:220px; border-radius:6px; border:1px solid #334155;" alt="Ekran Görüntüsü">
+            </div>
+          ` : ''}
+
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; font-size:0.76rem; color:var(--text-muted); padding-top:10px; border-top:1px solid rgba(255,255,255,0.06);">
+            <div>
+              👤 <strong>${escapeHtml(r.userName || 'Ziyaretçi')}</strong> (@${escapeHtml(r.userUsername || 'anonim')})
+              ${r.userEmail ? `• 📧 <a href="mailto:${escapeHtml(r.userEmail)}" style="color:#38BDF8;">${escapeHtml(r.userEmail)}</a>` : ''}
+              ${r.pageUrl ? `• Sayfa: <code>${escapeHtml(r.pageUrl)}</code>` : ''}
+            </div>
+            <div style="font-family:monospace; color:var(--text-dim);">ID: ${escapeHtml(r.id)}</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  },
+
+  async resolveReport(reportId) {
+    try {
+      const res = await fetch(`/api/feedback/reports/${reportId}/resolve`, { method: 'POST' });
+      const data = await res.json();
+      if (data.success) {
+        await this.fetchData();
+        this.renderReports();
+        this.updateBadgeCounts();
+      }
+    } catch (err) {
+      alert('İşlem gerçekleştirilemedi.');
     }
   },
 
