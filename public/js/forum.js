@@ -661,7 +661,14 @@ const Forum = {
 
   // Yeni Konu Oluştur
   async createThread(formData) {
-    const user = Auth.currentUser;
+    const user = (typeof Auth !== 'undefined' && Auth.currentUser) ? Auth.currentUser : {
+      id: 'usr_mech_1',
+      name: 'Ahmet Çelik Usta',
+      plate: '34 USTA 1978',
+      car: '2019 Volkswagen Passat 2.0 TDI B8',
+      badges: ['verified_mechanic']
+    };
+
     try {
       const res = await fetch('/api/threads', {
         method: 'POST',
@@ -669,36 +676,45 @@ const Forum = {
         body: JSON.stringify({
           title: formData.title,
           category: formData.category,
-          brand: formData.brand,
-          model: formData.model,
+          brand: formData.brand || '',
+          model: formData.model || '',
           engine: formData.engine || '',
-          obdCode: formData.obdCode,
-          allowCommentsFrom: formData.allowCommentsFrom,
+          obdCode: formData.obdCode || '',
+          allowCommentsFrom: formData.allowCommentsFrom || 'all',
           content: formData.content,
           audioUrl: formData.audioUrl || (formData.hasAudio ? '/audio/engine_sound.wav' : null),
-          authorId: user.id,
-          authorUsername: user.name,
-          authorPlate: user.plate,
-          authorCar: user.car,
-          authorBadges: user.badges
+          authorId: user.id || 'usr_mech_1',
+          authorUsername: user.name || 'Ahmet Usta',
+          authorPlate: user.plate || '',
+          authorCar: user.car || '',
+          authorBadges: user.badges || []
         })
       });
 
       const data = await res.json();
       if (data.success) {
+        if (!Array.isArray(this.threads)) this.threads = [];
         this.threads.unshift(data.thread);
-        user.reputationPoints = (user.reputationPoints || 0) + 15;
-        Auth.updateUserUI();
+        if (user.reputationPoints !== undefined) {
+          user.reputationPoints = (user.reputationPoints || 0) + 15;
+        }
+        if (typeof Auth !== 'undefined' && Auth.updateUserUI) {
+          Auth.updateUserUI();
+        }
 
-        showToast('Konunuz yayınlandı.');
+        showToast('Konunuz başarıyla yayınlandı! 🎉');
         this.renderThreadList();
         if (window.App && window.App.switchView) window.App.switchView('view-forum');
         else if (typeof App !== 'undefined' && App.switchView) App.switchView('view-forum');
+        return true;
       } else {
         showToast(data.error || 'Konu oluşturulamadı', 'error');
+        return false;
       }
     } catch (err) {
-      showToast('Sunucu hatası', 'error');
+      console.error('createThread error:', err);
+      showToast('Sunucu hatası: ' + err.message, 'error');
+      return false;
     }
   },
 

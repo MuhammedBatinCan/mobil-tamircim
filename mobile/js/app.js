@@ -636,7 +636,8 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       const content = document.getElementById('thread-content-input').value.trim();
-      const allowCommentsFrom = document.querySelector('input[name="allowCommentsFrom"]:checked').value;
+      const allowRadio = document.querySelector('input[name="allowCommentsFrom"]:checked');
+      const allowCommentsFrom = allowRadio ? allowRadio.value : 'all';
       const audioData = document.getElementById('thread-audio-data-input') ? document.getElementById('thread-audio-data-input').value : '';
       const hasAudio = !!audioData;
 
@@ -645,21 +646,37 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      Forum.createThread({
-        title, category, brand, model, engine, obdCode, content, allowCommentsFrom, hasAudio, audioUrl: audioData || null
-      });
+      const submitBtn = newThreadForm.querySelector('button[type="submit"]');
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Yayınlanıyor...';
+      }
 
-      newThreadForm.reset();
-      App.clearAudioRecording();
-      const chipsContainer = document.getElementById('quick-engine-chips');
-      if (chipsContainer) chipsContainer.innerHTML = '';
-      if (typeof Forum.toggleCustomObd === 'function') {
-        Forum.toggleCustomObd(false);
+      try {
+        await Forum.createThread({
+          title, category, brand, model, engine, obdCode, content, allowCommentsFrom, hasAudio, audioUrl: audioData || null
+        });
+
+        newThreadForm.reset();
+        App.clearAudioRecording();
+        const chipsContainer = document.getElementById('quick-engine-chips');
+        if (chipsContainer) chipsContainer.innerHTML = '';
+        if (typeof Forum.toggleCustomObd === 'function') {
+          Forum.toggleCustomObd(false);
+        }
+        if (typeof App.toggleCustomBrand === 'function') {
+          App.toggleCustomBrand(false);
+        }
+        closeModal('new-thread-modal');
+      } catch (err) {
+        console.error('Thread submit error:', err);
+        showToast('Konu yayınlanamadı: ' + err.message, 'error');
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Konuyu Yayınla';
+        }
       }
-      if (typeof App.toggleCustomBrand === 'function') {
-        App.toggleCustomBrand(false);
-      }
-      closeModal('new-thread-modal');
     });
   }
 
